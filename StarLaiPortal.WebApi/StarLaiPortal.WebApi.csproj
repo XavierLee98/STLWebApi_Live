@@ -9,12 +9,31 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="SQL 20230215\**" />
+    <Compile Remove="SQL 20230217\**" />
+    <Compile Remove="SQL 20230221\**" />
+    <Content Remove="SQL 20230215\**" />
+    <Content Remove="SQL 20230217\**" />
+    <Content Remove="SQL 20230221\**" />
+    <EmbeddedResource Remove="SQL 20230215\**" />
+    <EmbeddedResource Remove="SQL 20230217\**" />
+    <EmbeddedResource Remove="SQL 20230221\**" />
+    <None Remove="SQL 20230215\**" />
+    <None Remove="SQL 20230217\**" />
+    <None Remove="SQL 20230221\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="API\Controller\OpenSOController.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="DevExpress.ExpressApp.Api.Xpo.All" Version="22.2.3" />
     <PackageReference Include="DevExpress.ExpressApp.CodeAnalysis" Version="22.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.14" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StarLaiPortal.Module\StarLaiPortal.Module.csproj" />

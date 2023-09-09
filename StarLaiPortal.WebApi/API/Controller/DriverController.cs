@@ -1,40 +1,45 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
 using DevExpress.ExpressApp.Core;
-using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Security;
+using DevExpress.Xpo;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
-using Dapper;
-using StarLaiPortal.WebApi.Model;
 
 namespace StarLaiPortal.WebApi.API.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompanyController : ControllerBase
+    [Authorize]
+    public class DriverController : ControllerBase
     {
         private IConfiguration Configuration { get; }
-        public CompanyController(IConfiguration configuration)
+        IObjectSpaceFactory objectSpaceFactory;
+        ISecurityProvider securityProvider;
+        public DriverController(IConfiguration configuration, IObjectSpaceFactory objectSpaceFactory, ISecurityProvider securityProvider)
         {
-            Configuration = configuration;
+            this.objectSpaceFactory = objectSpaceFactory;
+            this.securityProvider = securityProvider;
+            this.Configuration = configuration;
         }
-        [HttpGet]
+
+        [HttpGet()]
         public IActionResult Get()
         {
             try
             {
-                //return Ok(rtn.ToList());
                 using (SqlConnection conn = new SqlConnection(Configuration.GetConnectionString("ConnectionString")))
                 {
-                    var val = conn.Query("exec sp_getdatalist 'Company'").ToList();
+                    var val = conn.Query($"exec sp_getdatalist 'Driver'").ToList();
                     return Ok(JsonConvert.SerializeObject(val, Formatting.Indented));
                 }
+
             }
             catch (Exception ex)
             {
                 return Problem(ex.Message);
             }
         }
-
     }
 }

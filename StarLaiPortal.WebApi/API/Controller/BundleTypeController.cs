@@ -17,12 +17,12 @@ namespace StarLaiPortal.WebApi.API.Controller
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class OpenSOController : ControllerBase
+    public class BundleTypeController : ControllerBase
     {
         private IConfiguration Configuration { get; }
         IObjectSpaceFactory objectSpaceFactory;
         ISecurityProvider securityProvider;
-        public OpenSOController(IConfiguration configuration, IObjectSpaceFactory objectSpaceFactory, ISecurityProvider securityProvider)
+        public BundleTypeController(IConfiguration configuration, IObjectSpaceFactory objectSpaceFactory, ISecurityProvider securityProvider)
         {
             this.objectSpaceFactory = objectSpaceFactory;
             this.securityProvider = securityProvider;
@@ -33,21 +33,20 @@ namespace StarLaiPortal.WebApi.API.Controller
         {
             try
             {
-                //using IObjectSpace newObjectSpace = objectSpaceFactory.CreateObjectSpace<vwOpenSO>();
+                //using IObjectSpace newObjectSpace = objectSpaceFactory.CreateObjectSpace<vwWarehouse>();
                 //ISecurityStrategyBase security = securityProvider.GetSecurity();
                 //var userId = security.UserId;
                 //var userName = security.UserName;
                 //ApplicationUser user = newObjectSpace.GetObjectByKey<ApplicationUser>(userId);
 
-                //List<vwOpenSO> obj = newObjectSpace.GetObjects<vwOpenSO>().ToList();
-                //var rtn = obj.Select(pp => new { OID = pp.PriKey, Cart = pp.Cart, Customer = pp.Customer, ContactNo = pp.ContactNo, DocNum = pp.DocNum, CreateDate = pp.CreateDate });
+                //List<vwWarehouse> obj = newObjectSpace.GetObjects<vwWarehouse>(new BinaryOperator("Inactive", "N", BinaryOperatorType.Equal)).ToList();
+                //var rtn = obj.Select(pp => new { WarehouseCode = pp.WarehouseCode, WarehouseName = pp.WarehouseName });
                 ////return Ok(rtn.ToList());
                 //string json = JsonConvert.SerializeObject(rtn, Formatting.Indented);
                 //return Ok(json);
-
                 using (SqlConnection conn = new SqlConnection(Configuration.GetConnectionString("ConnectionString")))
                 {
-                    var val = conn.Query("exec sp_getdatalist 'OpenSO'").ToList();
+                    var val = conn.Query("exec sp_getdatalist 'BundleType'").ToList();
                     return Ok(JsonConvert.SerializeObject(val, Formatting.Indented));
                 }
             }
@@ -56,30 +55,28 @@ namespace StarLaiPortal.WebApi.API.Controller
                 return Problem(ex.Message);
             }
         }
-        [HttpGet("oid")]
-        public IActionResult Get(int oid)
+        [HttpGet("code")]
+        public IActionResult Get(string code)
         {
             try
             {
-                //using IObjectSpace newObjectSpace = objectSpaceFactory.CreateObjectSpace<SalesOrderDetails>();
+                //using IObjectSpace newObjectSpace = objectSpaceFactory.CreateObjectSpace<vwWarehouse>();
                 //ISecurityStrategyBase security = securityProvider.GetSecurity();
                 //var userId = security.UserId;
                 //var userName = security.UserName;
                 //ApplicationUser user = newObjectSpace.GetObjectByKey<ApplicationUser>(userId);
 
-                //List<SalesOrderDetails> obj = newObjectSpace.GetObjects<SalesOrderDetails>(CriteriaOperator.Parse("SalesOrder=?", oid)).ToList();
-                //var rtn = obj.Select(pp => new { OID = pp.Oid, ItemCode = pp.ItemCode, ItemDesc = pp.ItemDesc, Model = pp.Model, Location = pp.Location.WarehouseCode, Quantity = pp.Quantity });
+                //List<vwWarehouse> obj = newObjectSpace.GetObjects<vwWarehouse>(CriteriaOperator.Parse("WarehouseCode=?", code)).ToList();
+                //var rtn = obj.Select(pp => new { WarehouseCode = pp.WarehouseCode, WarehouseName = pp.WarehouseName }).FirstOrDefault();
                 ////return Ok(rtn.ToList());
                 //string json = JsonConvert.SerializeObject(rtn, Formatting.Indented);
                 //return Ok(json);
-
                 using (SqlConnection conn = new SqlConnection(Configuration.GetConnectionString("ConnectionString")))
                 {
-                    string json = JsonConvert.SerializeObject(new { oid = oid });
-                    var val = conn.Query($"exec sp_getdatalist 'SalesOrderDetails', '{json}'").ToList();
+                    string json = JsonConvert.SerializeObject(new { bundleid = code });
+                    var val = conn.Query($"exec sp_getdatalist 'BundleType', '{json}'").ToList().FirstOrDefault();
                     return Ok(JsonConvert.SerializeObject(val, Formatting.Indented));
                 }
-
             }
             catch (Exception ex)
             {

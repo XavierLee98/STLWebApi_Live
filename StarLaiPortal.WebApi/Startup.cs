@@ -15,6 +15,9 @@ using DevExpress.ExpressApp.Security.Authentication;
 using DevExpress.ExpressApp.Security.Authentication.ClientServer;
 using StarLaiPortal.WebApi.Core;
 using DevExpress.ExpressApp.AspNetCore.WebApi;
+using System.Text.Json.Serialization;
+using StarLaiPortal.WebApi.Converters;
+using StarLaiPortal.WebApi.Helper;
 
 namespace StarLaiPortal.WebApi;
 
@@ -44,6 +47,8 @@ public class Startup {
             .AddScoped<IAuthenticationTokenProvider, JwtTokenProviderService>()
             .AddScoped<IObjectSpaceProviderFactory, ObjectSpaceProviderFactory>()
             .AddSingleton<IWebApiApplicationSetup, WebApiApplicationSetup>();
+
+        services.AddSingleton(new ConfigSettings(Configuration.GetConnectionString("ConnectionString")));
 
         services.AddXafAspNetCoreSecurity(Configuration, options => {
             options.RoleType = typeof(PermissionPolicyRole);
@@ -91,6 +96,10 @@ public class Startup {
                 options
                     .AddRouteComponents("api/odata", new EdmModelBuilder(serviceProvider).GetEdmModel())
                     .EnableQueryFeatures(100);
+            })
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new ExpandoObjectJsonConverter());
             });
         services.AddSingleton(Configuration);
 
@@ -125,19 +134,19 @@ public class Startup {
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-        if(env.IsDevelopment()) {
+        //if(env.IsDevelopment()) {
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "StarLaiPortal WebApi v1");
+                c.SwaggerEndpoint("../swagger/v1/swagger.json", "StarLaiPortal WebApi v1");
             });
-        }
-        else {
-            app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. To change this for production scenarios, see: https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
-        }
-        app.UseHttpsRedirection();
+        //}
+        //else {
+        //    app.UseExceptionHandler("/Error");
+        //    // The default HSTS value is 30 days. To change this for production scenarios, see: https://aka.ms/aspnetcore-hsts.
+        //    app.UseHsts();
+        //}
+        //app.UseHttpsRedirection();
         app.UseRequestLocalization();
         app.UseStaticFiles();
         app.UseRouting();

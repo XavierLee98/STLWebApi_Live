@@ -1,0 +1,10 @@
+create procedure [dbo].[sp_afterdatasave]
+@tablename nvarchar(50),
+@json nvarchar(1024) = ''
+as
+begin
+	if @tablename = 'PickListDetailsActual'
+	begin
+		select * from PickListDetailsActual where Oid = JSON_VALUE(@json, '$.oid')
+	end
+end

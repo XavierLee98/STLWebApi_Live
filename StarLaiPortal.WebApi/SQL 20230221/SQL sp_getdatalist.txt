@@ -1,0 +1,266 @@
+
+create procedure [dbo].[sp_getdatalist]
+@type nvarchar(50),
+@json nvarchar(1024) = ''
+as
+begin
+	if @type = 'Company'
+	begin
+		select DBName, [Description], WebApiUrl from StarLai_Common..ODBC
+	end
+	if @type = 'SalesPerson'
+	begin
+		if @json = ''
+		begin
+			select SlpCode, SlpName
+			from vwSalesPerson
+		end
+		else if @json like '%"code"%'
+		begin
+			EXECUTE sp_executesql N'select SlpCode, SlpName
+			from vwSalesPerson
+			where SlpCode = JSON_VALUE(@json, ''$.code'')', N'@json nvarchar(1024)', @json = @json
+		end
+	end	
+	if @type = 'Transporter'
+	begin
+		if @json = ''
+		begin
+			select OID, TransporterID
+			from Transporter
+			where IsActive = 1
+		end
+		else if @json like '%"code"%'
+		begin
+			EXECUTE sp_executesql N'select OID, TransporterID
+			from Transporter
+			where IsActive = 1
+			and TransporterID = JSON_VALUE(@json, ''$.code'')', N'@json nvarchar(1024)', @json = @json
+		end
+	end	
+	if @type = 'BundleType'
+	begin
+		if @json = ''
+		begin
+			select OID, BundleID
+			from BundleType
+			where IsActive = 1
+		end
+		else if @json like '%"code"%'
+		begin
+			EXECUTE sp_executesql N'select OID, BundleID
+			from BundleType
+			where IsActive = 1
+			and BundleID = JSON_VALUE(@json, ''$.code'')', N'@json nvarchar(1024)', @json = @json
+		end
+	end
+	if @type = 'OpenPLA'
+	begin
+		if @json = ''
+		begin
+			SELECT T0.OID, T2.DocNum, T0.ToBin, T2.DocDate, T0.PickQty, T0.ItemCode, T0.ItemDesc, T0.SOTransporter, T3.SlpName, sum(isnull(T1.Quantity,0)) as PackQty  
+			FROM [PickListDetailsActual] T0
+			inner join PickList T2 on T0.PickList = T2.OID
+			left join PackListDetails T1 on T1.BaseDoc = T2.DocNum and T1.BaseId = T1.OID and T1.GCRecord is null
+			left join vwSalesPerson T3 on T0.SOSalesperson = T3.SlpCode
+			group by T0.OID, T2.DocNum, T0.ToBin, T2.DocDate, T0.PickQty, T0.ItemCode, T0.ItemDesc, T0.SOTransporter, T3.SlpName
+			having T0.PickQty > sum(isnull(T1.Quantity,0))
+
+		end
+		else if @json like '%"tobin"%'
+		begin
+			EXECUTE sp_executesql N'SELECT T0.OID, T2.DocNum, T0.ToBin, T2.DocDate, T0.PickQty, T0.ItemCode, T0.ItemDesc, T0.SOTransporter, T3.SlpName, sum(isnull(T1.Quantity,0)) as PackQty  
+			FROM [PickListDetailsActual] T0
+			inner join PickList T2 on T0.PickList = T2.OID
+			left join PackListDetails T1 on T1.BaseDoc = T2.DocNum and T1.BaseId = T1.OID and T1.GCRecord is null
+			left join vwSalesPerson T3 on T0.SOSalesperson = T3.SlpCode
+			where T0.ToBin = JSON_VALUE(@json, ''$.tobin'')
+			group by T0.OID, T2.DocNum, T0.ToBin, T2.DocDate, T0.PickQty, T0.ItemCode, T0.ItemDesc, T0.SOTransporter, T3.SlpName
+			having T0.PickQty > sum(isnull(T1.Quantity,0))', N'@json nvarchar(1024)', @json = @json
+		end
+	end
+	if @type = 'OpenPL'
+	begin
+		if @json = ''
+		begin
+			SELECT T0.OID, T0.DocNum, T0.DocDate, T1.SOTransporter, T2.SlpName
+			FROM [PickList] T0
+			inner join PickListDetails T1 on T1.PickList = T0.OID and T1.GCRecord is null
+			left join vwSalesPerson T2 on T1.SOSalesperson = T2.SlpCode
+			where T1.PlanQty > T1.PickQty
+			group by T0.OID, T0.DocNum, T0.DocDate, T1.SOTransporter, T2.SlpName
+		end
+		else if @json like '%"oid"%'
+		begin
+			EXECUTE sp_executesql N';with cte as (
+			select T0.ItemCode as ItemCode,
+			T1.ItemName as ItemDesc, 
+			T0.WhsCode as WhsCode, T2.AbsEntry as BinAbs, T2.BinCode as BinCode,ISNULL(
+			CASE
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) < 0 THEN 0
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) > 0 
+			THEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) END,0) as InStock
+			from [SPH]..OITW T0
+			inner join [SPH]..OITM T1 on T0.ItemCode = T1.ItemCode
+			left join [SPH]..OBIN T2 on T0.DftBinAbs = T2.AbsEntry
+			)
+			SELECT T0.OID, T0.ItemCode, T0.ItemDesc, T0.CatalogNo, T0.Warehouse, T0.PlanQty, T0.PickQty, T0.Customer, T0.SOBaseDoc, T0.SOBaseId, T0.SOCreateDate, T0.SOExpectedDate,T0.SORemarks, T0.SOTransporter, BinAbs, BinCode, InStock  
+			, T0.SOTransporter, T2.SlpName
+			FROM PickListDetails T0
+			inner join cte on T0.ItemCode collate database_default = cte.ItemCode collate database_default and T0.[Warehouse] collate database_default = cte.WhsCode collate database_default
+			inner join PickList T1 on T1.OID = T0.PickList
+			left join vwSalesPerson T2 on T0.SOSalesperson = T2.SlpCode
+			where T0.PlanQty > PickQty and T1.GCRecord is null
+			and T0.PickList = JSON_VALUE(@json, ''$.oid'')', N'@json nvarchar(1024)', @json = @json
+		end
+	end
+
+	if @type = 'SalesOrderDetails'
+	begin
+		if @json like '%"oid"%'
+		begin
+			EXECUTE sp_executesql N';with cte as (
+			select T0.ItemCode + ''-'' + T0.WhsCode as PriKey, T0.ItemCode as ItemCode,
+			T1.ItemName as ItemDesc, 
+			T0.WhsCode as WhsCode, ''DummyBin'' + T0.WhsCode as BinCode,ISNULL(
+			CASE
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) < 0 THEN 0
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) > 0 
+			THEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) END,0) as InStock
+			from [SPH]..OITW T0
+			inner join [SPH]..OITM T1 on T0.ItemCode = T1.ItemCode
+			left join [SPH]..OBIN T2 on T0.DftBinAbs = T2.AbsEntry
+			)
+			  SELECT T0.OID, T0.ItemCode, T0.ItemDesc, T0.CatalogNo, T0.Warehouse, T0.PlanQty, T0.PickQty, T0.Customer, T0.SOBaseDoc, T0.SOCreateDate, T0.SOExpectedDate,T0.SORemarks, T0.SOTransporter, cte.BinCode, ''100'' as InStock  FROM PickListDetails T0
+			inner join cte on T0.ItemCode collate database_default = cte.ItemCode collate database_default and T0.[Warehouse] collate database_default = cte.WhsCode collate database_default
+			where T0.PickList = JSON_VALUE(@json, ''$.oid'')', N'@json nvarchar(1024)', @json = @json
+		end
+	end
+	if @type = 'Warehouse'
+	begin
+		if @json = ''
+		begin
+			select WhsCode as WarehouseCode, WhsName as WarehouseName 
+			from [SPH]..OWHS where Inactive = 'N'
+		end
+		if @json like '%"code"%'
+		begin
+			EXECUTE sp_executesql N'select WhsCode as WarehouseCode, WhsName as WarehouseName from [SPH]..OWHS
+			where WhsCode = JSON_VALUE(@json, ''$.code'')', N'@json nvarchar(1024)', @json = @json
+		end
+	end
+	if @type = 'WarehouseBin'
+	begin
+		if @json = ''
+		begin
+			select T1.BinCode as BinCode, T1.AbsEntry as BinAbs, T0.WhsCode, T0.WhsName 
+			from [SPH]..OWHS T0 left join [SPH]..OBIN T1 on T0.WhsCode = T1.WhsCode where T0.Inactive = 'N'
+		end
+		if @json like '%"code"%'
+		begin
+			EXECUTE sp_executesql N'select T1.BinCode as BinCode, T1.AbsEntry as BinAbs, T0.WhsCode, T0.WhsName 
+			from [SPH]..OWHS T0 left join [SPH]..OBIN T1 on T0.WhsCode = T1.WhsCode
+			where T1.BinCode = JSON_VALUE(@json, ''$.code'')', N'@json nvarchar(1024)', @json = @json
+		end
+	end
+	if @type = 'StockBalance'
+	begin
+		if @json = ''
+		begin
+			;with cte as (
+			select T0.ItemCode + '-' + T0.WhsCode as PriKey, T0.ItemCode as ItemCode,
+			T1.ItemName as ItemDesc, 
+			T0.WhsCode as WhsCode, T2.AbsEntry as BinAbs, T2.BinCode as BinCode,ISNULL(
+			CASE
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) < 0 THEN 0
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) > 0 
+			THEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) END,0) as InStock
+			from [SPH]..OITW T0
+			inner join [SPH]..OITM T1 on T0.ItemCode = T1.ItemCode
+			left join [SPH]..OBIN T2 on T0.DftBinAbs = T2.AbsEntry
+			)
+			select ItemCode, ItemDesc, BinCode, BinAbs, WhsCode, InStock 
+			from cte
+			order by WhsCode, BinCode, ItemCode
+		end
+		if @json like '%"page"%' and @json like '%rows%'
+		begin
+			declare @page int, @rows int
+			select @page = JSON_VALUE(@json, '$.page'), @rows = JSON_VALUE(@json, '$.rows')
+			;with cte as (
+			select T0.ItemCode + '-' + T0.WhsCode as PriKey, T0.ItemCode as ItemCode,
+			T1.ItemName as ItemDesc, 
+			T0.WhsCode as WhsCode, T2.AbsEntry as BinAbs, T2.BinCode as BinCode,ISNULL(
+			CASE
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) < 0 THEN 0
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) > 0 
+			THEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) END,0) as InStock
+			from [SPH]..OITW T0
+			inner join [SPH]..OITM T1 on T0.ItemCode = T1.ItemCode
+			left join [SPH]..OBIN T2 on T0.DftBinAbs = T2.AbsEntry
+			)
+			select ItemCode, ItemDesc, BinCode, BinAbs, WhsCode, InStock 
+			from cte
+			order by WhsCode, BinCode, ItemCode
+			offset ((@page - 1) * @rows) row fetch next @rows row only
+		end
+		if @json like '%"itemcode"%' and @json like '%"bincode"%'
+		begin
+			EXECUTE sp_executesql N';with cte as (
+			select T0.ItemCode + ''-'' + T0.WhsCode as PriKey, T0.ItemCode as ItemCode,
+			T1.ItemName as ItemDesc, 
+			T0.WhsCode as WhsCode, T2.AbsEntry as BinAbs, T2.BinCode as BinCode,ISNULL(
+			CASE
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) < 0 THEN 0
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) > 0 
+			THEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) END,0) as InStock
+			from [SPH]..OITW T0
+			inner join [SPH]..OITM T1 on T0.ItemCode = T1.ItemCode
+			left join [SPH]..OBIN T2 on T0.DftBinAbs = T2.AbsEntry
+			)
+			select ItemCode, ItemDesc, BinCode, BinAbs, WhsCode, InStock 
+			from cte
+			where ItemCode = JSON_VALUE(@json, ''$.itemcode'') and cte.BinCode = JSON_VALUE(@json, ''$.bincode'')
+			order by WhsCode, BinCode, ItemCode', N'@json nvarchar(1024)', @json = @json
+		end
+		else if @json like '%"itemcode"%'
+		begin
+			EXECUTE sp_executesql N';with cte as (
+			select T0.ItemCode + ''-'' + T0.WhsCode as PriKey, T0.ItemCode as ItemCode,
+			T1.ItemName as ItemDesc, 
+			T0.WhsCode as WhsCode, T2.AbsEntry as BinAbs, T2.BinCode as BinCode,ISNULL(
+			CASE
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) < 0 THEN 0
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) > 0 
+			THEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) END,0) as InStock
+			from [SPH]..OITW T0
+			inner join [SPH]..OITM T1 on T0.ItemCode = T1.ItemCode
+			left join [SPH]..OBIN T2 on T0.DftBinAbs = T2.AbsEntry
+			)
+			select ItemCode, ItemDesc, BinCode, BinAbs, WhsCode, InStock 
+			from cte
+			where ItemCode = JSON_VALUE(@json, ''$.itemcode'')
+			order by WhsCode, BinCode, ItemCode', N'@json nvarchar(1024)', @json = @json
+		end
+		else if @json like '%"bincode"%'
+		begin
+			EXECUTE sp_executesql N';with cte as (
+			select T0.ItemCode + ''-'' + T0.WhsCode as PriKey, T0.ItemCode as ItemCode,
+			T1.ItemName as ItemDesc, 
+			T0.WhsCode as WhsCode, T2.AbsEntry as BinAbs, T2.BinCode as BinCode,ISNULL(
+			CASE
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) < 0 THEN 0
+			WHEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) > 0 
+			THEN (ISNULL(NULLIF(T0.IsCommited,0), 0) - (ISNULL(NULLIF(T0.IsCommited,0), 0) - ISNULL(NULLIF(T0.OnHand,0), 0))) END,0) as InStock
+			from [SPH]..OITW T0
+			inner join [SPH]..OITM T1 on T0.ItemCode = T1.ItemCode
+			left join [SPH]..OBIN T2 on T0.DftBinAbs = T2.AbsEntry
+			)
+			select ItemCode, ItemDesc, BinCode, BinAbs, WhsCode, InStock 
+			from cte
+			where cte.BinCode = JSON_VALUE(@json, ''$.bincode'')
+			order by WhsCode, BinCode, ItemCode', N'@json nvarchar(1024)', @json = @json
+		end
+
+	end
+end

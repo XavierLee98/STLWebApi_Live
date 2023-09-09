@@ -1,0 +1,104 @@
+create PROCEDURE [dbo].[ValidateJsonInput]
+@type nvarchar(50),
+@json nvarchar(max)
+AS
+BEGIN	
+	declare @itemline table
+	(
+		[linekey] int,
+		[value] nvarchar(max)
+	)
+	declare @batch table
+	(
+		[linekey] int,
+		[value] nvarchar(max)
+	)
+	declare @serial table
+	(
+		[linekey] int,
+		[value] nvarchar(max)
+	)
+	declare @minkey int = -1
+	declare @value nvarchar(max)
+
+	declare @error bit = 0
+	declare @errormessage nvarchar(1024) = ''
+
+	declare @lines nvarchar(max)
+
+	if isjson(@json) <> 1 goto returnstep
+
+	-- change all those readable columns to lower case to prevent jsonconvert error
+	select @json = REPLACE(@json, '"Lines"', '"lines"')
+	select @json = REPLACE(@json, '"Batches"', '"batches"')
+	select @json = REPLACE(@json, '"Serials"', '"serials"')
+	select @json = REPLACE(@json, '"ItemCode"', '"itemcode"')
+	select @json = REPLACE(@json, '"Itemcode"', '"itemcode"')
+	select @json = REPLACE(@json, '"itemCode"', '"itemcode"')
+	select @json = REPLACE(@json, '"Quantity"', '"quantity"')
+	select @json = REPLACE(@json, '"InternalSerialNumber"', '"internalserialnumber"')
+	select @json = REPLACE(@json, '"InternalSerialnumber"', '"internalserialnumber"')
+	select @json = REPLACE(@json, '"Internalserialnumber"', '"internalserialnumber"')
+	select @json = REPLACE(@json, '"internalSerialNumber"', '"internalserialnumber"')
+	select @json = REPLACE(@json, '"internalSerialnumber"', '"internalserialnumber"')
+	select @json = REPLACE(@json, '"internalserialNumber"', '"internalserialnumber"')
+	select @json = REPLACE(@json, '"BatchNumber"', '"batchnumber"')
+	select @json = REPLACE(@json, '"Batchnumber"', '"batchnumber"')
+	select @json = REPLACE(@json, '"batchNumber"', '"batchnumber"')
+
+	if @type = '15'
+	begin
+		select @lines = convert(text, JSON_QUERY(@json, '$.lines'))
+
+		insert into @itemline
+		select [key], [value]
+		from OPENJSON(@lines)
+		-- batches
+		select [linekey] as [linekey], convert(text, JSON_QUERY([value], '$.batches')) as [value] into #tempbatches 
+		from @itemline
+
+		while (exists(select 1 from #tempbatches))
+		begin
+			select @minkey = min([linekey]) from #tempbatches
+			select @value = [value] from #tempbatches where [linekey] = @minkey
+			insert into @batch
+			([linekey], [value])
+			select @minkey, [value] from openjson(@value)
+			delete from #tempbatches where [linekey] = @minkey
+		end
+		drop table #tempbatches
+
+		-- serials
+		select [linekey] as [linekey], convert(text, JSON_QUERY([value], '$.serials')) as [value] into #tempserials 
+		from @itemline
+
+		while (exists(select 1 from #tempserials))
+		begin
+			select @minkey = min([linekey]) from #tempserials
+			select @value = [value] from #tempserials where [linekey] = @minkey
+			insert into @serial
+			([linekey], [value])
+			select @minkey, [value] from openjson(@value)
+			delete from #tempserials where [linekey] = @minkey
+		end
+		drop table #tempserials
+
+		--;with T0 as (select linekey, json_value([value], '$.itemcode') as itemcode, convert(numeric,json_value([value], '$.quantity')) as quantity from @itemline)
+		--, T1 as (select linekey, json_value([value], '$.batchnumber') as batchnumber, convert(numeric,json_value([value], '$.quantity')) as quantity from @batch)
+		--, T2 as (select linekey, json_value([value], '$.internalserialnumber') as internalserialnumber, 1 as quantity from @serial)
+		--select T0.linekey, T0.itemcode, T0.quantity, T1.batchnumber, isnull(T1.quantity,0) as batchqty, T2.internalserialnumber, isnull(T2.quantity,0) as serialqty 
+		--from T0	left join T1 on T0.linekey = T1.linekey
+		--left join T2 on T0.linekey = T2.linekey
+
+		--;with T0 as (select linekey, json_value([value], '$.itemcode') as itemcode, convert(numeric,json_value([value], '$.quantity')) as quantity from @itemline)
+		--, T1 as (select linekey, json_value([value], '$.batchnumber') as batchnumber, convert(numeric,json_value([value], '$.quantity')) as quantity from @batch)
+		--select top 1 @error = 1, @errormessage = concat('line:', T0.linekey, ',itemcode:',T0.itemcode, '[batch quantity is not match.]')
+		--from T0 inner join [IGPL_SAP]..OITM T9 on T0.itemcode collate database_default = T9.ItemCode collate database_default and T9.ManBtchNum = 'Y'
+		--left join (select linekey, sum(quantity) as batchquantity from T1 group by linekey) T10 on T0.linekey = T10.linekey
+		--where T0.quantity <> isnull(T10.batchquantity,0)
+
+	end
+
+	returnstep:
+	select @error as Error, @errormessage as ErrorMessage
+END
