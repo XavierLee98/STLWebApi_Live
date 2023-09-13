@@ -32,6 +32,7 @@ using System.Web;
 
 // 2023-08-16 - add stock 3 and stock 4 - ver 1.0.8
 // 2023-08-25 - export and import function - ver 1.0.9
+// 2023-09-12 add warehouse transfer req no ver 1.0.9
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -89,8 +90,8 @@ namespace StarLaiPortal.Module.Controllers
                 {
                     this.WTRInquiryItem.Active.SetItemValue("Enabled", true);
                     // Start ver 1.0.9
-                    //this.ExportWHReq.Active.SetItemValue("Enabled", true);
-                    //this.ImportWHReq.Active.SetItemValue("Enabled", true);
+                    this.ExportWHReq.Active.SetItemValue("Enabled", true);
+                    this.ImportWHReq.Active.SetItemValue("Enabled", true);
                     // End ver 1.0.9
                 }
                 else
@@ -504,6 +505,9 @@ namespace StarLaiPortal.Module.Controllers
                 }
                 newwt.Remarks = wtr.Remarks;
                 newwt.TransferType = TransferType.WT;
+                // Start ver 1.0.9
+                newwt.WarehouseTransferReqNo = wtr.DocNum;
+                // End ver 1.0.9
 
                 foreach (WarehouseTransferReqDetails dtl in wtr.WarehouseTransferReqDetails)
                 {

@@ -2485,7 +2485,7 @@
         <ColumnInfo Id="Reference" Index="9" />
       </Columns>
     </ListView>
-    <ListView Id="PurchaseReturnRequests_ListView_Approval" ClassName="StarLaiPortal.Module.BusinessObjects.Purchase_Return.PurchaseReturnRequests" Caption="Purchase Return Request Approval" DataAccessMode="Client" IsNewNode="True">
+    <ListView Id="PurchaseReturnRequests_ListView_Approval" ClassName="StarLaiPortal.Module.BusinessObjects.Purchase_Return.PurchaseReturnRequests" Caption="Purchase Return Request Approval" DataAccessMode="Client" DetailViewID="PurchaseReturnRequests_DetailView_Approval" MasterDetailView="PurchaseReturnRequests_DetailView" IsNewNode="True">
       <Columns IsNewNode="True">
         <ColumnInfo Id="AppUser" PropertyName="AppUser" Index="-1" IsNewNode="True" />
         <ColumnInfo Id="BillingAddress" PropertyName="BillingAddress" Index="-1" IsNewNode="True" />
@@ -3705,19 +3705,22 @@
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
           <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="100">
-            <LayoutGroup Id="SalesReturnDetails_col1" ShowCaption="False" Index="0" RelativeSize="49.883177570093459" IsNewNode="True">
-              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="6.654343807763401" IsNewNode="True" />
-              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="1" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="ItemDetails" ViewItem="ItemDetails" Index="2" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="DefBarcode" ViewItem="DefBarcode" Index="3" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="UOM" ViewItem="UOM" Index="4" RelativeSize="78.9279112754159" IsNewNode="True" />
+            <LayoutGroup Id="SalesReturnDetails_col1" ShowCaption="False" Index="0" RelativeSize="49.926793557833086" IsNewNode="True">
+              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="6.581352833638026" IsNewNode="True" />
+              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="1" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="ItemDetails" ViewItem="ItemDetails" Index="2" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="DefBarcode" ViewItem="DefBarcode" Index="3" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="UOM" ViewItem="UOM" Index="4" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="5" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="Bin" ViewItem="Bin" Index="6" RelativeSize="69.6526508226691" IsNewNode="True" />
             </LayoutGroup>
-            <LayoutGroup Id="SalesReturnDetails_col2" ShowCaption="False" Index="1" RelativeSize="50.116822429906541" IsNewNode="True">
-              <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="0" RelativeSize="6.654343807763401" IsNewNode="True" />
-              <LayoutItem Id="Bin" ViewItem="Bin" Index="1" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="ReasonCode" ViewItem="ReasonCode" Index="2" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="3" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="RtnQuantity" ViewItem="RtnQuantity" Index="4" RelativeSize="78.9279112754159" IsNewNode="True" />
+            <LayoutGroup Id="SalesReturnDetails_col2" ShowCaption="False" Index="1" RelativeSize="50.073206442166914" IsNewNode="True">
+              <LayoutItem Id="ReasonCode" ViewItem="ReasonCode" Index="0" RelativeSize="6.581352833638026" IsNewNode="True" />
+              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="1" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="RtnQuantity" ViewItem="RtnQuantity" Index="2" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="UnitCost" ViewItem="UnitCost" Index="3" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="Price" ViewItem="Price" Index="4" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="Total" ViewItem="Total" Index="5" RelativeSize="74.405850091407672" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="SalesReturnDetails" Removed="True" />
           </LayoutGroup>
@@ -3728,19 +3731,22 @@
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
           <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="100">
-            <LayoutGroup Id="SalesReturnRequestDetails_col1" ShowCaption="False" Index="0" RelativeSize="49.883177570093459" IsNewNode="True">
-              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="6.654343807763401" IsNewNode="True" />
-              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="1" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="ItemDetails" ViewItem="ItemDetails" Index="2" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="DefBarcode" ViewItem="DefBarcode" Index="3" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="UOM" ViewItem="UOM" Index="4" RelativeSize="78.9279112754159" IsNewNode="True" />
+            <LayoutGroup Id="SalesReturnRequestDetails_col1" ShowCaption="False" Index="0" RelativeSize="49.926793557833086" IsNewNode="True">
+              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="6.581352833638026" IsNewNode="True" />
+              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="1" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="ItemDetails" ViewItem="ItemDetails" Index="2" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="DefBarcode" ViewItem="DefBarcode" Index="3" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="UOM" ViewItem="UOM" Index="4" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="5" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="Bin" ViewItem="Bin" Index="6" RelativeSize="69.6526508226691" IsNewNode="True" />
             </LayoutGroup>
-            <LayoutGroup Id="SalesReturnRequestDetails_col2" ShowCaption="False" Index="1" RelativeSize="50.116822429906541" IsNewNode="True">
-              <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="0" RelativeSize="6.654343807763401" IsNewNode="True" />
-              <LayoutItem Id="Bin" ViewItem="Bin" Index="1" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="ReasonCode" ViewItem="ReasonCode" Index="2" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="3" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="RtnQuantity" ViewItem="RtnQuantity" Index="4" RelativeSize="78.9279112754159" IsNewNode="True" />
+            <LayoutGroup Id="SalesReturnRequestDetails_col2" ShowCaption="False" Index="1" RelativeSize="50.073206442166914" IsNewNode="True">
+              <LayoutItem Id="ReasonCode" ViewItem="ReasonCode" Index="0" RelativeSize="6.581352833638026" IsNewNode="True" />
+              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="1" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="RtnQuantity" ViewItem="RtnQuantity" Index="2" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="UnitCost" ViewItem="UnitCost" Index="3" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="Price" ViewItem="Price" Index="4" RelativeSize="4.753199268738574" IsNewNode="True" />
+              <LayoutItem Id="Total" ViewItem="Total" Index="5" RelativeSize="74.405850091407672" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="SalesReturnRequestDetails" Removed="True" />
           </LayoutGroup>

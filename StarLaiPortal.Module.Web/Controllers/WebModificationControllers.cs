@@ -10,6 +10,7 @@ using DevExpress.ExpressApp.Utils;
 using DevExpress.ExpressApp.Web.SystemModule;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
+using DevExpress.XtraGrid.EditForm.Helpers;
 using StarLaiPortal.Module.BusinessObjects;
 using StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice;
 using StarLaiPortal.Module.BusinessObjects.Credit_Notes_Cancellation;
@@ -36,6 +37,7 @@ using System.Text;
 
 // 2023-07-28 add AR Downpayment cancalletion ver 1.0.7
 // 2023-08-25 add picklistactual validation ver 1.0.9
+// 2023-04-09 fix speed issue ver 1.0.8.1
 
 namespace StarLaiPortal.Module.Web.Controllers
 {
@@ -128,6 +130,12 @@ namespace StarLaiPortal.Module.Web.Controllers
                 bool over = false;
                 string overitem = null;
 
+                CurrObject.Customer = null;
+                CurrObject.CustomerName = null;
+                CurrObject.Priority = null;
+                CurrObject.SONumber = null;
+                CurrObject.SODeliveryDate = null;
+                string dupso = null;
                 foreach (PickListDetails dtl in CurrObject.PickListDetails)
                 {
                     int pickqty = 0;
@@ -146,6 +154,38 @@ namespace StarLaiPortal.Module.Web.Controllers
                         over = true;
                         overitem = dtl.ItemCode.ItemCode;
                     }
+
+                    // Start ver 1.0.8.1
+                    if (CurrObject.Customer == null)
+                    {
+                        CurrObject.Customer = dtl.Customer.BPCode;
+                    }
+                    if (CurrObject.CustomerName == null)
+                    {
+                        CurrObject.CustomerName = dtl.Customer.BPName;
+                    }
+                    if (CurrObject.Priority == null)
+                    {
+                        CurrObject.Priority = CurrObject.Session.GetObjectByKey<PriorityType>(dtl.Priority.Oid);
+                    }
+
+                    if (dupso != dtl.SOBaseDoc)
+                    {
+                        if (CurrObject.SONumber == null)
+                        {
+                            CurrObject.SONumber = dtl.SOBaseDoc;
+                        }
+                        else
+                        {
+                            CurrObject.SONumber = CurrObject.SONumber + ", " + dtl.SOBaseDoc;
+                        }
+
+                        dupso = dtl.SOBaseDoc;
+                    }
+
+                    string deliverydate = CurrObject.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.SODeliveryDate).Min().SODeliveryDate.Date.ToString();
+                    CurrObject.SODeliveryDate = deliverydate.Substring(0, 10);
+                    // End ver 1.0.8.1
                 }
 
                 if (over == true)
@@ -170,6 +210,91 @@ namespace StarLaiPortal.Module.Web.Controllers
             {
                 PackList CurrObject = (PackList)args.CurrentObject;
 
+                // Start ver 1.0.8.1
+                string duppl = null;
+                string dupso = null;
+                string dupcustomer = null;
+                CurrObject.SONumber = null;
+                CurrObject.SAPSONo = null;
+                CurrObject.Customer = null;
+                CurrObject.PickListNo = null;
+                CurrObject.Priority = null;
+                foreach (PackListDetails dtl in CurrObject.PackListDetails)
+                {
+                    if (duppl != dtl.PickListNo)
+                    {
+                        PickList picklist = ObjectSpace.FindObject<PickList>(CriteriaOperator.Parse("DocNum = ?", dtl.PickListNo));
+
+                        if (picklist != null)
+                        {
+                            foreach (PickListDetails dtl2 in picklist.PickListDetails)
+                            {
+                                if (dupso != dtl2.SOBaseDoc)
+                                {
+                                    if (CurrObject.SONumber == null)
+                                    {
+                                        CurrObject.SONumber = dtl2.SOBaseDoc;
+                                    }
+                                    else
+                                    {
+                                        CurrObject.SONumber = CurrObject.SONumber + ", " + dtl2.SOBaseDoc;
+                                    }
+
+                                    SalesOrder salesorder = ObjectSpace.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", dtl2.SOBaseDoc));
+
+                                    if (salesorder != null)
+                                    {
+                                        if (CurrObject.SAPSONo == null)
+                                        {
+                                            CurrObject.SAPSONo = salesorder.SAPDocNum;
+                                        }
+                                        else
+                                        {
+                                            CurrObject.SAPSONo = CurrObject.SAPSONo + ", " + salesorder.SAPDocNum;
+                                        }
+                                    }
+
+                                    dupso = dtl2.SOBaseDoc;
+                                }
+
+                                if (dupcustomer != dtl2.Customer.BPName)
+                                {
+                                    if (CurrObject.Customer == null)
+                                    {
+                                        CurrObject.Customer = dtl2.Customer.BPName;
+                                    }
+                                    else
+                                    {
+                                        CurrObject.Customer = CurrObject.Customer + ", " + dtl2.Customer.BPName;
+                                    }
+
+                                    dupcustomer = dtl2.Customer.BPName;
+                                }
+                            }
+
+                            if (picklist != null)
+                            {
+                                if (CurrObject.Priority == null)
+                                {
+                                    CurrObject.Priority = picklist.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
+                                }
+                            }
+                        }
+
+                        if (CurrObject.PickListNo == null)
+                        {
+                            CurrObject.PickListNo = dtl.PickListNo;
+                        }
+                        else
+                        {
+                            CurrObject.PickListNo = CurrObject.PickListNo + ", " + dtl.PickListNo;
+                        }
+
+                        duppl = dtl.PickListNo;
+                    }
+                }    
+                // End ver 1.0.8.1
+
                 base.Save(args);
                 if (CurrObject.DocNum == null)
                 {
@@ -185,6 +310,44 @@ namespace StarLaiPortal.Module.Web.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(Load))
             {
                 Load CurrObject = (Load)args.CurrentObject;
+
+                // Start ver 1.0.8.1
+                CurrObject.PackListNo = null;
+                CurrObject.SONumber = null;
+                CurrObject.Priority = null;
+                string duppack = null;
+                foreach (LoadDetails dtl in CurrObject.LoadDetails)
+                {
+                    if (duppack != dtl.BaseDoc)
+                    {
+                        if (CurrObject.PackListNo == null)
+                        {
+                            CurrObject.PackListNo = dtl.BaseDoc;
+                        }
+                        else
+                        {
+                            CurrObject.PackListNo = CurrObject.PackListNo + ", " + dtl.BaseDoc;
+                        }
+
+                        duppack = dtl.BaseDoc;
+                    }
+
+                    PackList pack = ObjectSpace.FindObject<PackList>(CriteriaOperator.Parse("DocNum = ?", dtl.PackList));
+
+                    if (pack != null)
+                    {
+                        if (CurrObject.SONumber == null)
+                        {
+                            CurrObject.SONumber = pack.SONumber;
+                        }
+
+                        if (CurrObject.Priority == null)
+                        {
+                            CurrObject.Priority = pack.Priority;
+                        }
+                    }
+                }
+                // End ver 1.0.8.1
 
                 base.Save(args);
                 if (CurrObject.DocNum == null)
@@ -262,6 +425,29 @@ namespace StarLaiPortal.Module.Web.Controllers
             {
                 ASN CurrObject = (ASN)args.CurrentObject;
 
+                // Start ver 1.0.8.1
+                CurrObject.PONo = null;
+                string duppo = null;
+                foreach (ASNDetails dtl in CurrObject.ASNDetails)
+                {
+                    dtl.OIDKey = dtl.Oid;
+
+                    if (duppo != dtl.PORefNo)
+                    {
+                        if (CurrObject.PONo == null)
+                        {
+                            CurrObject.PONo = dtl.PORefNo;
+                        }
+                        else
+                        {
+                            CurrObject.PONo = CurrObject.PONo + ", " + dtl.PORefNo;
+                        }
+
+                        duppo = dtl.PORefNo;
+                    }
+                }
+                // End ver 1.0.8.1
+
                 base.Save(args);
                 if (CurrObject.DocNum == null)
                 {
@@ -277,6 +463,70 @@ namespace StarLaiPortal.Module.Web.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(GRN))
             {
                 GRN CurrObject = (GRN)args.CurrentObject;
+
+                // Start ver 1.0.8.1
+                string duppo = null;
+                string dupporef = null;
+                string dupasn = null;
+                CurrObject.SAPPONo = null;
+                CurrObject.PortalPONo = null;
+                CurrObject.ASNNo = null;
+                foreach (GRNDetails dtl in CurrObject.GRNDetails)
+                {
+                    dtl.OIDKey = dtl.Oid;
+
+                    if (dtl.PONo != null)
+                    {
+                        if (duppo != dtl.PONo)
+                        {
+                            if (CurrObject.SAPPONo == null)
+                            {
+                                CurrObject.SAPPONo = dtl.PONo;
+                            }
+                            else
+                            {
+                                CurrObject.SAPPONo = CurrObject.SAPPONo + ", " + dtl.PONo;
+                            }
+
+                            duppo = dtl.PONo;
+                        }
+                    }
+
+                    if (dtl.PORefNo != null)
+                    {
+                        if (dupporef != dtl.PORefNo)
+                        {
+                            if (CurrObject.PortalPONo == null)
+                            {
+                                CurrObject.PortalPONo = dtl.PORefNo;
+                            }
+                            else
+                            {
+                                CurrObject.PortalPONo = CurrObject.PortalPONo + ", " + dtl.PORefNo;
+                            }
+
+                            dupporef = dtl.PORefNo;
+                        }
+                    }
+
+                    if (dtl.ASNBaseDoc != null)
+                    {
+                        if (dupasn != dtl.ASNBaseDoc)
+                        {
+                            if (CurrObject.ASNNo == null)
+                            {
+                                CurrObject.ASNNo = dtl.ASNBaseDoc;
+                            }
+                            else
+                            {
+                                CurrObject.ASNNo = CurrObject.ASNNo + ", " + dtl.ASNBaseDoc;
+                            }
+
+                            dupasn = dtl.ASNBaseDoc;
+                        }
+                    }
+                }
+                // End ver 1.0.8.1
 
                 base.Save(args);
                 if (CurrObject.DocNum == null)
@@ -488,6 +738,21 @@ namespace StarLaiPortal.Module.Web.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(SalesOrderCollection))
             {
                 SalesOrderCollection CurrObject = (SalesOrderCollection)args.CurrentObject;
+
+                // Start ver 1.0.8.1
+                CurrObject.SONumber = null;
+                foreach (SalesOrderCollectionDetails dtl in CurrObject.SalesOrderCollectionDetails)
+                {
+                    if (CurrObject.SONumber != null)
+                    {
+                        CurrObject.SONumber = CurrObject.SONumber + ", " + dtl.SalesOrder;
+                    }
+                    else
+                    {
+                        CurrObject.SONumber = dtl.SalesOrder;
+                    }
+                }
+                // End ver 1.0.8.1
 
                 base.Save(args);
                 if (CurrObject.DocNum == null)

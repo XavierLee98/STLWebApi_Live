@@ -40,6 +40,7 @@ using System.Text;
 using System.Web.UI.WebControls;
 
 // 2023-07-28 add AR Downpayment cancalletion ver 1.0.7
+// 2023-09-11 add dashboard sales/purchase/warehouse ver 1.0.9
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -69,6 +70,47 @@ namespace StarLaiPortal.Module.Controllers
                     }
                 }
             }
+
+            // Start ver 1.0.9
+            if (View.ObjectTypeInfo.Type == typeof(DashboardsSales))
+            {
+                if (View.Id == "DashboardsSales_ListView")
+                {
+                    processCurrentObjectController = Frame.GetController<ListViewProcessCurrentObjectController>();
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem +=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+
+            if (View.ObjectTypeInfo.Type == typeof(DashboardsPurchase))
+            {
+                if (View.Id == "DashboardsPurchase_ListView")
+                {
+                    processCurrentObjectController = Frame.GetController<ListViewProcessCurrentObjectController>();
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem +=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+
+            if (View.ObjectTypeInfo.Type == typeof(DashboardsWarehouse))
+            {
+                if (View.Id == "DashboardsWarehouse_ListView")
+                {
+                    processCurrentObjectController = Frame.GetController<ListViewProcessCurrentObjectController>();
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem +=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+            // End ver 1.0.9
 
             if (View.ObjectTypeInfo.Type == typeof(SalesQuotation) || View.ObjectTypeInfo.Type == typeof(SalesOrder) ||
                 View.ObjectTypeInfo.Type == typeof(SalesOrderCollection) || View.ObjectTypeInfo.Type == typeof(PickList) ||
@@ -120,6 +162,44 @@ namespace StarLaiPortal.Module.Controllers
                     }
                 }
             }
+
+            // Start ver 1.0.9
+            if (View.ObjectTypeInfo.Type == typeof(DashboardsSales))
+            {
+                if (View.Id == "DashboardsSales_ListView")
+                {
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem -=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+
+            if (View.ObjectTypeInfo.Type == typeof(DashboardsPurchase))
+            {
+                if (View.Id == "DashboardsPurchase_ListView")
+                {
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem -=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+
+            if (View.ObjectTypeInfo.Type == typeof(DashboardsWarehouse))
+            {
+                if (View.Id == "DashboardsWarehouse_ListView")
+                {
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem -=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+            // End ver 1.0.9
 
             if (View.ObjectTypeInfo.Type == typeof(SalesQuotation) || View.ObjectTypeInfo.Type == typeof(SalesOrder) ||
                 View.ObjectTypeInfo.Type == typeof(SalesOrderCollection) || View.ObjectTypeInfo.Type == typeof(PickList) ||

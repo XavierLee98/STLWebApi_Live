@@ -62,8 +62,8 @@ namespace StarLaiPortal.Module.Controllers
                 {
                     this.PreviewSO.Active.SetItemValue("Enabled", true);
                     // Start ver 1.0.9
-                    //this.CancelSO.Active.SetItemValue("Enabled", true);
-                    //this.CloseSO.Active.SetItemValue("Enabled", true);
+                    this.CancelSO.Active.SetItemValue("Enabled", true);
+                    this.CloseSO.Active.SetItemValue("Enabled", true);
                     // End ver 1.0.9
                 }
             }

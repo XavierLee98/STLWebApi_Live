@@ -226,6 +226,11 @@ namespace StarLaiPortal.Module.Controllers
             string duppl = null;
             string dupso = null;
             string dupcustomer = null;
+            packobj.SONumber = null;
+            packobj.SAPSONo = null;
+            packobj.Customer = null;
+            packobj.PickListNo = null;
+            packobj.Priority = null;
             foreach (PackListDetails dtl in packobj.PackListDetails)
             {
                 if (duppl != dtl.PickListNo)
@@ -234,11 +239,6 @@ namespace StarLaiPortal.Module.Controllers
 
                     if (picklist != null)
                     {
-                        packobj.SONumber = null;
-                        packobj.SAPSONo = null;
-                        packobj.Customer = null;
-                        packobj.PickListNo = null;
-                        packobj.Priority = null;
                         foreach (PickListDetails dtl2 in picklist.PickListDetails)
                         {
                             if (dupso != dtl2.SOBaseDoc)

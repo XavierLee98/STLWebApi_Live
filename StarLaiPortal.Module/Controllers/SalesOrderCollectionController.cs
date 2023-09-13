@@ -165,7 +165,14 @@ namespace StarLaiPortal.Module.Controllers
                         {
                             soc.CustomerName = dtl.CustomerName;
                             // Start ver 1.0.8.1
-                            soc.SONumber = soc.SONumber + dtl.DocNum + ", ";
+                            if (soc.SONumber != null)
+                            {
+                                soc.SONumber = soc.SONumber + ", " + dtl.DocNum;
+                            }
+                            else
+                            {
+                                soc.SONumber = dtl.DocNum;
+                            }
                             // End ver 1.0.8.1
                             SalesOrderCollectionDetails newsocitem = ObjectSpace.CreateObject<SalesOrderCollectionDetails>();
 

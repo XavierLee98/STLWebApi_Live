@@ -296,13 +296,10 @@ namespace StarLaiPortal.Module.Controllers
                             {
                                 dupcustomer = customer.Customer;
                             }
-                        }
 
-                        foreach (vwPaymentSO customerlist in e.PopupWindowViewSelectedObjects)
-                        {
                             foreach (PickListDetails pllist in pl.PickListDetails)
                             {
-                                if (customerlist.Customer != pllist.Customer.BPCode)
+                                if (customer.Customer != pllist.Customer.BPCode)
                                 {
                                     showMsg("Error", "Copy fail, duplicate customer found.", InformationType.Error);
                                     return;
@@ -609,6 +606,85 @@ namespace StarLaiPortal.Module.Controllers
                                         }
                                     }
 
+                                    // Start ver 1.0.8.1
+                                    string duppl = null;
+                                    string dupso = null;
+                                    string dupcustomer = null;
+                                    foreach (PackListDetails dtl in newpack.PackListDetails)
+                                    {
+                                        if (duppl != dtl.PickListNo)
+                                        {
+                                            PickList picklist = packos.FindObject<PickList>(CriteriaOperator.Parse("DocNum = ?", dtl.PickListNo));
+
+                                            if (picklist != null)
+                                            {
+                                                foreach (PickListDetails dtl2 in picklist.PickListDetails)
+                                                {
+                                                    if (dupso != dtl2.SOBaseDoc)
+                                                    {
+                                                        if (newpack.SONumber == null)
+                                                        {
+                                                            newpack.SONumber = dtl2.SOBaseDoc;
+                                                        }
+                                                        else
+                                                        {
+                                                            newpack.SONumber = newpack.SONumber + ", " + dtl2.SOBaseDoc;
+                                                        }
+
+                                                        SalesOrder salesorder = packos.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", dtl2.SOBaseDoc));
+
+                                                        if (salesorder != null)
+                                                        {
+                                                            if (newpack.SAPSONo == null)
+                                                            {
+                                                                newpack.SAPSONo = salesorder.SAPDocNum;
+                                                            }
+                                                            else
+                                                            {
+                                                                newpack.SAPSONo = newpack.SAPSONo + ", " + salesorder.SAPDocNum;
+                                                            }
+                                                        }
+
+                                                        dupso = dtl2.SOBaseDoc;
+                                                    }
+
+                                                    if (dupcustomer != dtl2.Customer.BPName)
+                                                    {
+                                                        if (newpack.Customer == null)
+                                                        {
+                                                            newpack.Customer = dtl2.Customer.BPName;
+                                                        }
+                                                        else
+                                                        {
+                                                            newpack.Customer = newpack.Customer + ", " + dtl2.Customer.BPName;
+                                                        }
+
+                                                        dupcustomer = dtl2.Customer.BPName;
+                                                    }
+                                                }
+
+                                                if (picklist != null)
+                                                {
+                                                    if (newpack.Priority == null)
+                                                    {
+                                                        newpack.Priority = picklist.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
+                                                    }
+                                                }
+                                            }
+
+                                            if (newpack.PickListNo == null)
+                                            {
+                                                newpack.PickListNo = dtl.PickListNo;
+                                            }
+                                            else
+                                            {
+                                                newpack.PickListNo = newpack.PickListNo + ", " + dtl.PickListNo;
+                                            }
+
+                                            duppl = dtl.PickListNo;
+                                        }
+                                    }
+                                    // End ver 1.0.8.1
                                     packos.CommitChanges();
 
                                     #region Add Load
@@ -630,6 +706,41 @@ namespace StarLaiPortal.Module.Controllers
                                 conn.Close();
                                 #endregion
 
+                                // Start ver 1.0.8.1
+                                string duppack = null;
+                                foreach (LoadDetails dtl in newload.LoadDetails)
+                                {
+                                    if (duppack != dtl.BaseDoc)
+                                    {
+                                        if (newload.PackListNo == null)
+                                        {
+                                            newload.PackListNo = dtl.BaseDoc;
+                                        }
+                                        else
+                                        {
+                                            newload.PackListNo = newload.PackListNo + ", " + dtl.BaseDoc;
+                                        }
+
+                                        duppack = dtl.BaseDoc;
+                                    }
+
+                                    PackList pack = loados.FindObject<PackList>(CriteriaOperator.Parse("DocNum = ?", dtl.PackList));
+
+                                    if (pack != null)
+                                    {
+                                        if (newload.SONumber == null)
+                                        {
+                                            newload.SONumber = pack.SONumber;
+                                        }
+
+                                        if (newload.Priority == null)
+                                        {
+                                            newload.Priority = pack.Priority;
+                                        }
+                                    }
+                                }
+                                // End ver 1.0.8.1
+                                
                                 loados.CommitChanges();
 
                                 #region Add Delivery Order
@@ -1116,13 +1227,10 @@ namespace StarLaiPortal.Module.Controllers
                         {
                             dupcustomer = customer.Customer;
                         }
-                    }
 
-                    foreach (vwPaymentSOGroup customerlist in e.PopupWindowViewSelectedObjects)
-                    {
-                        foreach(PickListDetails pllist in pl.PickListDetails)
+                        foreach (PickListDetails pllist in pl.PickListDetails)
                         {
-                            if (customerlist.Customer != pllist.Customer.BPCode)
+                            if (customer.Customer != pllist.Customer.BPCode)
                             {
                                 showMsg("Error", "Copy fail, duplicate customer found.", InformationType.Error);
                                 return;
@@ -1324,6 +1432,49 @@ namespace StarLaiPortal.Module.Controllers
 
                         showMsg("Success", "Copy Success.", InformationType.Success);
                     }
+
+                    // Start ver 1.0.8.1
+                    pl.Customer = null;
+                    pl.CustomerName = null;
+                    pl.Priority = null;
+                    pl.SONumber = null;
+                    pl.SODeliveryDate = null;
+                    string dupso = null;
+                    foreach (PickListDetails dtl in pl.PickListDetails)
+                    {
+                        // Start ver 1.0.8.1
+                        if (pl.Customer == null)
+                        {
+                            pl.Customer = dtl.Customer.BPCode;
+                        }
+                        if (pl.CustomerName == null)
+                        {
+                            pl.CustomerName = dtl.Customer.BPName;
+                        }
+                        if (pl.Priority == null)
+                        {
+                            pl.Priority = pl.Session.GetObjectByKey<PriorityType>(dtl.Priority.Oid);
+                        }
+
+                        if (dupso != dtl.SOBaseDoc)
+                        {
+                            if (pl.SONumber == null)
+                            {
+                                pl.SONumber = dtl.SOBaseDoc;
+                            }
+                            else
+                            {
+                                pl.SONumber = pl.SONumber + ", " + dtl.SOBaseDoc;
+                            }
+
+                            dupso = dtl.SOBaseDoc;
+                        }
+
+                        string deliverydate = pl.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.SODeliveryDate).Min().SODeliveryDate.Date.ToString();
+                        pl.SODeliveryDate = deliverydate.Substring(0, 10);
+                        // End ver 1.0.8.1
+                    }
+                    // End ver 1.0.8.1
 
                     ObjectSpace.CommitChanges();
                     ObjectSpace.Refresh();

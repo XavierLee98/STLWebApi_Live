@@ -33,10 +33,10 @@ namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
     [Appearance("HideSubmit", AppearanceItemType.Action, "True", TargetItems = "SubmitWTR", Criteria = "not (Status in (0))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("HideSubmit1", AppearanceItemType.Action, "True", TargetItems = "SubmitWTR", Criteria = "(AppStatus in (2))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
 
-    [Appearance("HideCancel", AppearanceItemType.Action, "True", TargetItems = "CancelWTR", Criteria = "not (Status in (0)) and CopyTo = 1", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    [Appearance("HideCancel", AppearanceItemType.Action, "True", TargetItems = "CancelWTR", Criteria = "not (Status in (0, 1))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     // Start ver 1.0.9
     //[Appearance("HideCancel1", AppearanceItemType.Action, "True", TargetItems = "CancelWTR", Criteria = "(AppStatus in (2))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
-    [Appearance("HideCancel1", AppearanceItemType.Action, "True", TargetItems = "CancelWTR", Criteria = "(Status in (1)) and CopyTo = 1", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    //[Appearance("HideCancel1", AppearanceItemType.Action, "True", TargetItems = "CancelWTR", Criteria = "(Status in (1)) and CopyTo = 1", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("HideCancel2", AppearanceItemType.Action, "True", TargetItems = "CancelWTR", Criteria = "(Status in (2))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     // End ver 1.0.9
 

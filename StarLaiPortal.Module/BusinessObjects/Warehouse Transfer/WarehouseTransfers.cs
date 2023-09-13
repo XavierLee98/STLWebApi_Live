@@ -14,6 +14,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+// 2023-09-12 add warehouse transfer req no ver 1.0.9
+
 namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
 {
     [DefaultClassOptions]
@@ -243,6 +245,21 @@ namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
                 SetPropertyValue("SAPDocNum", ref _SAPDocNum, value);
             }
         }
+
+        // Start ver 1.0.9
+        private string _WarehouseTransferReqNo;
+        [XafDisplayName("WT Req No.")]
+        [Appearance("WarehouseTransferReqNo", Enabled = false)]
+        [Index(18), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        public string WarehouseTransferReqNo
+        {
+            get { return _WarehouseTransferReqNo; }
+            set
+            {
+                SetPropertyValue("WarehouseTransferReqNo", ref _WarehouseTransferReqNo, value);
+            }
+        }
+        // End ver 1.0.9
 
         private TransferType _TransferType;
         [LookupEditorMode(LookupEditorMode.AllItems)]

@@ -2639,7 +2639,14 @@ namespace PortalIntegration
                             {
                                 oDoc.Lines.AccountCode = oTargetDoc.ReasonCode.GLAcc;
                             }
-                            oDoc.Lines.UnitPrice = 0.01;
+                            if (dtl.CostType == AdjustmnetCost.Zero)
+                            {
+                                oDoc.Lines.UnitPrice = 0.01;
+                            }
+                            else
+                            {
+                                oDoc.Lines.UnitPrice = (double)dtl.Price;
+                            }
                             oDoc.Lines.UserFields.Fields.Item("U_PortalLineOid").Value = dtl.Oid.ToString();
 
                             if (dtl.Bin != null)

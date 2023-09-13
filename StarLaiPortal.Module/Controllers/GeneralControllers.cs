@@ -809,6 +809,86 @@ namespace StarLaiPortal.Module.Controllers
                                 }
                             }
 
+                            // Start ver 1.0.8.1
+                            string duppl = null;
+                            string dupso = null;
+                            string dupcustomer = null;
+                            foreach (PackListDetails dtl in newpack.PackListDetails)
+                            {
+                                if (duppl != dtl.PickListNo)
+                                {
+                                    PickList pl = packos.FindObject<PickList>(CriteriaOperator.Parse("DocNum = ?", dtl.PickListNo));
+
+                                    if (picklist != null)
+                                    {
+                                        foreach (PickListDetails dtl2 in pl.PickListDetails)
+                                        {
+                                            if (dupso != dtl2.SOBaseDoc)
+                                            {
+                                                if (newpack.SONumber == null)
+                                                {
+                                                    newpack.SONumber = dtl2.SOBaseDoc;
+                                                }
+                                                else
+                                                {
+                                                    newpack.SONumber = newpack.SONumber + ", " + dtl2.SOBaseDoc;
+                                                }
+
+                                                SalesOrder salesorder = packos.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", dtl2.SOBaseDoc));
+
+                                                if (salesorder != null)
+                                                {
+                                                    if (newpack.SAPSONo == null)
+                                                    {
+                                                        newpack.SAPSONo = salesorder.SAPDocNum;
+                                                    }
+                                                    else
+                                                    {
+                                                        newpack.SAPSONo = newpack.SAPSONo + ", " + salesorder.SAPDocNum;
+                                                    }
+                                                }
+
+                                                dupso = dtl2.SOBaseDoc;
+                                            }
+
+                                            if (dupcustomer != dtl2.Customer.BPName)
+                                            {
+                                                if (newpack.Customer == null)
+                                                {
+                                                    newpack.Customer = dtl2.Customer.BPName;
+                                                }
+                                                else
+                                                {
+                                                    newpack.Customer = newpack.Customer + ", " + dtl2.Customer.BPName;
+                                                }
+
+                                                dupcustomer = dtl2.Customer.BPName;
+                                            }
+                                        }
+
+                                        if (pl != null)
+                                        {
+                                            if (newpack.Priority == null)
+                                            {
+                                                newpack.Priority = pl.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
+                                            }
+                                        }
+                                    }
+
+                                    if (newpack.PickListNo == null)
+                                    {
+                                        newpack.PickListNo = dtl.PickListNo;
+                                    }
+                                    else
+                                    {
+                                        newpack.PickListNo = newpack.PickListNo + ", " + dtl.PickListNo;
+                                    }
+
+                                    duppl = dtl.PickListNo;
+                                }
+                            }
+                            // End ver 1.0.8.1
+
                             packos.CommitChanges();
 
                             #region Add Load
@@ -829,6 +909,41 @@ namespace StarLaiPortal.Module.Controllers
                         }
                         conn.Close();
                         #endregion
+
+                        // Start ver 1.0.8.1
+                        string duppack = null;
+                        foreach (LoadDetails dtl in newload.LoadDetails)
+                        {
+                            if (duppack != dtl.BaseDoc)
+                            {
+                                if (newload.PackListNo == null)
+                                {
+                                    newload.PackListNo = dtl.BaseDoc;
+                                }
+                                else
+                                {
+                                    newload.PackListNo = newload.PackListNo + ", " + dtl.BaseDoc;
+                                }
+
+                                duppack = dtl.BaseDoc;
+                            }
+
+                            PackList pack = loados.FindObject<PackList>(CriteriaOperator.Parse("DocNum = ?", dtl.PackList));
+
+                            if (pack != null)
+                            {
+                                if (newload.SONumber == null)
+                                {
+                                    newload.SONumber = pack.SONumber;
+                                }
+
+                                if (newload.Priority == null)
+                                {
+                                    newload.Priority = pack.Priority;
+                                }
+                            }
+                        }
+                        // End ver 1.0.8.1
 
                         loados.CommitChanges();
 
