@@ -920,7 +920,7 @@ namespace StarLaiPortal.Module.Controllers
                                 }
                             }
 
-                            if (sq.IsValid4 == true)
+                            if (sq.IsValid4 == true && p.AppStatus != ApprovalActions.No)
                             {
                                 showMsg("Error", "Sales qty not allow over warehouse available qty.", InformationType.Error);
                                 process = false;
@@ -1161,7 +1161,7 @@ namespace StarLaiPortal.Module.Controllers
                         }
 
                         // Start ver 1.0.8.1
-                        if (sq.IsValid4 == true)
+                        if (sq.IsValid4 == true && p.AppStatus != ApprovalActions.No)
                         {
                             showMsg("Error", "Sales qty not allow over warehouse available qty.", InformationType.Error);
                             return;
@@ -1319,6 +1319,9 @@ namespace StarLaiPortal.Module.Controllers
                             newSO.Remarks = trx.Remarks;
                             newSO.Attn = trx.Attn;
                             newSO.RefNo = trx.RefNo;
+                            // Start ver 1.0.8.1
+                            newSO.SQNumber = trx.DocNum;
+                            // End ver 1.0.8.1
 
                             foreach (SalesQuotationDetails detail in trx.SalesQuotationDetails)
                             {

@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-07-20 - hide copy from so button for series indent - ver 1.0.6 (LIVE)
+// 2023-09-25 change date format ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.Purchase_Order
 {
@@ -93,6 +94,9 @@ namespace StarLaiPortal.Module.BusinessObjects.Purchase_Order
 
         private DateTime? _CreateDate;
         [Index(301), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        // Start ver 1.0.10
+        [ModelDefault("DisplayFormat", "{0: dd/MM/yyyy hh:mm tt}")]
+        // End ver 1.0.10
         [Appearance("CreateDate", Enabled = false)]
         public DateTime? CreateDate
         {

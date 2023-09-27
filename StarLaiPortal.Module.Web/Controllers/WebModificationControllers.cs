@@ -28,6 +28,7 @@ using StarLaiPortal.Module.BusinessObjects.Sales_Refund;
 using StarLaiPortal.Module.BusinessObjects.Sales_Return;
 using StarLaiPortal.Module.BusinessObjects.Setup;
 using StarLaiPortal.Module.BusinessObjects.Stock_Adjustment;
+using StarLaiPortal.Module.BusinessObjects.View;
 using StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer;
 using StarLaiPortal.Module.Controllers;
 using System;
@@ -38,6 +39,7 @@ using System.Text;
 // 2023-07-28 add AR Downpayment cancalletion ver 1.0.7
 // 2023-08-25 add picklistactual validation ver 1.0.9
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 copy warehouse ver 1.0.10
 
 namespace StarLaiPortal.Module.Web.Controllers
 {
@@ -272,13 +274,17 @@ namespace StarLaiPortal.Module.Web.Controllers
                                 }
                             }
 
-                            if (picklist != null)
+                            if (CurrObject.Priority == null)
                             {
-                                if (CurrObject.Priority == null)
-                                {
-                                    CurrObject.Priority = picklist.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
-                                }
+                                CurrObject.Priority = picklist.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
                             }
+
+                            // Start ver 1.0.10
+                            if (CurrObject.Warehouse == null)
+                            {
+                                CurrObject.Warehouse = CurrObject.Session.GetObjectByKey<vwWarehouse>(picklist.Warehouse.WarehouseCode);
+                            }
+                            // End ver 1.0.10
                         }
 
                         if (CurrObject.PickListNo == null)
@@ -345,6 +351,13 @@ namespace StarLaiPortal.Module.Web.Controllers
                         {
                             CurrObject.Priority = pack.Priority;
                         }
+
+                        // Start ver 1.0.10
+                        if (CurrObject.Warehouse == null)
+                        {
+                            CurrObject.Warehouse = CurrObject.Session.GetObjectByKey<vwWarehouse>(pack.Warehouse.WarehouseCode);
+                        }
+                        // End ver 1.0.10
                     }
                 }
                 // End ver 1.0.8.1

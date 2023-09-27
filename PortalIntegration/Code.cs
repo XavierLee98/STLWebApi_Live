@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 // 2023-07-28 add GRPO Correction ver 1.0.7
 // 2023-08-16 temporary fix glaccount ver 1.0.8
@@ -4017,219 +4018,401 @@ namespace PortalIntegration
         {
             IObjectSpace lso = ObjectSpaceProvider.CreateObjectSpace();
 
-            // Sales Order Collection
-            IList<SalesOrderCollection> soclist = lso.GetObjects<SalesOrderCollection>
-                (CriteriaOperator.Parse("IsNull(SONumber)"));
+            //// Sales Order Collection
+            //IList<SalesOrderCollection> soclist = lso.GetObjects<SalesOrderCollection>
+            //    (CriteriaOperator.Parse("IsNull(SONumber)"));
 
-            foreach (SalesOrderCollection dtlsoc in soclist)
-            {
-                IObjectSpace socos = ObjectSpaceProvider.CreateObjectSpace();
-                SalesOrderCollection socobj = socos.GetObjectByKey<SalesOrderCollection>(dtlsoc.Oid);
+            //foreach (SalesOrderCollection dtlsoc in soclist)
+            //{
+            //    IObjectSpace socos = ObjectSpaceProvider.CreateObjectSpace();
+            //    SalesOrderCollection socobj = socos.GetObjectByKey<SalesOrderCollection>(dtlsoc.Oid);
 
-                string dupso = null;
-                foreach (SalesOrderCollectionDetails dtl in socobj.SalesOrderCollectionDetails)
-                {
-                    if (dupso != dtl.SalesOrder)
-                    {
-                        if (socobj.SONumber == null)
-                        {
-                            socobj.SONumber = dtl.SalesOrder;
-                        }
-                        else
-                        {
-                            socobj.SONumber = socobj.SONumber + ", " + dtl.SalesOrder;
-                        }
+            //    string dupso = null;
+            //    foreach (SalesOrderCollectionDetails dtl in socobj.SalesOrderCollectionDetails)
+            //    {
+            //        if (dupso != dtl.SalesOrder)
+            //        {
+            //            if (socobj.SONumber == null)
+            //            {
+            //                socobj.SONumber = dtl.SalesOrder;
+            //            }
+            //            else
+            //            {
+            //                socobj.SONumber = socobj.SONumber + ", " + dtl.SalesOrder;
+            //            }
 
-                        dupso = dtl.SalesOrder;
-                    }
-                }
+            //            dupso = dtl.SalesOrder;
+            //        }
+            //    }
 
-                socos.CommitChanges();
-            }
+            //    socos.CommitChanges();
+            //}
 
-            // Pick List
-            IList<PickList> pllist = lso.GetObjects<PickList>
-                (CriteriaOperator.Parse("IsNull(Customer)"));
+            //// Pick List
+            //IList<PickList> pllist = lso.GetObjects<PickList>
+            //    (CriteriaOperator.Parse("IsNull(Customer)"));
 
-            foreach (PickList dtlpl in pllist)
-            {
-                IObjectSpace plos = ObjectSpaceProvider.CreateObjectSpace();
-                PickList plobj = plos.GetObjectByKey<PickList>(dtlpl.Oid);
+            //foreach (PickList dtlpl in pllist)
+            //{
+            //    IObjectSpace plos = ObjectSpaceProvider.CreateObjectSpace();
+            //    PickList plobj = plos.GetObjectByKey<PickList>(dtlpl.Oid);
 
-                string dupso = null;
-                foreach (PickListDetails dtl in plobj.PickListDetails)
-                {
-                    if (plobj.Customer == null)
-                    {
-                        plobj.Customer = dtl.Customer.BPCode;
-                    }
-                    if (plobj.CustomerName == null)
-                    {
-                        plobj.CustomerName = dtl.Customer.BPName;
-                    }
+            //    string dupso = null;
+            //    foreach (PickListDetails dtl in plobj.PickListDetails)
+            //    {
+            //        if (plobj.Customer == null)
+            //        {
+            //            plobj.Customer = dtl.Customer.BPCode;
+            //        }
+            //        if (plobj.CustomerName == null)
+            //        {
+            //            plobj.CustomerName = dtl.Customer.BPName;
+            //        }
 
-                    if (dupso != dtl.SOBaseDoc)
-                    {
-                        if (plobj.SONumber == null)
-                        {
-                            plobj.SONumber = dtl.SOBaseDoc;
-                        }
-                        else
-                        {
-                            plobj.SONumber = plobj.SONumber + ", " + dtl.SOBaseDoc;
-                        }
+            //        if (dupso != dtl.SOBaseDoc)
+            //        {
+            //            if (plobj.SONumber == null)
+            //            {
+            //                plobj.SONumber = dtl.SOBaseDoc;
+            //            }
+            //            else
+            //            {
+            //                plobj.SONumber = plobj.SONumber + ", " + dtl.SOBaseDoc;
+            //            }
 
-                        dupso = dtl.SOBaseDoc;
-                    }
-                }
+            //            dupso = dtl.SOBaseDoc;
+            //        }
+            //    }
 
-                string sodeliverydate = null;
-                if (plobj.PickListDetails.Count() > 0)
-                {
-                    sodeliverydate = plobj.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.SODeliveryDate).Min().SODeliveryDate.Date.ToString();
-                }
+            //    string sodeliverydate = null;
+            //    if (plobj.PickListDetails.Count() > 0)
+            //    {
+            //        sodeliverydate = plobj.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.SODeliveryDate).Min().SODeliveryDate.Date.ToString();
+            //    }
 
-                if (sodeliverydate != null)
-                {
-                    plobj.SODeliveryDate =  sodeliverydate.Substring(0, 10);
-                }
+            //    if (sodeliverydate != null)
+            //    {
+            //        plobj.SODeliveryDate =  sodeliverydate.Substring(0, 10);
+            //    }
 
-                if (plobj.PickListDetails.Count() > 0)
-                {
-                    plobj.Priority = plobj.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
-                }
+            //    if (plobj.PickListDetails.Count() > 0)
+            //    {
+            //        plobj.Priority = plobj.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
+            //    }
 
-                plos.CommitChanges();
-            }
+            //    plos.CommitChanges();
+            //}
 
-            // Pack List
-            IList<PackList> packlist = lso.GetObjects<PackList>
-                (CriteriaOperator.Parse("IsNull(SONumber)"));
+            //// Pack List
+            //IList<PackList> packlist = lso.GetObjects<PackList>
+            //    (CriteriaOperator.Parse("IsNull(SONumber)"));
 
-            foreach (PackList dtlpack in packlist)
-            {
-                IObjectSpace packos = ObjectSpaceProvider.CreateObjectSpace();
-                PackList packobj = packos.GetObjectByKey<PackList>(dtlpack.Oid);
+            //foreach (PackList dtlpack in packlist)
+            //{
+            //    IObjectSpace packos = ObjectSpaceProvider.CreateObjectSpace();
+            //    PackList packobj = packos.GetObjectByKey<PackList>(dtlpack.Oid);
 
-                string duppl = null;
-                string dupso = null;
-                string dupcustomer = null;
-                foreach (PackListDetails dtl in packobj.PackListDetails)
-                {
-                    if (duppl != dtl.PickListNo)
-                    {
-                        PickList picklist = packos.FindObject<PickList>(CriteriaOperator.Parse("DocNum = ?", dtl.PickListNo));
+            //    string duppl = null;
+            //    string dupso = null;
+            //    string dupcustomer = null;
+            //    foreach (PackListDetails dtl in packobj.PackListDetails)
+            //    {
+            //        if (duppl != dtl.PickListNo)
+            //        {
+            //            PickList picklist = packos.FindObject<PickList>(CriteriaOperator.Parse("DocNum = ?", dtl.PickListNo));
 
-                        if (picklist != null)
-                        {
-                            foreach (PickListDetails dtl2 in picklist.PickListDetails)
-                            {
-                                if (dupso != dtl2.SOBaseDoc)
-                                {
-                                    if (packobj.SONumber == null)
-                                    {
-                                        packobj.SONumber = dtl2.SOBaseDoc;
-                                    }
-                                    else
-                                    {
-                                        packobj.SONumber = packobj.SONumber + ", " + dtl2.SOBaseDoc;
-                                    }
+            //            if (picklist != null)
+            //            {
+            //                foreach (PickListDetails dtl2 in picklist.PickListDetails)
+            //                {
+            //                    if (dupso != dtl2.SOBaseDoc)
+            //                    {
+            //                        if (packobj.SONumber == null)
+            //                        {
+            //                            packobj.SONumber = dtl2.SOBaseDoc;
+            //                        }
+            //                        else
+            //                        {
+            //                            packobj.SONumber = packobj.SONumber + ", " + dtl2.SOBaseDoc;
+            //                        }
 
-                                    SalesOrder salesorder = packos.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", dtl2.SOBaseDoc));
+            //                        SalesOrder salesorder = packos.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", dtl2.SOBaseDoc));
 
-                                    if (salesorder != null)
-                                    {
-                                        if (packobj.SAPSONo == null)
-                                        {
-                                            packobj.SAPSONo = salesorder.SAPDocNum;
-                                        }
-                                        else
-                                        {
-                                            packobj.SAPSONo = packobj.SAPSONo + ", " + salesorder.SAPDocNum;
-                                        }
-                                    }
+            //                        if (salesorder != null)
+            //                        {
+            //                            if (packobj.SAPSONo == null)
+            //                            {
+            //                                packobj.SAPSONo = salesorder.SAPDocNum;
+            //                            }
+            //                            else
+            //                            {
+            //                                packobj.SAPSONo = packobj.SAPSONo + ", " + salesorder.SAPDocNum;
+            //                            }
+            //                        }
 
-                                    dupso = dtl2.SOBaseDoc;
-                                }
+            //                        dupso = dtl2.SOBaseDoc;
+            //                    }
 
-                                if (dupcustomer != dtl2.Customer.BPName)
-                                {
-                                    if (packobj.Customer == null)
-                                    {
-                                        packobj.Customer = dtl2.Customer.BPName;
-                                    }
-                                    else
-                                    {
-                                        packobj.Customer = packobj.Customer + ", " + dtl2.Customer.BPName;
-                                    }
+            //                    if (dupcustomer != dtl2.Customer.BPName)
+            //                    {
+            //                        if (packobj.Customer == null)
+            //                        {
+            //                            packobj.Customer = dtl2.Customer.BPName;
+            //                        }
+            //                        else
+            //                        {
+            //                            packobj.Customer = packobj.Customer + ", " + dtl2.Customer.BPName;
+            //                        }
 
-                                    dupcustomer = dtl2.Customer.BPName;
-                                }
-                            }
+            //                        dupcustomer = dtl2.Customer.BPName;
+            //                    }
+            //                }
 
-                            if (picklist != null)
-                            {
-                                if (packobj.Priority == null)
-                                {
-                                    packobj.Priority = picklist.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
-                                }
-                            }
-                        }
+            //                if (picklist != null)
+            //                {
+            //                    if (packobj.Priority == null)
+            //                    {
+            //                        packobj.Priority = picklist.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
+            //                    }
+            //                }
+            //            }
 
-                        if (packobj.PickListNo == null)
-                        {
-                            packobj.PickListNo = dtl.PickListNo;
-                        }
-                        else
-                        {
-                            packobj.PickListNo = packobj.PickListNo + ", " + dtl.PickListNo;
-                        }
+            //            if (packobj.PickListNo == null)
+            //            {
+            //                packobj.PickListNo = dtl.PickListNo;
+            //            }
+            //            else
+            //            {
+            //                packobj.PickListNo = packobj.PickListNo + ", " + dtl.PickListNo;
+            //            }
 
-                        duppl = dtl.PickListNo;
-                    }
-                }
+            //            duppl = dtl.PickListNo;
+            //        }
+            //    }
 
-                packos.CommitChanges();
-            }
+            //    packos.CommitChanges();
+            //}
+
+            //// Load
+            //IList<Load> loadlist = lso.GetObjects<Load>
+            //    (CriteriaOperator.Parse("IsNull(PackListNo)"));
+
+            //foreach (Load dtlload in loadlist)
+            //{
+            //    IObjectSpace loados = ObjectSpaceProvider.CreateObjectSpace();
+            //    Load loadobj = loados.GetObjectByKey<Load>(dtlload.Oid);
+
+            //    string duppack = null;
+            //    foreach (LoadDetails dtl in loadobj.LoadDetails)
+            //    {
+            //        if (duppack != dtl.BaseDoc)
+            //        {
+            //            if (loadobj.PackListNo == null)
+            //            {
+            //                loadobj.PackListNo = dtl.BaseDoc;
+            //            }
+            //            else
+            //            {
+            //                loadobj.PackListNo = loadobj.PackListNo + ", " + dtl.BaseDoc;
+            //            }
+
+            //            duppack = dtl.BaseDoc;
+            //        }
+
+            //        PackList pack = loados.FindObject<PackList>(CriteriaOperator.Parse("DocNum = ?", dtl.PackList));
+
+            //        if (pack != null)
+            //        {
+            //            if (loadobj.SONumber == null)
+            //            {
+            //                loadobj.SONumber = pack.SONumber;
+            //            }
+
+            //            if (loadobj.Priority == null)
+            //            {
+            //                loadobj.Priority = pack.Priority;
+            //            }
+            //        }
+            //    }
+
+            //    loados.CommitChanges();
+            //}
+
+            //// Delivery Orders
+            //IList<DeliveryOrder> deliverylist = lso.GetObjects<DeliveryOrder>
+            //    (CriteriaOperator.Parse("IsNull(SONo)"));
+
+            //foreach (DeliveryOrder dtldelivery in deliverylist)
+            //{
+            //    IObjectSpace deliveryos = ObjectSpaceProvider.CreateObjectSpace();
+            //    DeliveryOrder deliveryobj = deliveryos.GetObjectByKey<DeliveryOrder>(dtldelivery.Oid);
+
+            //    string dupno = null;
+            //    string dupso = null;
+            //    foreach (DeliveryOrderDetails dtl in deliveryobj.DeliveryOrderDetails)
+            //    {
+            //        if (dupno != dtl.BaseDoc)
+            //        {
+            //            if (deliveryobj.LoadingNo == null)
+            //            {
+            //                deliveryobj.LoadingNo = dtl.BaseDoc;
+            //            }
+            //            else
+            //            {
+            //                deliveryobj.LoadingNo = deliveryobj.LoadingNo + ", " + dtl.BaseDoc;
+            //            }
+
+            //            dupno = dtl.BaseDoc;
+            //        }
+
+            //        if (dupso != dtl.SODocNum)
+            //        {
+            //            if (deliveryobj.SONo == null)
+            //            {
+            //                deliveryobj.SONo = dtl.SODocNum;
+            //            }
+            //            else
+            //            {
+            //                deliveryobj.SONo = deliveryobj.SONo + ", " + dtl.SODocNum;
+            //            }
+
+            //            dupso = dtl.SODocNum;
+            //        }
+
+            //        if (deliveryobj.Priority == null)
+            //        {
+            //            SalesOrder salesorder = deliveryos.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", dtl.SODocNum));
+
+            //            if (salesorder != null)
+            //            {
+            //                deliveryobj.Priority = salesorder.Priority;
+            //            }
+            //        }
+            //    }
+
+            //    deliveryos.CommitChanges();
+            //}
+
+            //// ASN
+            //IList<ASN> asnlist = lso.GetObjects<ASN>
+            //    (CriteriaOperator.Parse("IsNull(PONo)"));
+
+            //foreach (ASN dtlasn in asnlist)
+            //{
+            //    IObjectSpace asnos = ObjectSpaceProvider.CreateObjectSpace();
+            //    ASN asnobj = asnos.GetObjectByKey<ASN>(dtlasn.Oid);
+
+            //    string duppo = null;
+            //    foreach (ASNDetails dtl in asnobj.ASNDetails)
+            //    {
+            //        if (duppo != dtl.PORefNo)
+            //        {
+            //            if (asnobj.PONo == null)
+            //            {
+            //                asnobj.PONo = dtl.PORefNo;
+            //            }
+            //            else
+            //            {
+            //                asnobj.PONo = asnobj.PONo + ", " + dtl.PORefNo;
+            //            }
+
+            //            duppo = dtl.PORefNo;
+            //        }
+            //    }
+
+            //    asnos.CommitChanges();
+            //}
+
+            //// GRN
+            //IList<GRN> grnlist = lso.GetObjects<GRN>
+            //    (CriteriaOperator.Parse("IsNull(SAPPONo)"));
+
+            //foreach (GRN dtlgrn in grnlist)
+            //{
+            //    IObjectSpace grnos = ObjectSpaceProvider.CreateObjectSpace();
+            //    GRN grnobj = grnos.GetObjectByKey<GRN>(dtlgrn.Oid);
+
+            //    // Start ver 1.0.8.1
+            //    string duppo = null;
+            //    string dupporef = null;
+            //    string dupasn = null;
+            //    // End ver 1.0.8.1
+            //    foreach (GRNDetails dtl2 in grnobj.GRNDetails)
+            //    {
+            //        if (dtl2.PONo != null)
+            //        {
+            //            if (duppo != dtl2.PONo)
+            //            {
+            //                if (grnobj.SAPPONo == null)
+            //                {
+            //                    grnobj.SAPPONo = dtl2.PONo;
+            //                }
+            //                else
+            //                {
+            //                    grnobj.SAPPONo = grnobj.SAPPONo + ", " + dtl2.PONo;
+            //                }
+
+            //                duppo = dtl2.PONo;
+            //            }
+            //        }
+
+            //        if (dtl2.PORefNo != null)
+            //        {
+            //            if (dupporef != dtl2.PORefNo)
+            //            {
+            //                if (grnobj.PortalPONo == null)
+            //                {
+            //                    grnobj.PortalPONo = dtl2.PORefNo;
+            //                }
+            //                else
+            //                {
+            //                    grnobj.PortalPONo = grnobj.PortalPONo + ", " + dtl2.PORefNo;
+            //                }
+
+            //                dupporef = dtl2.PORefNo;
+            //            }
+            //        }
+
+            //        if (dtl2.ASNBaseDoc != null)
+            //        {
+            //            if (dupasn != dtl2.ASNBaseDoc)
+            //            {
+            //                if (grnobj.ASNNo == null)
+            //                {
+            //                    grnobj.ASNNo = dtl2.ASNBaseDoc;
+            //                }
+            //                else
+            //                {
+            //                    grnobj.ASNNo = grnobj.ASNNo + ", " + dtl2.ASNBaseDoc;
+            //                }
+
+            //                dupasn = dtl2.ASNBaseDoc;
+            //            }
+            //        }
+            //    }
+
+            //    grnos.CommitChanges();
+            //}
 
             // Load
             IList<Load> loadlist = lso.GetObjects<Load>
-                (CriteriaOperator.Parse("IsNull(PackListNo)"));
+                (CriteriaOperator.Parse("IsNull(Warehouse)"));
 
             foreach (Load dtlload in loadlist)
             {
                 IObjectSpace loados = ObjectSpaceProvider.CreateObjectSpace();
                 Load loadobj = loados.GetObjectByKey<Load>(dtlload.Oid);
 
-                string duppack = null;
                 foreach (LoadDetails dtl in loadobj.LoadDetails)
                 {
-                    if (duppack != dtl.BaseDoc)
-                    {
-                        if (loadobj.PackListNo == null)
-                        {
-                            loadobj.PackListNo = dtl.BaseDoc;
-                        }
-                        else
-                        {
-                            loadobj.PackListNo = loadobj.PackListNo + ", " + dtl.BaseDoc;
-                        }
-
-                        duppack = dtl.BaseDoc;
-                    }
 
                     PackList pack = loados.FindObject<PackList>(CriteriaOperator.Parse("DocNum = ?", dtl.PackList));
 
                     if (pack != null)
                     {
-                        if (loadobj.SONumber == null)
+                        if (loadobj.Warehouse == null)
                         {
-                            loadobj.SONumber = pack.SONumber;
-                        }
-
-                        if (loadobj.Priority == null)
-                        {
-                            loadobj.Priority = pack.Priority;
+                            loadobj.Warehouse = loadobj.Session.GetObjectByKey<vwWarehouse>(pack.Warehouse.WarehouseCode);
                         }
                     }
                 }
@@ -4237,162 +4420,6 @@ namespace PortalIntegration
                 loados.CommitChanges();
             }
 
-            // Delivery Orders
-            IList<DeliveryOrder> deliverylist = lso.GetObjects<DeliveryOrder>
-                (CriteriaOperator.Parse("IsNull(SONo)"));
-
-            foreach (DeliveryOrder dtldelivery in deliverylist)
-            {
-                IObjectSpace deliveryos = ObjectSpaceProvider.CreateObjectSpace();
-                DeliveryOrder deliveryobj = deliveryos.GetObjectByKey<DeliveryOrder>(dtldelivery.Oid);
-
-                string dupno = null;
-                string dupso = null;
-                foreach (DeliveryOrderDetails dtl in deliveryobj.DeliveryOrderDetails)
-                {
-                    if (dupno != dtl.BaseDoc)
-                    {
-                        if (deliveryobj.LoadingNo == null)
-                        {
-                            deliveryobj.LoadingNo = dtl.BaseDoc;
-                        }
-                        else
-                        {
-                            deliveryobj.LoadingNo = deliveryobj.LoadingNo + ", " + dtl.BaseDoc;
-                        }
-
-                        dupno = dtl.BaseDoc;
-                    }
-
-                    if (dupso != dtl.SODocNum)
-                    {
-                        if (deliveryobj.SONo == null)
-                        {
-                            deliveryobj.SONo = dtl.SODocNum;
-                        }
-                        else
-                        {
-                            deliveryobj.SONo = deliveryobj.SONo + ", " + dtl.SODocNum;
-                        }
-
-                        dupso = dtl.SODocNum;
-                    }
-
-                    if (deliveryobj.Priority == null)
-                    {
-                        SalesOrder salesorder = deliveryos.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", dtl.SODocNum));
-
-                        if (salesorder != null)
-                        {
-                            deliveryobj.Priority = salesorder.Priority;
-                        }
-                    }
-                }
-
-                deliveryos.CommitChanges();
-            }
-
-            // ASN
-            IList<ASN> asnlist = lso.GetObjects<ASN>
-                (CriteriaOperator.Parse("IsNull(PONo)"));
-
-            foreach (ASN dtlasn in asnlist)
-            {
-                IObjectSpace asnos = ObjectSpaceProvider.CreateObjectSpace();
-                ASN asnobj = asnos.GetObjectByKey<ASN>(dtlasn.Oid);
-
-                string duppo = null;
-                foreach (ASNDetails dtl in asnobj.ASNDetails)
-                {
-                    if (duppo != dtl.PORefNo)
-                    {
-                        if (asnobj.PONo == null)
-                        {
-                            asnobj.PONo = dtl.PORefNo;
-                        }
-                        else
-                        {
-                            asnobj.PONo = asnobj.PONo + ", " + dtl.PORefNo;
-                        }
-
-                        duppo = dtl.PORefNo;
-                    }
-                }
-
-                asnos.CommitChanges();
-            }
-
-            // GRN
-            IList<GRN> grnlist = lso.GetObjects<GRN>
-                (CriteriaOperator.Parse("IsNull(SAPPONo)"));
-
-            foreach (GRN dtlgrn in grnlist)
-            {
-                IObjectSpace grnos = ObjectSpaceProvider.CreateObjectSpace();
-                GRN grnobj = grnos.GetObjectByKey<GRN>(dtlgrn.Oid);
-
-                // Start ver 1.0.8.1
-                string duppo = null;
-                string dupporef = null;
-                string dupasn = null;
-                // End ver 1.0.8.1
-                foreach (GRNDetails dtl2 in grnobj.GRNDetails)
-                {
-                    if (dtl2.PONo != null)
-                    {
-                        if (duppo != dtl2.PONo)
-                        {
-                            if (grnobj.SAPPONo == null)
-                            {
-                                grnobj.SAPPONo = dtl2.PONo;
-                            }
-                            else
-                            {
-                                grnobj.SAPPONo = grnobj.SAPPONo + ", " + dtl2.PONo;
-                            }
-
-                            duppo = dtl2.PONo;
-                        }
-                    }
-
-                    if (dtl2.PORefNo != null)
-                    {
-                        if (dupporef != dtl2.PORefNo)
-                        {
-                            if (grnobj.PortalPONo == null)
-                            {
-                                grnobj.PortalPONo = dtl2.PORefNo;
-                            }
-                            else
-                            {
-                                grnobj.PortalPONo = grnobj.PortalPONo + ", " + dtl2.PORefNo;
-                            }
-
-                            dupporef = dtl2.PORefNo;
-                        }
-                    }
-
-                    if (dtl2.ASNBaseDoc != null)
-                    {
-                        if (dupasn != dtl2.ASNBaseDoc)
-                        {
-                            if (grnobj.ASNNo == null)
-                            {
-                                grnobj.ASNNo = dtl2.ASNBaseDoc;
-                            }
-                            else
-                            {
-                                grnobj.ASNNo = grnobj.ASNNo + ", " + dtl2.ASNBaseDoc;
-                            }
-
-                            dupasn = dtl2.ASNBaseDoc;
-                        }
-                    }
-                }
-
-                grnos.CommitChanges();
-            }
-            
             return 0;
         }
         // End ver 1.0.8.1

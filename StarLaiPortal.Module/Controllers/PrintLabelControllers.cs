@@ -30,6 +30,7 @@ using System.Text;
 using System.Web;
 
 // 2023-07-20 - enhance print label docnumber to selection - ver 1.0.6 (UAT)
+// 2023-09-25 add printing uom ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {

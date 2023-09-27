@@ -9,6 +9,7 @@ using DevExpress.ExpressApp.Templates;
 using DevExpress.ExpressApp.Utils;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
+using DevExpress.XtraEditors.Filtering;
 using DevExpress.XtraPrinting;
 using StarLaiPortal.Module.BusinessObjects;
 using StarLaiPortal.Module.BusinessObjects.Delivery_Order;
@@ -26,6 +27,8 @@ using System.Linq;
 using System.Text;
 
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 bring SO remark to DO ver 1.0.10
+// 2023-09-25 copy warehouse ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -189,6 +192,13 @@ namespace StarLaiPortal.Module.Controllers
 
                         load.LoadDetails.Add(newloaditem);
 
+                        // Start ver 1.0.10
+                        if (load.Warehouse == null)
+                        {
+                             load.Warehouse = load.Session.GetObjectByKey<vwWarehouse>(packlist.Warehouse.WarehouseCode);
+                        }
+                        // End ver 1.0.10
+
                         if (load.DocNum == null)
                         {
                             string docprefix = genCon.GetDocPrefix();
@@ -305,6 +315,9 @@ namespace StarLaiPortal.Module.Controllers
                         // Start ver 1.0.8.1
                         newdelivery.Priority = newdelivery.Session.GetObjectByKey<PriorityType>(so.Priority.Oid);
                         // End ver 1.0.8.1
+                        // Start ver 1.0.10
+                        newdelivery.Remarks = so.Remarks;
+                        // End ver 1.0.10
 
                         string[] packlistnum = currload.PackListNo.Replace(" ", "").Split(',');
                         foreach (string dtlpack in packlistnum)
@@ -318,6 +331,7 @@ namespace StarLaiPortal.Module.Controllers
                                         PackList pl = deiveryos.FindObject<PackList>(CriteriaOperator.Parse("DocNum = ?", dtlpack));
 
                                         newdelivery.CustomerGroup = pl.CustomerGroup;
+
                                         foreach (PackListDetails dtlpackdetail in pl.PackListDetails)
                                         {
                                             if (dtlload.Bundle.BundleID == dtlpackdetail.Bundle.BundleID)
@@ -436,6 +450,13 @@ namespace StarLaiPortal.Module.Controllers
 
                                 dupso = dtl.SODocNum;
                             }
+
+                            // Start ver 1.0.10
+                            if (newdelivery.Warehouse != null)
+                            {
+                                newdelivery.Warehouse = newdelivery.Session.GetObjectByKey<vwWarehouse>(dtl.Warehouse.WarehouseCode);
+                            }
+                            // End ver 1.0.10
                         }
                         // End ver 1.0.8.1
 

@@ -15,6 +15,8 @@ using DevExpress.ExpressApp.Web.Editors.ASPx;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
+using DevExpress.Xpo;
+using DevExpress.XtraPrinting.Export.Pdf;
 using StarLaiPortal.Module.BusinessObjects;
 using StarLaiPortal.Module.BusinessObjects.Item_Inquiry;
 using StarLaiPortal.Module.BusinessObjects.Sales_Quotation;
@@ -33,6 +35,7 @@ using System.Web;
 // 2023-08-16 - add stock 3 and stock 4 - ver 1.0.8
 // 2023-08-25 - export and import function - ver 1.0.9
 // 2023-09-12 add warehouse transfer req no ver 1.0.9
+// 2023-09-25 - add stock balance checking - ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -273,6 +276,37 @@ namespace StarLaiPortal.Module.Controllers
             StringParameters p = (StringParameters)e.PopupWindow.View.CurrentObject;
             if (p.IsErr) return;
             SqlConnection conn = new SqlConnection(genCon.getConnectionString());
+
+            // Start ver 1.0.10
+            foreach(WarehouseTransferReqDetails dtl in selectedObject.WarehouseTransferReqDetails)
+            {
+                vwStockBalance available = ObjectSpace.FindObject<vwStockBalance>(CriteriaOperator.Parse("ItemCode = ? and WhsCode = ?",
+                    dtl.ItemCode, selectedObject.FromWarehouse.WarehouseCode));
+
+                if (available != null)
+                {
+                    if (available.InStock < (double)dtl.Quantity)
+                    {
+                        showMsg("Error", "Insufficient onhand quantity.", InformationType.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    showMsg("Error", "Insufficient onhand quantity.", InformationType.Error);
+                    return;
+                }
+
+                if (dtl.FromBin != null)
+                {
+                    if (dtl.FromBin.InStock < dtl.Quantity)
+                    {
+                        showMsg("Error", "Bin not enough stock.", InformationType.Error);
+                        return;
+                    }
+                }
+            }
+            // End ver 1.0.10
 
             if (selectedObject.IsValid == true)
             {

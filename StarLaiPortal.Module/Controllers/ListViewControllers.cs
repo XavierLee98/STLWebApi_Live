@@ -20,6 +20,7 @@ using StarLaiPortal.Module.BusinessObjects.Credit_Notes_Cancellation;
 using StarLaiPortal.Module.BusinessObjects.Dashboard;
 using StarLaiPortal.Module.BusinessObjects.Delivery_Order;
 using StarLaiPortal.Module.BusinessObjects.GRN;
+using StarLaiPortal.Module.BusinessObjects.Inquiry_View;
 using StarLaiPortal.Module.BusinessObjects.Item_Inquiry;
 using StarLaiPortal.Module.BusinessObjects.Load;
 using StarLaiPortal.Module.BusinessObjects.Pack_List;
@@ -41,6 +42,7 @@ using System.Web.UI.WebControls;
 
 // 2023-07-28 add AR Downpayment cancalletion ver 1.0.7
 // 2023-09-11 add dashboard sales/purchase/warehouse ver 1.0.9
+// 2023-09-19 add disable detail view ver 1.0.9
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -101,6 +103,32 @@ namespace StarLaiPortal.Module.Controllers
             if (View.ObjectTypeInfo.Type == typeof(DashboardsWarehouse))
             {
                 if (View.Id == "DashboardsWarehouse_ListView")
+                {
+                    processCurrentObjectController = Frame.GetController<ListViewProcessCurrentObjectController>();
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem +=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+
+            if (View.ObjectTypeInfo.Type == typeof(vwInquirySalesOrder))
+            {
+                if (View.Id == "vwInquirySalesOrder_ListView")
+                {
+                    processCurrentObjectController = Frame.GetController<ListViewProcessCurrentObjectController>();
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem +=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+
+            if (View.ObjectTypeInfo.Type == typeof(vwInquiryPickList))
+            {
+                if (View.Id == "vwInquiryPickList_ListView")
                 {
                     processCurrentObjectController = Frame.GetController<ListViewProcessCurrentObjectController>();
                     if (processCurrentObjectController != null)
@@ -191,6 +219,30 @@ namespace StarLaiPortal.Module.Controllers
             if (View.ObjectTypeInfo.Type == typeof(DashboardsWarehouse))
             {
                 if (View.Id == "DashboardsWarehouse_ListView")
+                {
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem -=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+
+            if (View.ObjectTypeInfo.Type == typeof(vwInquirySalesOrder))
+            {
+                if (View.Id == "vwInquirySalesOrder_ListView")
+                {
+                    if (processCurrentObjectController != null)
+                    {
+                        processCurrentObjectController.CustomProcessSelectedItem -=
+                            processCurrentObjectController_CustomProcessSelectedItem;
+                    }
+                }
+            }
+
+            if (View.ObjectTypeInfo.Type == typeof(vwInquiryPickList))
+            {
+                if (View.Id == "vwInquiryPickList_ListView")
                 {
                     if (processCurrentObjectController != null)
                     {

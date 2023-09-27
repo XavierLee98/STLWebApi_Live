@@ -118,7 +118,7 @@
                                                         <xaf:WebActionContainer ContainerId="View" />
                                                         <xaf:WebActionContainer ContainerId="Export" />
                                                         <xaf:WebActionContainer ContainerId="Reports" />
-                                                        <xaf:WebActionContainer ContainerId="Filters" />
+                                                        <xaf:WebActionContainer ContainerId="filter" />
                                                         <xaf:WebActionContainer ContainerId="RecordsNavigation" />
                                                         <xaf:WebActionContainer ContainerId="Tools" />
                                                         <xaf:WebActionContainer ContainerId="Diagnostic" />

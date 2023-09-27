@@ -31,6 +31,7 @@ using System.Web;
 
 // 2023-07-20 - do not close asn if partial - ver 1.0.6 (UAT)
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 add copyto qty ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -230,14 +231,11 @@ namespace StarLaiPortal.Module.Controllers
                         ObjectSpace.CommitChanges();
                         ObjectSpace.Refresh();
 
-                        IObjectSpace os = Application.CreateObjectSpace();
-                        GRN trx = os.FindObject<GRN>(new BinaryOperator("Oid", grn.Oid));
-
                         // Start ver 1.0.8.1
                         string duppo = null;
                         string dupporef = null;
                         // End ver 1.0.8.1
-                        foreach (GRNDetails dtl2 in trx.GRNDetails)
+                        foreach (GRNDetails dtl2 in grn.GRNDetails)
                         {
                             dtl2.OIDKey = dtl2.Oid;
 
@@ -246,13 +244,13 @@ namespace StarLaiPortal.Module.Controllers
                             {
                                 if (duppo != dtl2.PONo)
                                 {
-                                    if (trx.SAPPONo == null)
+                                    if (grn.SAPPONo == null)
                                     {
-                                        trx.SAPPONo = dtl2.PONo;
+                                        grn.SAPPONo = dtl2.PONo;
                                     }
                                     else
                                     {
-                                        trx.SAPPONo = trx.SAPPONo + ", " + dtl2.PONo;
+                                        grn.SAPPONo = grn.SAPPONo + ", " + dtl2.PONo;
                                     }
 
                                     duppo = dtl2.PONo;
@@ -263,13 +261,13 @@ namespace StarLaiPortal.Module.Controllers
                             {
                                 if (dupporef != dtl2.PORefNo)
                                 {
-                                    if (trx.PortalPONo == null)
+                                    if (grn.PortalPONo == null)
                                     {
-                                        trx.PortalPONo = dtl2.PORefNo;
+                                        grn.PortalPONo = dtl2.PORefNo;
                                     }
                                     else
                                     {
-                                        trx.PortalPONo = trx.PortalPONo + ", " + dtl2.PORefNo;
+                                        grn.PortalPONo = grn.PortalPONo + ", " + dtl2.PORefNo;
                                     }
 
                                     dupporef = dtl2.PORefNo;
@@ -278,8 +276,8 @@ namespace StarLaiPortal.Module.Controllers
                             // End ver 1.0.8.1
                         }
 
-                        os.CommitChanges();
-                        os.Refresh();
+                        ObjectSpace.CommitChanges();
+                        ObjectSpace.Refresh();
 
                         showMsg("Success", "Copy Success.", InformationType.Success);
                     //}
@@ -417,18 +415,13 @@ namespace StarLaiPortal.Module.Controllers
                         {
                              grn.DocNum = genCon.GenerateDocNum(DocTypeList.GRN, ObjectSpace, TransferType.NA, 0, docprefix);
                         }
-                        ObjectSpace.CommitChanges();
-                        ObjectSpace.Refresh();
-
-                        IObjectSpace os = Application.CreateObjectSpace();
-                        GRN trx = os.FindObject<GRN>(new BinaryOperator("Oid", grn.Oid));
 
                         // Start ver 1.0.8.1
                         string duppo = null;
                         string dupporef = null;
                         string dupasn = null;
                         // End ver 1.0.8.1
-                        foreach (GRNDetails dtl2 in trx.GRNDetails)
+                        foreach (GRNDetails dtl2 in grn.GRNDetails)
                         {
                             dtl2.OIDKey = dtl2.Oid;
 
@@ -436,13 +429,13 @@ namespace StarLaiPortal.Module.Controllers
                             {
                                 if (duppo != dtl2.PONo)
                                 {
-                                    if (trx.SAPPONo == null)
+                                    if (grn.SAPPONo == null)
                                     {
-                                        trx.SAPPONo = dtl2.PONo;
+                                        grn.SAPPONo = dtl2.PONo;
                                     }
                                     else
                                     {
-                                        trx.SAPPONo = trx.SAPPONo + ", " + dtl2.PONo;
+                                        grn.SAPPONo = grn.SAPPONo + ", " + dtl2.PONo;
                                     }
 
                                     duppo = dtl2.PONo;
@@ -453,13 +446,13 @@ namespace StarLaiPortal.Module.Controllers
                             {
                                 if (dupporef != dtl2.PORefNo)
                                 {
-                                    if (trx.PortalPONo == null)
+                                    if (grn.PortalPONo == null)
                                     {
-                                        trx.PortalPONo = dtl2.PORefNo;
+                                        grn.PortalPONo = dtl2.PORefNo;
                                     }
                                     else
                                     {
-                                        trx.PortalPONo = trx.PortalPONo + ", " + dtl2.PORefNo;
+                                        grn.PortalPONo = grn.PortalPONo + ", " + dtl2.PORefNo;
                                     }
 
                                     dupporef = dtl2.PORefNo;
@@ -470,13 +463,13 @@ namespace StarLaiPortal.Module.Controllers
                             {
                                 if (dupasn != dtl2.ASNBaseDoc)
                                 {
-                                    if (trx.ASNNo == null)
+                                    if (grn.ASNNo == null)
                                     {
-                                        trx.ASNNo = dtl2.ASNBaseDoc;
+                                        grn.ASNNo = dtl2.ASNBaseDoc;
                                     }
                                     else
                                     {
-                                        trx.ASNNo = trx.ASNNo + ", " + dtl2.ASNBaseDoc;
+                                        grn.ASNNo = grn.ASNNo + ", " + dtl2.ASNBaseDoc;
                                     }
 
                                     dupasn = dtl2.ASNBaseDoc;
@@ -484,8 +477,8 @@ namespace StarLaiPortal.Module.Controllers
                             }
                         }
 
-                        os.CommitChanges();
-                        os.Refresh();
+                        ObjectSpace.CommitChanges();
+                        ObjectSpace.Refresh();
 
                         showMsg("Success", "Copy Success.", InformationType.Success);
                     //}
@@ -580,13 +573,27 @@ namespace StarLaiPortal.Module.Controllers
                             {
                                 foreach (ASNDetails asndetail in asn.ASNDetails)
                                 {
+                                    // Start ver 1.0.10
                                     // Start ver 1.0.6 (UAT)
                                     //if (asndetail.Oid.ToString() == dtl.ASNBaseId)
-                                    if (asndetail.Oid.ToString() == dtl.ASNBaseId && dtl.Received >= asndetail.UnloadQty)
-                                    // End ver 1.0.6 (UAT)
+                                    //if (asndetail.Oid.ToString() == dtl.ASNBaseId && dtl.Received >= asndetail.UnloadQty)
+                                    //// End ver 1.0.6 (UAT)
+                                    //{
+                                    //    asndetail.LineClosed = true;
+                                    //}
+
+                                    if (asndetail.Oid.ToString() == dtl.ASNBaseId)
+                                    {
+                                        asndetail.CopyToQty = asndetail.CopyToQty - (asndetail.CopyToQty - dtl.Received);
+                                        asndetail.CopyTotalQty = asndetail.CopyTotalQty + dtl.Received;
+                                    }
+
+                                    if (asndetail.Oid.ToString() == dtl.ASNBaseId && asndetail.CopyTotalQty == asndetail.UnloadQty)
                                     {
                                         asndetail.LineClosed = true;
+                                        asndetail.CopyToQty = asndetail.CopyTotalQty;
                                     }
+                                    // End ver 1.0.10
                                 }
                             }
 

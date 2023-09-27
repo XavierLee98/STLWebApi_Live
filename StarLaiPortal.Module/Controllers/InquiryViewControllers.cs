@@ -7,22 +7,36 @@ using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Templates;
 using DevExpress.ExpressApp.Utils;
+using DevExpress.ExpressApp.Web.Templates.ActionContainers.Menu;
+using DevExpress.ExpressApp.Web.Templates.ActionContainers;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
+using StarLaiPortal.Module.BusinessObjects;
+using StarLaiPortal.Module.BusinessObjects.Dashboard;
 using StarLaiPortal.Module.BusinessObjects.Inquiry_View;
 using StarLaiPortal.Module.BusinessObjects.Pick_List;
+using StarLaiPortal.Module.BusinessObjects.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DevExpress.Web;
+using System.Web.UI.WebControls;
+using DevExpress.Xpo.DB;
+using DevExpress.ExpressApp.Web.Templates;
+using DevExpress.ExpressApp.Web;
+
+// 2023-09-14 - add filter into inquiry - ver 1.0.9 
 
 namespace StarLaiPortal.Module.Controllers
 {
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
     public partial class InquiryViewControllers : ViewController
     {
-        // Use CodeRush to create Controllers and Actions with a few keystrokes.
-        // https://docs.devexpress.com/CodeRushForRoslyn/403133/
+        // Start ver 1.0.9
+        private DateTime Fromdate;
+        private DateTime Todate;
+        // End ver 1.0.9
         public InquiryViewControllers()
         {
             InitializeComponent();
@@ -35,6 +49,12 @@ namespace StarLaiPortal.Module.Controllers
             this.ViewOpenPickList.Active.SetItemValue("Enabled", false);
             this.ViewPickListDetailInquiry.Active.SetItemValue("Enabled", false);
             this.ViewPickListInquiry.Active.SetItemValue("Enabled", false);
+            // Start ver 1.0.9
+            this.InquiryStatus.Active.SetItemValue("Enabled", false);
+            this.InquiryDateFrom.Active.SetItemValue("Enabled", false);
+            this.InquiryDateTo.Active.SetItemValue("Enabled", false);
+            this.InquiryFilter.Active.SetItemValue("Enabled", false);
+            // End ver 1.0.9
 
             if (typeof(vwInquiryOpenPickList).IsAssignableFrom(View.ObjectTypeInfo.Type))
             {
@@ -62,16 +82,150 @@ namespace StarLaiPortal.Module.Controllers
                     this.ViewPickListInquiry.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;
                 }
             }
+
+            // Start ver 1.0.9
+            if (typeof(vwInquirySalesOrder).IsAssignableFrom(View.ObjectTypeInfo.Type))
+            {
+                if (View.ObjectTypeInfo.Type == typeof(vwInquirySalesOrder))
+                {
+                    if (View.Id == "vwInquirySalesOrder_ListView")
+                    {
+                        InquiryStatus.Items.Clear();
+
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Open", "Open"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Draft", "Draft"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Submitted", "Submitted"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Cancelled", "Cancelled"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Closed", "Closed"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Posted", "Posted"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Pending Post", "Pending Post"));
+
+                        InquiryStatus.SelectedIndex = 0;
+
+                        this.InquiryStatus.Active.SetItemValue("Enabled", true);
+                        InquiryStatus.PaintStyle = DevExpress.ExpressApp.Templates.ActionItemPaintStyle.Caption;
+                        InquiryStatus.CustomizeControl += action_CustomizeControl;
+
+                        this.InquiryDateFrom.Active.SetItemValue("Enabled", true);
+                        this.InquiryDateFrom.Value = DateTime.Today.AddDays(-7);
+                        InquiryDateFrom.PaintStyle = DevExpress.ExpressApp.Templates.ActionItemPaintStyle.Caption;
+                        this.InquiryDateFrom.CustomizeControl += DateActionFrom_CustomizeControl;
+                        this.InquiryDateTo.Active.SetItemValue("Enabled", true);
+                        this.InquiryDateTo.Value = DateTime.Today.AddDays(1);
+                        InquiryDateTo.PaintStyle = DevExpress.ExpressApp.Templates.ActionItemPaintStyle.Caption;
+                        this.InquiryDateTo.CustomizeControl += DateActionTo_CustomizeControl;
+                        this.InquiryFilter.Active.SetItemValue("Enabled", true);
+
+                        ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+                        "and DocDate >= ? and DocDate <= ?",
+                        InquiryStatus.SelectedItem.Id, InquiryDateFrom.Value, InquiryDateTo.Value);
+                    }
+                }
+            }
+
+            if (typeof(vwInquiryPickList).IsAssignableFrom(View.ObjectTypeInfo.Type))
+            {
+                if (View.ObjectTypeInfo.Type == typeof(vwInquiryPickList))
+                {
+                    if (View.Id == "vwInquiryPickList_ListView")
+                    {
+                        InquiryStatus.Items.Clear();
+
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Open", "Open"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Draft", "Draft"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Submitted", "Submitted"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Cancelled", "Cancelled"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Closed", "Closed"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Posted", "Posted"));
+                        InquiryStatus.Items.Add(new ChoiceActionItem("Pending Post", "Pending Post"));
+
+                        InquiryStatus.SelectedIndex = 1;
+
+                        ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ?",
+                            InquiryStatus.SelectedItem.Id);
+
+                        this.InquiryStatus.Active.SetItemValue("Enabled", true);
+                        InquiryStatus.PaintStyle = DevExpress.ExpressApp.Templates.ActionItemPaintStyle.Caption;
+                        InquiryStatus.CustomizeControl += action_CustomizeControl;
+
+                        this.InquiryDateFrom.Active.SetItemValue("Enabled", true);
+                        this.InquiryDateFrom.Value = DateTime.Today.AddDays(-7);
+                        InquiryDateFrom.PaintStyle = DevExpress.ExpressApp.Templates.ActionItemPaintStyle.Caption;
+                        this.InquiryDateFrom.CustomizeControl += DateActionFrom_CustomizeControl;
+                        this.InquiryDateTo.Active.SetItemValue("Enabled", true);
+                        this.InquiryDateTo.Value = DateTime.Today.AddDays(1);
+                        InquiryDateTo.PaintStyle = DevExpress.ExpressApp.Templates.ActionItemPaintStyle.Caption;
+                        this.InquiryDateTo.CustomizeControl += DateActionTo_CustomizeControl;
+                        this.InquiryFilter.Active.SetItemValue("Enabled", true);
+
+                        ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+                        "and DocDate >= ? and DocDate <= ?",
+                        InquiryStatus.SelectedItem.Id, InquiryDateFrom.Value, InquiryDateTo.Value);
+                    }
+                }
+            }
+            // End ver 1.0.9
         }
         protected override void OnViewControlsCreated()
         {
             base.OnViewControlsCreated();
-            // Access and customize the target View control.
+            // Access and customize the target View control. 
         }
+
         protected override void OnDeactivated()
         {
             // Unsubscribe from previously subscribed events and release other references and resources.
             base.OnDeactivated();
+        }
+
+        void action_CustomizeControl(object sender, CustomizeControlEventArgs e)
+        {
+            SingleChoiceActionAsModeMenuActionItem actionItem = e.Control as SingleChoiceActionAsModeMenuActionItem;
+            if (actionItem != null && actionItem.Action.PaintStyle == DevExpress.ExpressApp.Templates.ActionItemPaintStyle.Caption)
+            {
+                DropDownSingleChoiceActionControlBase control = (DropDownSingleChoiceActionControlBase)actionItem.Control;
+                control.Label.Text = actionItem.Action.Caption;
+                control.Label.Style["padding-right"] = "5px";
+                control.ComboBox.Width = 100;
+            }
+        }
+
+        private void DateActionFrom_CustomizeControl(object sender, CustomizeControlEventArgs e)
+        {
+            ParametrizedActionMenuActionItem actionItem = e.Control as ParametrizedActionMenuActionItem;
+
+            if (actionItem != null)
+            {
+                ASPxDateEdit dateEdit = actionItem.Control.Editor as ASPxDateEdit;
+                if (dateEdit != null)
+                {
+                    dateEdit.Width = 110;
+                    dateEdit.Buttons.Clear();
+                    if (dateEdit.Text != "")
+                    {
+                        Fromdate = Convert.ToDateTime(dateEdit.Text);
+                    }
+                }
+            }
+        }
+
+        private void DateActionTo_CustomizeControl(object sender, CustomizeControlEventArgs e)
+        {
+            ParametrizedActionMenuActionItem actionItem = e.Control as ParametrizedActionMenuActionItem;
+
+            if (actionItem != null)
+            {
+                ASPxDateEdit dateEdit = actionItem.Control.Editor as ASPxDateEdit;
+                if (dateEdit != null)
+                {
+                    dateEdit.Width = 110;
+                    dateEdit.Buttons.Clear();
+                    if (dateEdit.Text != "")
+                    {
+                        Todate = Convert.ToDateTime(dateEdit.Text);
+                    }
+                }
+            }
         }
 
         public void openNewView(IObjectSpace os, object target, ViewEditMode viewmode)
@@ -170,5 +324,35 @@ namespace StarLaiPortal.Module.Controllers
             e.Maximized = true;
             //e.DialogController.CancelAction.Active["NothingToCancel"] = false;
         }
+
+        // Start ver 1.0.9
+        private void InquiryStatus_Execute(object sender, SingleChoiceActionExecuteEventArgs e)
+        {
+            ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+                "and DocDate >= ? and DocDate <= ?",
+                InquiryStatus.SelectedItem.Id, Fromdate, Todate);
+        }
+
+        private void InquiryDateFrom_Execute(object sender, ParametrizedActionExecuteEventArgs e)
+        {
+            ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+                "and DocDate >= ? and DocDate <= ?",
+                InquiryStatus.SelectedItem.Id, Fromdate, Todate);
+        }
+
+        private void InquiryDateTo_Execute(object sender, ParametrizedActionExecuteEventArgs e)
+        {
+            ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+                "and DocDate >= ? and DocDate <= ?",
+                InquiryStatus.SelectedItem.Id, Fromdate, Todate);
+        }
+
+        private void InquiryFilter_Execute(object sender, SimpleActionExecuteEventArgs e)
+        {
+            ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+                "and DocDate >= ? and DocDate <= ?",
+                InquiryStatus.SelectedItem.Id, Fromdate, Todate);
+        }
+        // End ver 1.0.9
     }
 }

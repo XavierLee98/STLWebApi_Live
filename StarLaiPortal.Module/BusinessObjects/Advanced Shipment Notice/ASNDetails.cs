@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-08-25 remove validation for qty ver 1.0.9
+// 2023-09-25 add copyto qty ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice
 {
@@ -324,6 +325,42 @@ namespace StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice
             }
         }
 
+        // Start ver 1.0.10
+        private decimal _CopyToQty;
+        [ImmediatePostData]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:N0}")]
+        [ModelDefault("EditMask", "d")]
+        [XafDisplayName("Copy To Qty")]
+        [Appearance("CopyToQty", Enabled = false)]
+        [Index(33), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public decimal CopyToQty
+        {
+            get { return _CopyToQty; }
+            set
+            {
+                SetPropertyValue("CopyToQty", ref _CopyToQty, value);
+            }
+        }
+
+        private decimal _CopyTotalQty;
+        [ImmediatePostData]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:N0}")]
+        [ModelDefault("EditMask", "d")]
+        [XafDisplayName("Copy To Qty")]
+        [Appearance("CopyTotalQty", Enabled = false)]
+        [Index(33), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public decimal CopyTotalQty
+        {
+            get { return _CopyTotalQty; }
+            set
+            {
+                SetPropertyValue("CopyTotalQty", ref _CopyTotalQty, value);
+            }
+        }
+        // End ver 1.0.10
+
         private int _OIDKey;
         [Index(80), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [XafDisplayName("OIDKey")]
@@ -343,6 +380,22 @@ namespace StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice
             get
             { return Session.IsNewObject(this); }
         }
+
+        // Start ver 1.0.10
+        [Browsable(false)]
+        public bool IsValid
+        {
+            get
+            {
+                if (CopyToQty < UnloadQty)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+        // End ver 1.0.10
 
         private ASN _ASN;
         [Association("ASN-ASNDetails")]

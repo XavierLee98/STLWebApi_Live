@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 add warehouse field ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.Delivery_Order
 {
@@ -175,6 +176,24 @@ namespace StarLaiPortal.Module.BusinessObjects.Delivery_Order
                 SetPropertyValue("CustomerName", ref _CustomerName, value);
             }
         }
+
+        // Start ver 1.0.10
+        private vwWarehouse _Warehouse;
+        [XafDisplayName("Warehouse")]
+        [NoForeignKey]
+        [ImmediatePostData]
+        [LookupEditorMode(LookupEditorMode.AllItems)]
+        [DataSourceCriteria("Inactive = 'N'")]
+        [Index(9), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        public vwWarehouse Warehouse
+        {
+            get { return _Warehouse; }
+            set
+            {
+                SetPropertyValue("Warehouse", ref _Warehouse, value);
+            }
+        }
+        // End ver 1.0.10
 
         private DateTime _DocDate;
         [XafDisplayName("Date")]

@@ -14,6 +14,7 @@ using DevExpress.ExpressApp.Web.Editors.ASPx;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using StarLaiPortal.Module.BusinessObjects;
+using StarLaiPortal.Module.BusinessObjects.View;
 using StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Web;
+
+// 2023-09-25 - add stock balance checking - ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -135,6 +138,28 @@ namespace StarLaiPortal.Module.Controllers
             WarehouseTransfers selectedObject = (WarehouseTransfers)e.CurrentObject;
             StringParameters p = (StringParameters)e.PopupWindow.View.CurrentObject;
             if (p.IsErr) return;
+
+            // Start ver 1.0.10
+            foreach (WarehouseTransferDetails dtl in selectedObject.WarehouseTransferDetails)
+            {
+                vwStockBalance available = ObjectSpace.FindObject<vwStockBalance>(CriteriaOperator.Parse("ItemCode = ? and WhsCode = ?",
+                   dtl.ItemCode, selectedObject.FromWarehouse.WarehouseCode));
+
+                if (available != null)
+                {
+                    if (available.InStock < (double)dtl.Quantity)
+                    {
+                        showMsg("Error", "Insufficient onhand quantity.", InformationType.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    showMsg("Error", "Insufficient onhand quantity.", InformationType.Error);
+                    return;
+                }
+            }
+            // End ver 1.0.10
 
             if (selectedObject.IsValid2 == true)
             {

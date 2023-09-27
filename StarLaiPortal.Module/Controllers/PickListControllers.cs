@@ -35,6 +35,7 @@ using System.Web;
 // 2023-08-16 preview multiple picklist ver 1.0.8
 // 2023-08-25 add picklistactual validation ver 1.0.9
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 bring SO remark to DO ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -769,6 +770,9 @@ namespace StarLaiPortal.Module.Controllers
                                         // Start ver 1.0.8.1
                                         newdelivery.Priority = newdelivery.Session.GetObjectByKey<PriorityType>(so.Priority.Oid);
                                         // End ver 1.0.8.1
+                                        // Start ver 1.0.10
+                                        newdelivery.Remarks = so.Remarks;
+                                        // End ver 1.0.10
 
                                         foreach (LoadDetails dtlload in newload.LoadDetails)
                                         {
@@ -898,6 +902,13 @@ namespace StarLaiPortal.Module.Controllers
 
                                                 dupso = dtl.SODocNum;
                                             }
+
+                                            // Start ver 1.0.10
+                                            if (newdelivery.Warehouse == null)
+                                            {
+                                                newdelivery.Warehouse = newdelivery.Session.GetObjectByKey<vwWarehouse>(dtl.Warehouse.WarehouseCode);
+                                            }
+                                            // End ver 1.0.10
                                         }
                                         // End ver 1.0.8.1
 

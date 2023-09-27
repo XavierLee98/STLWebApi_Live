@@ -37,6 +37,9 @@ using System.Net.Mail;
 using System.Text;
 
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 bring SO remark to DO ver 1.0.10
+// 2023-09-25 add warehouse field ver 1.0.10
+// 2023-09-25 update asn coptytoqty ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -338,6 +341,13 @@ namespace StarLaiPortal.Module.Controllers
                 {
                     asn.CopyTo = false;
                 }
+
+                // Start ver 1.0.10
+                foreach (ASNDetails dtl in asn.ASNDetails)
+                {
+                    dtl.CopyToQty = dtl.UnloadQty;
+                }
+                // End ver 1.0.10
             }
 
             os.CommitChanges();
@@ -476,6 +486,9 @@ namespace StarLaiPortal.Module.Controllers
                         // Start ver 1.0.8.1
                         newdelivery.Priority = newdelivery.Session.GetObjectByKey<PriorityType>(so.Priority.Oid);
                         // End ver 1.0.8.1
+                        // Start ver 1.0.10
+                        newdelivery.Remarks = so.Remarks;
+                        // End ver 1.0.10
 
                         ////string picklistdone = null;
                         //foreach (LoadDetails dtlload in load.LoadDetails)
@@ -601,6 +614,7 @@ namespace StarLaiPortal.Module.Controllers
                                         PackList pl = os.FindObject<PackList>(CriteriaOperator.Parse("DocNum = ?", dtlpack));
 
                                         newdelivery.CustomerGroup = pl.CustomerGroup;
+
                                         foreach (PackListDetails dtlpackdetail in pl.PackListDetails)
                                         {
                                             if (dtlload.Bundle.BundleID == dtlpackdetail.Bundle.BundleID)
@@ -719,6 +733,13 @@ namespace StarLaiPortal.Module.Controllers
 
                                 dupso = dtl.SODocNum;
                             }
+
+                            // Start ver 1.0.10
+                            if (newdelivery.Warehouse == null)
+                            {
+                                newdelivery.Warehouse = newdelivery.Session.GetObjectByKey<vwWarehouse>(dtl.Warehouse.WarehouseCode);
+                            }
+                            // End ver 1.0.10
                         }
                         // End ver 1.0.8.1
 
@@ -972,6 +993,9 @@ namespace StarLaiPortal.Module.Controllers
                                 // Start ver 1.0.8.1
                                 newdelivery.Priority = newdelivery.Session.GetObjectByKey<PriorityType>(so.Priority.Oid);
                                 // End ver 1.0.8.1
+                                // Start ver 1.0.10
+                                newdelivery.Remarks = so.Remarks;
+                                // End ver 1.0.10
 
                                 foreach (LoadDetails dtlload in newload.LoadDetails)
                                 {
@@ -1101,6 +1125,13 @@ namespace StarLaiPortal.Module.Controllers
 
                                         dupso = dtl.SODocNum;
                                     }
+
+                                    // Start ver 1.0.10
+                                    if (newdelivery.Warehouse == null)
+                                    {
+                                        newdelivery.Warehouse = newdelivery.Session.GetObjectByKey<vwWarehouse>(dtl.Warehouse.WarehouseCode);
+                                    }
+                                    // End ver 1.0.10
                                 }
                                 // End ver 1.0.8.1
 

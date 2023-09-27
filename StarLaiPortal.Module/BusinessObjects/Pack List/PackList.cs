@@ -18,6 +18,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 add warehouse field ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.Pack_List
 {
@@ -29,7 +30,10 @@ namespace StarLaiPortal.Module.BusinessObjects.Pack_List
     [Appearance("HideEdit", AppearanceItemType.Action, "True", TargetItems = "SwitchToEditMode; Edit", Criteria = "not (Status in (0))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("HideSubmit", AppearanceItemType.Action, "True", TargetItems = "SubmitPA", Criteria = "not (Status in (0))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("HideCancel", AppearanceItemType.Action, "True", TargetItems = "CancelPA", Criteria = "not (Status in (0))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
-    [Appearance("HideCopy", AppearanceItemType.Action, "True", TargetItems = "PACopyFromPL", Criteria = "PackingLocation = null", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    // Start ver 1.0.10
+    //[Appearance("HideCopy", AppearanceItemType.Action, "True", TargetItems = "PACopyFromPL", Criteria = "PackingLocation = null", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    [Appearance("HideCopy", AppearanceItemType.Action, "True", TargetItems = "PACopyFromPL", Criteria = "PackingLocation = null or Warehouse = null", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    // End ver 1.0.10
 
     public class PackList : XPObject
     { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument113146.aspx).
@@ -123,12 +127,32 @@ namespace StarLaiPortal.Module.BusinessObjects.Pack_List
             }
         }
 
-        private vwBin _PackingLocation;
+        // Start ver 1.0.10
+        private vwWarehouse _Warehouse;
+        [XafDisplayName("Warehouse")]
+        [NoForeignKey]
         [ImmediatePostData]
+        [LookupEditorMode(LookupEditorMode.AllItems)]
+        [DataSourceCriteria("Inactive = 'N'")]
+        [Index(1), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        public vwWarehouse Warehouse
+        {
+            get { return _Warehouse; }
+            set
+            {
+                SetPropertyValue("Warehouse", ref _Warehouse, value);
+            }
+        }
+        // End ver 1.0.10
+
+        private vwBin _PackingLocation;
+        //[ImmediatePostData]
         [XafDisplayName("Packing Location")]
         [NoForeignKey]
         [LookupEditorMode(LookupEditorMode.AllItems)]
-        //[DataSourceCriteria("Inactive = 'N'")]
+        // Start ver 1.0.10
+        [DataSourceCriteria("Warehouse = '@this.Warehouse.WarehouseCode'")]
+        // End ver 1.0.10
         [RuleRequiredField(DefaultContexts.Save)]
         [Index(3), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
         public vwBin PackingLocation

@@ -23,6 +23,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admiral.ImportData.Web", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admiral.ImportData.Win", "Admiral.ImportData.Win\Admiral.ImportData.Win.csproj", "{1ECDF975-9640-4F7F-98E2-C73223005655}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MainPage", "MainPage\", "{EFA8059E-B86B-45D6-870B-C4DE700108F1}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.1"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_54801"
+		Debug.AspNetCompiler.PhysicalPath = "MainPage\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_54801\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_54801"
+		Release.AspNetCompiler.PhysicalPath = "MainPage\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_54801\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "54801"
+		SlnRelativePath = "MainPage\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +111,12 @@ Global
 		{1ECDF975-9640-4F7F-98E2-C73223005655}.EasyTest|Any CPU.Build.0 = EasyTest|Any CPU
 		{1ECDF975-9640-4F7F-98E2-C73223005655}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1ECDF975-9640-4F7F-98E2-C73223005655}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA8059E-B86B-45D6-870B-C4DE700108F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA8059E-B86B-45D6-870B-C4DE700108F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA8059E-B86B-45D6-870B-C4DE700108F1}.EasyTest|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA8059E-B86B-45D6-870B-C4DE700108F1}.EasyTest|Any CPU.Build.0 = Debug|Any CPU
+		{EFA8059E-B86B-45D6-870B-C4DE700108F1}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA8059E-B86B-45D6-870B-C4DE700108F1}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

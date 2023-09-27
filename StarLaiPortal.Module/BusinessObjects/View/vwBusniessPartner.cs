@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-07-28 add createdate ver 1.0.7
+// 2023-09-25 add Territory/Price List ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.View
 {
@@ -208,6 +209,24 @@ namespace StarLaiPortal.Module.BusinessObjects.View
             get; set;
         }
         // End ver 1.0.7
+
+        // Start ver 1.0.10
+        [XafDisplayName("Territory")]
+        [Appearance("Territory", Enabled = false)]
+        [Index(40)]
+        public string Territory
+        {
+            get; set;
+        }
+
+        [XafDisplayName("Price List")]
+        [Appearance("PriceList", Enabled = false)]
+        [Index(43)]
+        public string PriceList
+        {
+            get; set;
+        }
+        // End ver 1.0.10
 
         [Index(88), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(true)]
         public string BoFullName

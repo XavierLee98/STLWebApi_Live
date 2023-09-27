@@ -18,6 +18,7 @@ using System.Text;
 
 // 2023-08-22 add cancel and close button ver 1.0.9
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 change date format ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.Sales_Order
 {
@@ -79,6 +80,9 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order
 
         private DateTime? _CreateDate;
         [Index(301), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        // Start ver 1.0.10
+        [ModelDefault("DisplayFormat", "{0: dd/MM/yyyy hh:mm tt}")]
+        // End ver 1.0.10
         [Appearance("CreateDate", Enabled = false)]
         public DateTime? CreateDate
         {

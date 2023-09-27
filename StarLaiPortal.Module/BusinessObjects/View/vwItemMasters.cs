@@ -13,6 +13,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+// 2023-09-25 add printing uom ver 1.0.10
+
 namespace StarLaiPortal.Module.BusinessObjects.View
 {
     [DefaultClassOptions]
@@ -176,6 +178,16 @@ namespace StarLaiPortal.Module.BusinessObjects.View
         {
             get; set;
         }
+
+        // Start ver 1.0.10
+        [XafDisplayName("Print UOM")]
+        [Appearance("PrintUoM", Enabled = false)]
+        [Index(40), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
+        public string PrintUoM
+        {
+            get; set;
+        }
+        // End ver 1.0.10
 
         [Index(30), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
         public string BoFullName

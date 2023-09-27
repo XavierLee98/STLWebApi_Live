@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 add copyto qty ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice
 {
@@ -29,7 +30,10 @@ namespace StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice
     [Appearance("HideClose", AppearanceItemType.Action, "True", TargetItems = "CloseASN", Criteria = "not (Status in (1))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
 
     [Appearance("HideCopyTo", AppearanceItemType.Action, "True", TargetItems = "ASNCopyToGRN", Criteria = "not (Status in (1))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
-    [Appearance("HideCopyTo1", AppearanceItemType.Action, "True", TargetItems = "ASNCopyToGRN", Criteria = "CopyTo = 1", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    // Start ver 1.0.10
+    //[Appearance("HideCopyTo1", AppearanceItemType.Action, "True", TargetItems = "ASNCopyToGRN", Criteria = "CopyTo = 1", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    [Appearance("HideCopyTo1", AppearanceItemType.Action, "True", TargetItems = "ASNCopyToGRN", Criteria = "IsValid1 = 0", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    // Ene ver 1.0.10
 
     [Appearance("HidePrint", AppearanceItemType.Action, "True", TargetItems = "PreviewASN", Criteria = "(Status in (0))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("HideExportSQ", AppearanceItemType.Action, "True", TargetItems = "ExportASN", Criteria = "DocNum = null", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
@@ -409,6 +413,25 @@ namespace StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice
                 return false;
             }
         }
+
+        // Start ver 1.0.10
+        [Browsable(false)]
+        public bool IsValid1
+        {
+            get
+            {
+                foreach (ASNDetails dtl in this.ASNDetails)
+                {
+                    if (dtl.IsValid == true)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+        // End ver 1.0.10
 
         [Association("ASN-ASNDetails")]
         [XafDisplayName("Content")]

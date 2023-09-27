@@ -30,6 +30,7 @@ using System.Text;
 using System.Web;
 
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 add warehouse field ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -290,6 +291,10 @@ namespace StarLaiPortal.Module.Controllers
                             {
                                 packobj.Priority = picklist.PickListDetails.Where(x => x.SOBaseDoc != null).OrderBy(c => c.Priority).Max().Priority;
                             }
+
+                            // Start ver 1.0.10
+                            packobj.Warehouse = packobj.Session.GetObjectByKey<vwWarehouse>(picklist.Warehouse.WarehouseCode);
+                            // End ver 1.0.10
                         }
                     }
 

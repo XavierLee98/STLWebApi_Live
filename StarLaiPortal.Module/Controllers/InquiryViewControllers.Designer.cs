@@ -32,6 +32,10 @@
             this.ViewOpenPickList = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
             this.ViewPickListDetailInquiry = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
             this.ViewPickListInquiry = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
+            this.InquiryStatus = new DevExpress.ExpressApp.Actions.SingleChoiceAction(this.components);
+            this.InquiryDateFrom = new DevExpress.ExpressApp.Actions.ParametrizedAction(this.components);
+            this.InquiryDateTo = new DevExpress.ExpressApp.Actions.ParametrizedAction(this.components);
+            this.InquiryFilter = new DevExpress.ExpressApp.Actions.SimpleAction(this.components);
             // 
             // ViewOpenPickList
             // 
@@ -69,11 +73,57 @@
             this.ViewPickListInquiry.CustomizePopupWindowParams += new DevExpress.ExpressApp.Actions.CustomizePopupWindowParamsEventHandler(this.ViewPickListInquiry_CustomizePopupWindowParams);
             this.ViewPickListInquiry.Execute += new DevExpress.ExpressApp.Actions.PopupWindowShowActionExecuteEventHandler(this.ViewPickListInquiry_Execute);
             // 
+            // InquiryStatus
+            // 
+            this.InquiryStatus.Caption = "Status";
+            this.InquiryStatus.Category = "ObjectsCreation";
+            this.InquiryStatus.ConfirmationMessage = null;
+            this.InquiryStatus.Id = "InquiryStatus";
+            this.InquiryStatus.ToolTip = null;
+            this.InquiryStatus.Execute += new DevExpress.ExpressApp.Actions.SingleChoiceActionExecuteEventHandler(this.InquiryStatus_Execute);
+            // 
+            // InquiryDateFrom
+            // 
+            this.InquiryDateFrom.Caption = "From";
+            this.InquiryDateFrom.Category = "ObjectsCreation";
+            this.InquiryDateFrom.ConfirmationMessage = null;
+            this.InquiryDateFrom.Id = "InquiryDateFrom";
+            this.InquiryDateFrom.NullValuePrompt = null;
+            this.InquiryDateFrom.ShortCaption = null;
+            this.InquiryDateFrom.ToolTip = null;
+            this.InquiryDateFrom.ValueType = typeof(System.DateTime);
+            this.InquiryDateFrom.Execute += new DevExpress.ExpressApp.Actions.ParametrizedActionExecuteEventHandler(this.InquiryDateFrom_Execute);
+            // 
+            // InquiryDateTo
+            // 
+            this.InquiryDateTo.Caption = "To";
+            this.InquiryDateTo.Category = "ObjectsCreation";
+            this.InquiryDateTo.ConfirmationMessage = null;
+            this.InquiryDateTo.Id = "InquiryDateTo";
+            this.InquiryDateTo.NullValuePrompt = null;
+            this.InquiryDateTo.ShortCaption = null;
+            this.InquiryDateTo.ToolTip = null;
+            this.InquiryDateTo.ValueType = typeof(System.DateTime);
+            this.InquiryDateTo.Execute += new DevExpress.ExpressApp.Actions.ParametrizedActionExecuteEventHandler(this.InquiryDateTo_Execute);
+            // 
+            // InquiryFilter
+            // 
+            this.InquiryFilter.Caption = "Filter";
+            this.InquiryFilter.Category = "ObjectsCreation";
+            this.InquiryFilter.ConfirmationMessage = null;
+            this.InquiryFilter.Id = "InquiryFilter";
+            this.InquiryFilter.ToolTip = null;
+            this.InquiryFilter.Execute += new DevExpress.ExpressApp.Actions.SimpleActionExecuteEventHandler(this.InquiryFilter_Execute);
+            // 
             // InquiryViewControllers
             // 
             this.Actions.Add(this.ViewOpenPickList);
             this.Actions.Add(this.ViewPickListDetailInquiry);
             this.Actions.Add(this.ViewPickListInquiry);
+            this.Actions.Add(this.InquiryStatus);
+            this.Actions.Add(this.InquiryDateFrom);
+            this.Actions.Add(this.InquiryDateTo);
+            this.Actions.Add(this.InquiryFilter);
 
         }
 
@@ -82,5 +132,9 @@
         private DevExpress.ExpressApp.Actions.PopupWindowShowAction ViewOpenPickList;
         private DevExpress.ExpressApp.Actions.PopupWindowShowAction ViewPickListDetailInquiry;
         private DevExpress.ExpressApp.Actions.PopupWindowShowAction ViewPickListInquiry;
+        private DevExpress.ExpressApp.Actions.SingleChoiceAction InquiryStatus;
+        private DevExpress.ExpressApp.Actions.ParametrizedAction InquiryDateFrom;
+        private DevExpress.ExpressApp.Actions.ParametrizedAction InquiryDateTo;
+        private DevExpress.ExpressApp.Actions.SimpleAction InquiryFilter;
     }
 }

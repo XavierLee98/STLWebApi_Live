@@ -14,6 +14,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+// 2023-09-25 add printing uom ver 1.0.10
+
 namespace StarLaiPortal.Module.BusinessObjects.Print_Module
 {
     [DefaultClassOptions]
@@ -54,11 +56,17 @@ namespace StarLaiPortal.Module.BusinessObjects.Print_Module
                 {
                     LegacyItemCode = ItemCode.LegacyItemCode;
                     ItemDesc = ItemCode.ItemName;
+                    // Start ver 1.0.10
+                    STDPack = ItemCode.PrintUoM;
+                    // End ver 1.0.10
                 }
                 else if (!IsLoading && value != null)
                 {
                     LegacyItemCode = null;
                     ItemDesc = null;
+                    // Start ver 1.0.10
+                    STDPack = null;
+                    // End ver 1.0.10
                 }
             }
         }
@@ -89,6 +97,21 @@ namespace StarLaiPortal.Module.BusinessObjects.Print_Module
                 SetPropertyValue("ItemDesc", ref _ItemDesc, value);
             }
         }
+
+        // Start ver 1.0.10
+        private string _STDPack;
+        [XafDisplayName("STD Pack")]
+        [Appearance("STDPack", Enabled = false)]
+        [Index(6), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        public string STDPack
+        {
+            get { return _STDPack; }
+            set
+            {
+                SetPropertyValue("STDPack", ref _STDPack, value);
+            }
+        }
+        // End ver 1.0.10
 
         private LabelType _LabelType;
         [XafDisplayName("Label Type")]

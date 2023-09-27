@@ -1,0 +1,130 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Login.master.cs" Inherits="LoginMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        .btn {
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 15px 40px;
+            display: inline-block;
+            transition: all .2s;
+            /*position: absolute;*/
+            background-color: crimson;
+            border-radius: 100px;
+            font-size: large;
+            font:bolder;
+            color:white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-white {
+            /*background-color: #fff;*/
+            /*color: #777;*/
+        }
+
+        .btn::after {
+            content: "";
+            display: inline-block;
+            height: 100%;
+            width: 100%;
+            border-radius: 100px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            transition: all .4s;
+        }
+
+        .btn-white::after {
+            background-color: #fff;
+        }
+
+        .btn:hover::after {
+            transform: scaleX(1.4) scaleY(1.6);
+            opacity: 0;
+        }
+
+        .btn-animated {
+            animation: moveInBottom 5s ease-out;
+            animation-fill-mode: backwards;
+        }
+    </style>
+
+    <link href="Image/Mainpage.css" rel="stylesheet" />
+    <title>BWY Login</title>
+
+
+</head>
+<body style="background-color: #E6E6FA">
+    <form id="form1" runat="server">
+            <br/>
+        <div>
+            <div class="container-fluid">
+                    <div class="row">
+                        <center>
+                            <img src="Image/Logo.png" />
+                        </center>
+                    </div>
+                </div>
+        </div>
+        <br/>
+        <br/>
+        <div style="background-color: #EADDCA; width:430px; margin:auto; border-radius: 20px; opacity:0.8; border:groove">
+            <%--            <div>          
+                <div class="container-fluid">
+                        <div class="row">
+                            <center>
+                                <div>
+                                    <asp:Label ID="Label1" Style="margin-top:10px; color:gold"  Font-Bold="true" Font-Names="Roboto" 
+                                        Font-Size="50px" runat="server" Text="Outlet Selection" Visible ="False"></asp:Label>
+                                </div>
+                            </center>
+                        </div>
+                    </div>
+            </div>--%>
+            <div>
+                <div class="container-fluid">
+                        <div class="row">
+                            <center>
+                                <div>
+                                    <b style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size:18px">Company</b>
+                                    <asp:DropDownList ID="CompanyList" runat="server" Style="margin-top: 25px; width: 400px; border-radius: 10px; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size:15px" AutoPostBack="True" OnSelectedIndexChanged="CompanyList_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                    <asp:TextBox ID="CompanyName" runat="server" Visible="False"></asp:TextBox>
+                                </div>
+                            </center>
+                        </div>
+                    </div>
+            </div>
+            <br/>
+            <div>
+                <div class="container-fluid">
+                        <div class="row">
+                            <center>
+                                <div>
+                                    <asp:Button ID="ButtonProceed" runat="server" class="btn btn-white btn-animated" Text="Proceed" 
+                                        AutoPostBack="True" OnClick="ButtonProceed_Click" />
+                                </div>
+                            </center>
+                        </div>
+                    </div>
+            </div>
+            <br/>
+        </div>
+    </form>
+</body>
+</html>

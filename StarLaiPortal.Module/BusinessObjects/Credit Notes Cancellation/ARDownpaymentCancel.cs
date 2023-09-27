@@ -17,6 +17,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Text;
 
 // 2023-08-16 Add reason code ver 1.0.8
+// 2023-09-25 change date format ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.Credit_Notes_Cancellation
 {
@@ -84,6 +85,9 @@ namespace StarLaiPortal.Module.BusinessObjects.Credit_Notes_Cancellation
 
         private DateTime? _CreateDate;
         [Index(301), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        // Start ver 1.0.10
+        [ModelDefault("DisplayFormat", "{0: dd/MM/yyyy hh:mm tt}")]
+        // End ver 1.0.10
         [Appearance("CreateDate", Enabled = false)]
         public DateTime? CreateDate
         {

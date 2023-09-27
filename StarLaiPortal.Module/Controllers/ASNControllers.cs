@@ -28,6 +28,7 @@ using System.Text;
 using System.Web;
 
 // 2023-08-25 add validation for qty when submit ver 1.0.9
+// 2023-09-25 add copyto qty ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -238,32 +239,24 @@ namespace StarLaiPortal.Module.Controllers
                             string docprefix = genCon.GetDocPrefix();
                             asn.DocNum = genCon.GenerateDocNum(DocTypeList.ASN, ObjectSpace, TransferType.NA, 0, docprefix);
                         }
-
-                        ObjectSpace.CommitChanges();
-                        ObjectSpace.Refresh();
-
-                        showMsg("Success", "Copy Success.", InformationType.Success);
-
-                        IObjectSpace os = Application.CreateObjectSpace();
-                        ASN trx = os.FindObject<ASN>(new BinaryOperator("Oid", asn.Oid));
                         
                         // Start ver 1.0.8.1
                         string duppo = null;
                         // End ver 1.0.8.1
-                        foreach (ASNDetails dtl2 in trx.ASNDetails)
+                        foreach (ASNDetails dtl2 in asn.ASNDetails)
                         {
                             dtl2.OIDKey = dtl2.Oid;
 
                             // Start ver 1.0.8.1
                             if (duppo != dtl2.PORefNo)
                             {
-                                if (trx.PONo == null)
+                                if (asn.PONo == null)
                                 {
-                                    trx.PONo = dtl2.PORefNo;
+                                    asn.PONo = dtl2.PORefNo;
                                 }
                                 else
                                 {
-                                    trx.PONo = trx.PONo + ", " + dtl2.PORefNo;
+                                    asn.PONo = asn.PONo + ", " + dtl2.PORefNo;
                                 }
 
                                 duppo = dtl2.PORefNo;
@@ -271,8 +264,10 @@ namespace StarLaiPortal.Module.Controllers
                             // End ver 1.0.8.1
                         }
 
-                        os.CommitChanges();
-                        os.Refresh();
+                        ObjectSpace.CommitChanges();
+                        ObjectSpace.Refresh();
+
+                        showMsg("Success", "Copy Success.", InformationType.Success);
                     //}
                 }
                 catch (Exception)
@@ -387,31 +382,23 @@ namespace StarLaiPortal.Module.Controllers
                             asn.DocNum = genCon.GenerateDocNum(DocTypeList.ASN, ObjectSpace, TransferType.NA, 0, docprefix);
                         }
 
-                        ObjectSpace.CommitChanges();
-                        ObjectSpace.Refresh();
-
-                        showMsg("Success", "Copy Success.", InformationType.Success);
-
-                        IObjectSpace os = Application.CreateObjectSpace();
-                        ASN trx = os.FindObject<ASN>(new BinaryOperator("Oid", asn.Oid));
-
                         // Start ver 1.0.8.1
                         string duppo = null;
                         // End ver 1.0.8.1
-                        foreach (ASNDetails dtl2 in trx.ASNDetails)
+                        foreach (ASNDetails dtl2 in asn.ASNDetails)
                         {
                             dtl2.OIDKey = dtl2.Oid;
 
                             // Start ver 1.0.8.1
                             if (duppo != dtl2.PORefNo)
                             {
-                                if (trx.PONo == null)
+                                if (asn.PONo == null)
                                 {
-                                    trx.PONo = dtl2.PORefNo;
+                                    asn.PONo = dtl2.PORefNo;
                                 }
                                 else
                                 {
-                                    trx.PONo = trx.PONo + ", " + dtl2.PORefNo;
+                                    asn.PONo = asn.PONo + ", " + dtl2.PORefNo;
                                 }
 
                                 duppo = dtl2.PORefNo;
@@ -419,8 +406,11 @@ namespace StarLaiPortal.Module.Controllers
                             // End ver 1.0.8.1
                         }
 
-                        os.CommitChanges();
-                        os.Refresh();
+                        ObjectSpace.CommitChanges();
+                        ObjectSpace.Refresh();
+
+                        showMsg("Success", "Copy Success.", InformationType.Success);
+
                     //}
                 }
                 catch (Exception)
@@ -620,31 +610,41 @@ namespace StarLaiPortal.Module.Controllers
 
                 foreach (ASNDetails dtl in asn.ASNDetails)
                 {
-                    GRNDetails newgrnitem = os.CreateObject<GRNDetails>();
-
-                    newgrnitem.PONo = dtl.PONo;
-                    newgrnitem.ItemCode = newgrnitem.Session.GetObjectByKey<vwItemMasters>(dtl.ItemCode.ItemCode);
-                    newgrnitem.ItemDesc = dtl.ItemDesc;
-                    newgrnitem.CatalogNo = dtl.CatalogNo;
-                    if (dtl.Location != null)
+                    // Start ver 1.0.10
+                    if (dtl.LineClosed == false)
                     {
-                        newgrnitem.Location = newgrnitem.Session.GetObjectByKey<vwWarehouse>(dtl.Location.WarehouseCode);
-                    }
-                    if (dtl.DefBin != null)
-                    {
-                        newgrnitem.DefBin = newgrnitem.Session.FindObject
-                            <vwBin>(CriteriaOperator.Parse("BinCode = ?", dtl.DefBin.BinCode));
-                    }
-                    newgrnitem.OpenQty = dtl.UnloadQty;
-                    newgrnitem.Received = 0;
-                    newgrnitem.PORefNo = dtl.PORefNo;
-                    newgrnitem.ASNBaseDoc = asn.DocNum;
-                    newgrnitem.ASNBaseId = dtl.Oid.ToString();
-                    newgrnitem.ASNPOBaseDoc = dtl.BaseDoc.ToString();
-                    newgrnitem.ASNPOBaseId = dtl.BaseId.ToString();
-                    newgrnitem.BaseType = "ASN";
+                    // End ver 1.0.10
+                        GRNDetails newgrnitem = os.CreateObject<GRNDetails>();
 
-                    newgrn.GRNDetails.Add(newgrnitem);
+                        newgrnitem.PONo = dtl.PONo;
+                        newgrnitem.ItemCode = newgrnitem.Session.GetObjectByKey<vwItemMasters>(dtl.ItemCode.ItemCode);
+                        newgrnitem.ItemDesc = dtl.ItemDesc;
+                        newgrnitem.CatalogNo = dtl.CatalogNo;
+                        if (dtl.Location != null)
+                        {
+                            newgrnitem.Location = newgrnitem.Session.GetObjectByKey<vwWarehouse>(dtl.Location.WarehouseCode);
+                        }
+                        if (dtl.DefBin != null)
+                        {
+                            newgrnitem.DefBin = newgrnitem.Session.FindObject
+                                <vwBin>(CriteriaOperator.Parse("BinCode = ?", dtl.DefBin.BinCode));
+                        }
+                        // Start ver 1.0.10
+                        //newgrnitem.OpenQty = dtl.UnloadQty;
+                        newgrnitem.OpenQty = dtl.UnloadQty - dtl.CopyTotalQty;
+                        // End ver 1.0.10
+                        newgrnitem.Received = 0;
+                        newgrnitem.PORefNo = dtl.PORefNo;
+                        newgrnitem.ASNBaseDoc = asn.DocNum;
+                        newgrnitem.ASNBaseId = dtl.Oid.ToString();
+                        newgrnitem.ASNPOBaseDoc = dtl.BaseDoc.ToString();
+                        newgrnitem.ASNPOBaseId = dtl.BaseId.ToString();
+                        newgrnitem.BaseType = "ASN";
+
+                        newgrn.GRNDetails.Add(newgrnitem);
+                    // Start ver 1.0.10
+                    }
+                    // End ver 1.0.10
                 }
 
                 ShowViewParameters svp = new ShowViewParameters();
