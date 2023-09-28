@@ -19,6 +19,7 @@ using DevExpress.Xpo;
 using StarLaiPortal.Module.BusinessObjects.Pack_List;
 using StarLaiPortal.Module.Controllers;
 using StarLaiPortal.Module.BusinessObjects.Setup;
+using DevExpress.XtraPrinting.Native;
 
 namespace StarLaiPortal.WebApi.API.Controller
 {
@@ -89,23 +90,31 @@ namespace StarLaiPortal.WebApi.API.Controller
                 return Problem(ex.Message);
             }
         }
+
         [HttpPost()]
         public IActionResult Post([FromBody] ExpandoObject obj)
         {
             try
             {
                 dynamic dynamicObj = obj;
-                using (SqlConnection conn = new SqlConnection(Configuration.GetConnectionString("ConnectionString")))
+                try
                 {
-                    string jsonString = JsonConvert.SerializeObject(obj);
-
-                    jsonString = jsonString.Replace("'", "''");
-
-                    var validatejson = conn.Query<ValidateJson>($"exec ValidateJsonInput 'PackList', '{jsonString}'").FirstOrDefault();
-                    if (validatejson.Error)
+                    using (SqlConnection conn = new SqlConnection(Configuration.GetConnectionString("ConnectionString")))
                     {
-                        return Problem(validatejson.ErrorMessage);
+                        string jsonString = JsonConvert.SerializeObject(obj);
+
+                        jsonString = jsonString.Replace("'", "''");
+
+                        var validatejson = conn.Query<ValidateJson>($"exec ValidateJsonInput 'PackList', '{jsonString}'").FirstOrDefault();
+                        if (validatejson.Error)
+                        {
+                            return Problem(validatejson.ErrorMessage);
+                        }
                     }
+                }
+                catch (Exception excep)
+                {
+                    throw new Exception("Validation Error. " + excep.Message);
                 }
 
                 //Check All Picklist whether already pack?
@@ -141,7 +150,6 @@ namespace StarLaiPortal.WebApi.API.Controller
                 var userName = security.UserName;
 
                 PackList curobj = null;
-                //curobj = new PickListDetailsActual(((DevExpress.ExpressApp.Xpo.XPObjectSpace)newObjectSpace).Session);
                 curobj = newObjectSpace.CreateObject<PackList>();
                 ExpandoParser.ParseExObjectXPO<PackList>(obj, curobj, newObjectSpace);
 
@@ -152,6 +160,41 @@ namespace StarLaiPortal.WebApi.API.Controller
                     dtl.CreateUser = newObjectSpace.GetObjectByKey<ApplicationUser>(userId);
                     dtl.UpdateUser = newObjectSpace.GetObjectByKey<ApplicationUser>(userId);
                 }
+
+                List<string> soNumbers = new List<string>();
+                List<string> sAPSONo = new List<string>();
+
+                string jsonArray = JsonConvert.SerializeObject(new { PickLists = distinctIds });
+
+                int priority = -1;
+                string customer = string.Empty;
+                string customerGroup = string.Empty;
+                string warehouse = string.Empty;
+
+                try
+                {
+                    using (SqlConnection conn = new SqlConnection(Configuration.GetConnectionString("ConnectionString")))
+                    {
+                        warehouse = conn.Query<string>($"exec sp_beforedatasave 'GetWarehouseFromPick', '{jsonArray}'").FirstOrDefault();
+                        soNumbers = conn.Query<string>($"exec sp_beforedatasave 'GetPickDistinctSONumber', '{jsonArray}'").ToList();
+                        sAPSONo = conn.Query<string>($"exec sp_beforedatasave 'GetPickDistinctSAPSONo', '{jsonArray}'").ToList();
+                        priority = conn.Query<int>($"exec sp_beforedatasave 'GetPickPriority', '{jsonArray}'").FirstOrDefault();
+                        customer = conn.Query<string>($"exec sp_beforedatasave 'GetPickCustomer', '{jsonArray}'").FirstOrDefault();
+                        customerGroup = conn.Query<string>($"exec sp_beforedatasave 'GetPickCustomerGroup', '{jsonArray}'").FirstOrDefault();
+                    }
+                }
+                catch (Exception excep)
+                {
+                    throw new Exception("Header Error. " + excep.Message);
+                }
+
+                curobj.CustomerGroup = customerGroup;
+                curobj.SONumber = string.Join(",", soNumbers);
+                curobj.SAPSONo = string.Join(",", sAPSONo);
+                curobj.PickListNo = string.Join(",", distinctIds);
+                curobj.Priority = newObjectSpace.GetObjectByKey<PriorityType>(priority);
+                curobj.Customer = customer;
+                curobj.Warehouse = newObjectSpace.GetObjectByKey<vwWarehouse>(warehouse);
 
                 curobj.Save();
 
