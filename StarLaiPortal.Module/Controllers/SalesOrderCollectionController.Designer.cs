@@ -33,6 +33,7 @@
             this.SubmitSOC = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
             this.CancelSOC = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
             this.PrintARDownpayment = new DevExpress.ExpressApp.Actions.SimpleAction(this.components);
+            this.SOCCopyFromSR = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
             // 
             // SOCCopyFromSO
             // 
@@ -79,12 +80,25 @@
             this.PrintARDownpayment.ToolTip = null;
             this.PrintARDownpayment.Execute += new DevExpress.ExpressApp.Actions.SimpleActionExecuteEventHandler(this.PrintARDownpayment_Execute);
             // 
+            // SOCCopyFromSR
+            // 
+            this.SOCCopyFromSR.AcceptButtonCaption = null;
+            this.SOCCopyFromSR.CancelButtonCaption = null;
+            this.SOCCopyFromSR.Caption = "Copy From SR";
+            this.SOCCopyFromSR.Category = "ObjectsCreation";
+            this.SOCCopyFromSR.ConfirmationMessage = null;
+            this.SOCCopyFromSR.Id = "SOCCopyFromSR";
+            this.SOCCopyFromSR.ToolTip = null;
+            this.SOCCopyFromSR.CustomizePopupWindowParams += new DevExpress.ExpressApp.Actions.CustomizePopupWindowParamsEventHandler(this.SOCCopyFromSR_CustomizePopupWindowParams);
+            this.SOCCopyFromSR.Execute += new DevExpress.ExpressApp.Actions.PopupWindowShowActionExecuteEventHandler(this.SOCCopyFromSR_Execute);
+            // 
             // SalesOrderCollectionController
             // 
             this.Actions.Add(this.SOCCopyFromSO);
             this.Actions.Add(this.SubmitSOC);
             this.Actions.Add(this.CancelSOC);
             this.Actions.Add(this.PrintARDownpayment);
+            this.Actions.Add(this.SOCCopyFromSR);
 
         }
 
@@ -94,5 +108,6 @@
         private DevExpress.ExpressApp.Actions.PopupWindowShowAction SubmitSOC;
         private DevExpress.ExpressApp.Actions.PopupWindowShowAction CancelSOC;
         private DevExpress.ExpressApp.Actions.SimpleAction PrintARDownpayment;
+        private DevExpress.ExpressApp.Actions.PopupWindowShowAction SOCCopyFromSR;
     }
 }

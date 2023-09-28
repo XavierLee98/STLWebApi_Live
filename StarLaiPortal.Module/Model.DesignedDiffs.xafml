@@ -2925,8 +2925,8 @@
       </Items>
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
-          <LayoutGroup Id="SimpleEditors" RelativeSize="47.368421052631582" Direction="Horizontal">
-            <LayoutGroup Id="SalesOrderCollection_col1" ShowCaption="False" Index="0" RelativeSize="49.297752808988761" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="50.602409638554214" Direction="Horizontal">
+            <LayoutGroup Id="SalesOrderCollection_col1" ShowCaption="False" Index="0" RelativeSize="48.917748917748916" IsNewNode="True">
               <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="14.285714285714286" IsNewNode="True" />
               <LayoutItem Id="Customer" ViewItem="Customer" Index="1" RelativeSize="10.317460317460318" IsNewNode="True" />
               <LayoutItem Id="CustomerName" ViewItem="CustomerName" Index="2" RelativeSize="10.317460317460318" IsNewNode="True" />
@@ -2937,11 +2937,13 @@
               <LayoutItem Id="CreditCardNum" ViewItem="CreditCardNum" Index="7" RelativeSize="10.317460317460318" IsNewNode="True" />
               <LayoutItem Id="CreditCardValidUntil" ViewItem="CreditCardValidUntil" Index="8" RelativeSize="13.492063492063492" IsNewNode="True" />
             </LayoutGroup>
-            <LayoutGroup Id="Auto4c575e16-a062-49d7-896a-181c6a7de610" ShowCaption="False" Caption="Auto4c575e16-a062-49d7-896a-181c6a7de610(10)" Index="1" RelativeSize="50.702247191011239" IsNewNode="True">
-              <LayoutItem Id="ReferenceNum" ViewItem="ReferenceNum" Index="0" RelativeSize="26.587301587301589" IsNewNode="True" />
+            <LayoutGroup Id="Auto4c575e16-a062-49d7-896a-181c6a7de610" ShowCaption="False" Caption="Auto4c575e16-a062-49d7-896a-181c6a7de610(10)" Index="1" RelativeSize="51.082251082251084" IsNewNode="True">
+              <LayoutItem Id="ReferenceNum" ViewItem="ReferenceNum" Index="0" RelativeSize="26.19047619047619" IsNewNode="True" />
               <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="10.317460317460318" IsNewNode="True" />
-              <LayoutItem Id="Remarks" ViewItem="Remarks" Index="2" RelativeSize="10.317460317460318" IsNewNode="True" />
-              <LayoutGroup Id="SalesOrderCollection_col2" ShowCaption="False" Index="3" RelativeSize="52.777777777777779" IsNewNode="True" />
+              <LayoutItem Id="Remarks" ViewItem="Remarks" Index="2" RelativeSize="29.365079365079364" IsNewNode="True" />
+              <LayoutItem Id="Total" ViewItem="Total" Index="3" RelativeSize="10.317460317460318" IsNewNode="True" />
+              <LayoutItem Id="ReturnAmt" ViewItem="ReturnAmt" Index="4" RelativeSize="10.317460317460318" IsNewNode="True" />
+              <LayoutItem Id="TotalPayment" ViewItem="TotalPayment" Index="5" RelativeSize="13.492063492063492" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="SalesOrderCollection" RelativeSize="100" Removed="True">
               <LayoutGroup Id="SalesOrderCollection_col1" RelativeSize="50">
@@ -2959,9 +2961,12 @@
               </LayoutGroup>
             </LayoutGroup>
           </LayoutGroup>
-          <TabbedGroup Id="Tabs" RelativeSize="44.3609022556391">
+          <TabbedGroup Id="Tabs" RelativeSize="40.562248995983936">
             <LayoutGroup Id="SalesOrderCollectionDetails" RelativeSize="100">
               <LayoutItem Id="SalesOrderCollectionDetails" RelativeSize="100" />
+            </LayoutGroup>
+            <LayoutGroup Id="SalesOrderCollectionReturn" RelativeSize="100">
+              <LayoutItem Id="SalesOrderCollectionReturn" RelativeSize="100" />
             </LayoutGroup>
             <LayoutGroup Id="SalesOrderCollectionDocStatus" RelativeSize="100">
               <LayoutItem Id="SalesOrderCollectionDocStatus" RelativeSize="100" />
@@ -2970,10 +2975,7 @@
               <LayoutItem Id="AuditTrail" RelativeSize="100" />
             </LayoutGroup>
           </TabbedGroup>
-          <LayoutGroup Id="Auto03b7558a-5eb8-4f7d-aa41-093122c058f6" ShowCaption="False" Caption="Auto03b7558a-5eb8-4f7d-aa41-093122c058f6(14)" Direction="Horizontal" Index="2" RelativeSize="8.2706766917293226" IsNewNode="True">
-            <LayoutItem Id="Item1" Index="0" RelativeSize="49.297752808988761" IsNewNode="True" />
-            <LayoutItem Id="Total" ViewItem="Total" Index="1" RelativeSize="50.702247191011239" IsNewNode="True" />
-          </LayoutGroup>
+          <LayoutGroup Id="Auto03b7558a-5eb8-4f7d-aa41-093122c058f6" ShowCaption="False" Caption="Auto03b7558a-5eb8-4f7d-aa41-093122c058f6(14)" Direction="Horizontal" Index="2" RelativeSize="8.8353413654618471" IsNewNode="True" />
         </LayoutGroup>
       </Layout>
     </DetailView>
@@ -3046,6 +3048,7 @@
     </DetailView>
     <ListView Id="SalesOrderCollection_ListView" DataAccessMode="Client" />
     <ListView Id="SalesOrderCollection_SalesOrderCollectionDetails_ListView" AllowEdit="True" />
+    <ListView Id="SalesOrderCollection_SalesOrderCollectionReturn_ListView" AllowEdit="True" />
     <DetailView Id="SalesOrderCollectionDetails_DetailView" AllowEdit="True" />
     <ListView Id="SalesQuotation_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
@@ -4669,6 +4672,7 @@
     <ListView Id="vwLocalBank_ListView" DataAccessMode="Client" />
     <DetailView Id="vwOpenSO_DetailView" AllowEdit="False" />
     <ListView Id="vwOpenSO_ListView" DataAccessMode="Client" />
+    <DetailView Id="vwOpenSR_DetailView" AllowEdit="False" />
     <DetailView Id="vwPackList_DetailView" AllowEdit="False" />
     <ListView Id="vwPackList_ListView" DataAccessMode="Client" />
     <DetailView Id="vwPaymentSO_DetailView" AllowEdit="False" />

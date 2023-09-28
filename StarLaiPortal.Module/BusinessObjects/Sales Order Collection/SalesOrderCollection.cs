@@ -21,6 +21,7 @@ using System.Text;
 // 2023-08-16 update detail when change paymenttype ver 1.0.8
 // 2023-04-09 fix speed issue ver 1.0.8.1
 // 2023-09-25 change date format ver 1.0.10
+// 2023-09-25 add sales return ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
 {
@@ -35,6 +36,10 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
 
     [Appearance("HideCopyFromSO", AppearanceItemType.Action, "True", TargetItems = "SOCCopyFromSO", Criteria = "PaymentType = null or Customer = null or ReferenceNum = null or " +
         "(PaymentType.PaymentCode = 'CHEQUE' and (ChequeBank = null or CheckNum = null)) or (PaymentType.PaymentCode = 'CREDITCARD' and (CreditCardNum = null or CreditCardValidUntil = null))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    // Start ver 1.0.10
+    [Appearance("HideCopyFromSR", AppearanceItemType.Action, "True", TargetItems = "SOCCopyFromSR", Criteria = "PaymentType = null or Customer = null or ReferenceNum = null or " +
+        "(PaymentType.PaymentCode = 'CHEQUE' and (ChequeBank = null or CheckNum = null)) or (PaymentType.PaymentCode = 'CREDITCARD' and (CreditCardNum = null or CreditCardValidUntil = null))", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    // End ver 1.0.10
 
     public class SalesOrderCollection : XPObject
     { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument113146.aspx).
@@ -400,6 +405,62 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
             }
         }
 
+        // Start ver 1.0.10
+        private decimal _ReturnAmt;
+        [XafDisplayName("Return Amount")]
+        [Appearance("ReturnAmt", Enabled = false)]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [Index(31), VisibleInDetailView(true), VisibleInListView(false), VisibleInLookupListView(false)]
+        public decimal ReturnAmt
+        {
+            get
+            {
+                if (Session.IsObjectsSaving != true)
+                {
+                    decimal rtn = 0;
+                    if (SalesOrderCollectionReturn != null)
+                        rtn += SalesOrderCollectionReturn.Sum(p => p.ReturnAmount);
+
+                    return rtn;
+                }
+                else
+                {
+                    return _ReturnAmt;
+                }
+            }
+            set
+            {
+                SetPropertyValue("ReturnAmt", ref _ReturnAmt, value);
+            }
+        }
+
+        private decimal _TotalPayment;
+        [XafDisplayName("Total Payment")]
+        [Appearance("TotalPayment", Enabled = false)]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [Index(32), VisibleInDetailView(true), VisibleInListView(false), VisibleInLookupListView(false)]
+        public decimal TotalPayment
+        {
+            get
+            {
+                if (Session.IsObjectsSaving != true)
+                {
+                    return Total - ReturnAmt;
+                }
+                else
+                {
+                    return _ReturnAmt;
+                }
+            }
+            set
+            {
+                SetPropertyValue("TotalPayment", ref _TotalPayment, value);
+            }
+        }
+        // End ver 1.0.10
+
         private decimal _PaymentAmount;
         [XafDisplayName("Payment Amount")]
         [DbType("numeric(18,6)")]
@@ -483,6 +544,15 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
         {
             get { return GetCollection<SalesOrderCollectionDetails>("SalesOrderCollectionDetails"); }
         }
+
+        // Start ver 1.0.10
+        [Association("SalesOrderCollection-SalesOrderCollectionReturn")]
+        [XafDisplayName("Sales Return")]
+        public XPCollection<SalesOrderCollectionReturn> SalesOrderCollectionReturn
+        {
+            get { return GetCollection<SalesOrderCollectionReturn>("SalesOrderCollectionReturn"); }
+        }
+        // End ver 1.0.10
 
         [Association("SalesOrderCollection-SalesOrderCollectionDocStatus")]
         [XafDisplayName("Status History")]

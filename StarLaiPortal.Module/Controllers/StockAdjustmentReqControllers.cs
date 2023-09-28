@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-08-16 - add stock 3 and stock 4 - ver 1.0.8
+// 2023-09-26 - copy price and cost type - ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -441,6 +442,11 @@ namespace StarLaiPortal.Module.Controllers
                     newsadetails.Quantity = dtl.Quantity;
                     newsadetails.BaseDoc = sar.DocNum;
                     newsadetails.BaseId = dtl.Oid.ToString();
+                    // Start ver 1.0.10
+                    newsadetails.CostType = dtl.CostType;
+                    newsadetails.Price = dtl.Price;
+                    // End ver 1.0.10
+
                     newsa.StockAdjustmentDetails.Add(newsadetails);
                 }
 

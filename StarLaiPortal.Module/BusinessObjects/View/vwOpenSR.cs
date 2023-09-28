@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 
 namespace StarLaiPortal.Module.BusinessObjects.View
@@ -26,11 +27,11 @@ namespace StarLaiPortal.Module.BusinessObjects.View
     [Appearance("HideLink", AppearanceItemType.Action, "True", TargetItems = "Link", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("HideUnlink", AppearanceItemType.Action, "True", TargetItems = "Unlink", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("HideRefresh", AppearanceItemType.Action, "True", TargetItems = "Refresh", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
-    public class vwOpenSO : XPLiteObject
+    public class vwOpenSR : XPLiteObject
     { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument113146.aspx).
         // Use CodeRush to create XPO classes and properties with a few keystrokes.
         // https://docs.devexpress.com/CodeRushForRoslyn/118557
-        public vwOpenSO(Session session)
+        public vwOpenSR(Session session)
             : base(session)
         {
         }
@@ -39,7 +40,6 @@ namespace StarLaiPortal.Module.BusinessObjects.View
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
         }
-
         [Key]
         [Browsable(true)]
         [XafDisplayName("PriKey")]
@@ -51,7 +51,7 @@ namespace StarLaiPortal.Module.BusinessObjects.View
         }
 
         [XafDisplayName("DocNum")]
-        [Appearance("DocNum", Enabled = false)]
+        [Appearance("Portal Doc No", Enabled = false)]
         [Index(3)]
         public string DocNum
         {
@@ -74,10 +74,10 @@ namespace StarLaiPortal.Module.BusinessObjects.View
             get; set;
         }
 
-        [XafDisplayName("Order Date")]
-        [Appearance("OrderDate", Enabled = false)]
+        [XafDisplayName("Return Date")]
+        [Appearance("ReturnDate", Enabled = false)]
         [Index(10)]
-        public DateTime OrderDate
+        public DateTime ReturnDate
         {
             get; set;
         }
@@ -90,21 +90,21 @@ namespace StarLaiPortal.Module.BusinessObjects.View
             get; set;
         }
 
-        [XafDisplayName("Transporter")]
-        [Appearance("Transporter", Enabled = false)]
-        [Index(15), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
-        public string Transporter
-        {
-            get; set;
-        }
-
         [XafDisplayName("Doc Total")]
         [DbType("numeric(19,6)")]
         [ModelDefault("DisplayFormat", "{0:n4}")]
         [ModelDefault("EditMask", "{0:n4}")]
         [Appearance("DocTotal", Enabled = false)]
-        [Index(18)]
+        [Index(15)]
         public decimal DocTotal
+        {
+            get; set;
+        }
+
+        [XafDisplayName("SAP No")]
+        [Appearance("SAPNo", Enabled = false)]
+        [Index(18)]
+        public string SAPNo
         {
             get; set;
         }

@@ -235,6 +235,7 @@
     <Compile Include="BusinessObjects\Sales Order Collection\SalesOrderCollectionDetails.cs" />
     <Compile Include="BusinessObjects\Sales Order Collection\SalesOrderCollectionDocStatus.cs" />
     <Compile Include="BusinessObjects\Sales Order Collection\SalesOrderCollectionReport.cs" />
+    <Compile Include="BusinessObjects\Sales Order Collection\SalesOrderCollectionReturn.cs" />
     <Compile Include="BusinessObjects\Sales Order\SalesOrder.cs" />
     <Compile Include="BusinessObjects\Sales Order\SalesOrderDetails.cs" />
     <Compile Include="BusinessObjects\Sales Order\SalesOrderDocStatus.cs" />
@@ -307,6 +308,7 @@
     <Compile Include="BusinessObjects\View\vwLoadingSO.cs" />
     <Compile Include="BusinessObjects\View\vwLocalBank.cs" />
     <Compile Include="BusinessObjects\View\vwOpenSO.cs" />
+    <Compile Include="BusinessObjects\View\vwOpenSR.cs" />
     <Compile Include="BusinessObjects\View\vwPackList.cs" />
     <Compile Include="BusinessObjects\View\vwPaymentSO.cs" />
     <Compile Include="BusinessObjects\View\vwPaymentSOGroup.cs" />
