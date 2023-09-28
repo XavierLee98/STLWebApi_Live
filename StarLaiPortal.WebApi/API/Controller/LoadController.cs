@@ -195,7 +195,7 @@ namespace StarLaiPortal.WebApi.API.Controller
                 {
                     using (SqlConnection conn = new SqlConnection(Configuration.GetConnectionString("ConnectionString")))
                     {
-                        warehouse = conn.Query<string>($"exec sp_beforedatasave 'GetWarehouseFromPick', '{jsonArray}'").FirstOrDefault();
+                        warehouse = conn.Query<string>($"exec sp_beforedatasave 'GetWarehouseFromPack', '{packIdJson}'").FirstOrDefault();
                         soNumbers = conn.Query<string>($"exec sp_beforedatasave 'GetPackSONumber', '{packIdJson}'").ToList();
                         priority = conn.Query<int>($"exec sp_beforedatasave 'GetPackPriority', '{packIdJson}'").FirstOrDefault();
                     }

@@ -35,6 +35,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 // 2023-08-16 temporary fix glaccount ver 1.0.8
 // 2023-08-22 add cancel and close button ver 1.0.9
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 add sales return ver 1.0.10
 
 namespace PortalIntegration
 {
@@ -2965,6 +2966,10 @@ namespace PortalIntegration
                             }
                         }
 
+                        // Start ver 1.0.10
+                        oDoc.DocTotal = (double)(oTargetDoc.Total - oTargetDoc.ReturnAmt);
+                        // End ver 1.0.10
+
                         int rc = oDoc.Add();
                         if (rc != 0)
                         {
@@ -3053,11 +3058,17 @@ namespace PortalIntegration
                             oDoc.Address = so.BillingAddressfield;
                         }
 
-                        if (detail.PaymentAmount > 0)
+                        // Start ver 1.0.10
+                        //if (detail.PaymentAmount > 0)
+                        if (detail.PaymentAmount - oTargetDoc.ReturnAmt > 0)
+                        // End ver 1.0.10
                         {
                             if (oTargetDoc.PaymentType.PaymentMean == "CASH")
                             {
-                                oDoc.CashSum += Convert.ToDouble(detail.PaymentAmount);
+                                // Start ver 1.0.10
+                                //oDoc.CashSum += Convert.ToDouble(detail.PaymentAmount);
+                                oDoc.CashSum += Convert.ToDouble(detail.PaymentAmount - oTargetDoc.ReturnAmt);
+                                // End ver 1.0.10
                                 if (detail.GLAccount != null)
                                 {
                                     // Start ver 1.0.8
@@ -3069,7 +3080,10 @@ namespace PortalIntegration
 
                             if (oTargetDoc.PaymentType.PaymentMean == "CCARD")
                             {
-                                oDoc.CreditCards.CreditSum += Convert.ToDouble(detail.PaymentAmount);
+                                // Start ver 1.0.10
+                                //oDoc.CreditCards.CreditSum += Convert.ToDouble(detail.PaymentAmount);
+                                oDoc.CreditCards.CreditSum += Convert.ToDouble(detail.PaymentAmount - oTargetDoc.ReturnAmt);
+                                // End ver 1.0.10
                                 // Start ver 1.0.8
                                 //oDoc.CreditCards.CreditAcct = detail.GLAccount.AcctCode;
                                 oDoc.CreditCards.CreditAcct = oTargetDoc.PaymentType.GLAccount;
@@ -3101,7 +3115,10 @@ namespace PortalIntegration
 
                             if (oTargetDoc.PaymentType.PaymentMean == "TRANSFER")
                             {
-                                oDoc.TransferSum += Convert.ToDouble(detail.PaymentAmount);
+                                // Start ver 1.0.10
+                                //oDoc.TransferSum += Convert.ToDouble(detail.PaymentAmount);
+                                oDoc.TransferSum += Convert.ToDouble(detail.PaymentAmount - oTargetDoc.ReturnAmt);
+                                // End ver 1.0.10
                                 // Start ver 1.0.8
                                 //oDoc.TransferAccount = detail.GLAccount.AcctCode;
                                 oDoc.TransferAccount = oTargetDoc.PaymentType.GLAccount;
@@ -3128,7 +3145,10 @@ namespace PortalIntegration
 
                             if (oTargetDoc.PaymentType.PaymentMean == "CHEQUE")
                             {
-                                oDoc.Checks.CheckSum += Convert.ToDouble(detail.PaymentAmount);
+                                // Start ver 1.0.10
+                                //oDoc.Checks.CheckSum += Convert.ToDouble(detail.PaymentAmount);
+                                oDoc.Checks.CheckSum += Convert.ToDouble(detail.PaymentAmount - oTargetDoc.ReturnAmt);
+                                // End ver 1.0.10
                                 // Start ver 1.0.8
                                 //oDoc.Checks.CheckAccount = detail.GLAccount.AcctCode;
                                 oDoc.Checks.CheckAccount = oTargetDoc.PaymentType.GLAccount;

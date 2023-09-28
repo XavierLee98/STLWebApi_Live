@@ -7,12 +7,12 @@ using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
-using StarLaiPortal.Module.BusinessObjects.Sales_Order;
 using StarLaiPortal.Module.BusinessObjects.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 
 namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
@@ -22,13 +22,12 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
     //[Appearance("HideEdit", AppearanceItemType.Action, "True", TargetItems = "SwitchToEditMode; Edit", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("LinkDoc", AppearanceItemType = "Action", TargetItems = "Link", Context = "ListView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     [Appearance("UnlinkDoc", AppearanceItemType = "Action", TargetItems = "Unlink", Context = "ListView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
-    [XafDisplayName("Sales Order Collection Details")]
-
-    public class SalesOrderCollectionDetails : XPObject
+    [XafDisplayName("Sales Order Collection Return")]
+    public class SalesOrderCollectionReturn : XPObject
     { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument113146.aspx).
         // Use CodeRush to create XPO classes and properties with a few keystrokes.
         // https://docs.devexpress.com/CodeRushForRoslyn/118557
-        public SalesOrderCollectionDetails(Session session)
+        public SalesOrderCollectionReturn(Session session)
             : base(session)
         {
         }
@@ -46,7 +45,6 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
                 CreateUser = Session.GetObjectByKey<ApplicationUser>(Guid.Parse("100348B5-290E-47DF-9355-557C7E2C56D3"));
             }
             CreateDate = DateTime.Now;
-            //GLAccount = Session.GetObjectByKey<vwBank>("1600-21102");
         }
 
         private ApplicationUser _CreateUser;
@@ -97,24 +95,24 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
             }
         }
 
-        private string _SalesOrder;
-        [XafDisplayName("Sales Order")]
+        private string _SalesReturn;
+        [XafDisplayName("Sales Return")]
         [Index(0), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        [Appearance("SalesOrder", Enabled = false)]
+        [Appearance("SalesReturn", Enabled = false)]
         [RuleRequiredField(DefaultContexts.Save)]
-        public string SalesOrder
+        public string SalesReturn
 
         {
-            get { return _SalesOrder; }
+            get { return _SalesReturn; }
             set
             {
-                SetPropertyValue("SalesOrder", ref _SalesOrder, value);
+                SetPropertyValue("SalesReturn", ref _SalesReturn, value);
             }
         }
 
         private string _CustomerName;
         [XafDisplayName("Customer Name")]
-        [Index(1), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [Index(3), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [Appearance("CustomerName", Enabled = false)]
         public string CustomerName
 
@@ -126,101 +124,46 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
             }
         }
 
-        private DateTime _OrderDate;
-        [XafDisplayName("Order Date")]
-        [Index(3), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        [Appearance("OrderDate", Enabled = false)]
-        [RuleRequiredField(DefaultContexts.Save)]
-        public DateTime OrderDate
-        {
-            get { return _OrderDate; }
-            set
-            {
-                SetPropertyValue("OrderDate", ref _OrderDate, value);
-            }
-        }
-
-        private vwBank _GLAccount;
-        [NoForeignKey]
-        [LookupEditorMode(LookupEditorMode.AllItems)]
-        [XafDisplayName("GL Account")]
-        [Index(4), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        [RuleRequiredField(DefaultContexts.Save)]
-        public vwBank GLAccount
-        {
-            get { return _GLAccount; }
-            set
-            {
-                SetPropertyValue("GLAccount", ref _GLAccount, value);
-            }
-        }
-
-        private decimal _PaymentAmount;
-        [ImmediatePostData]
-        [DbType("numeric(18,6)")]
-        [ModelDefault("DisplayFormat", "{0:n2}")]
-        [XafDisplayName("Payment Amount")]
-        [Appearance("PaymentAmount", Enabled = false)]
+        private DateTime _ReturnDate;
+        [XafDisplayName("Return Date")]
         [Index(5), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        public decimal PaymentAmount
+        [Appearance("ReturnDate", Enabled = false)]
+        [RuleRequiredField(DefaultContexts.Save)]
+        public DateTime ReturnDate
         {
-            get { return _PaymentAmount; }
+            get { return _ReturnDate; }
             set
             {
-                SetPropertyValue("PaymentAmount", ref _PaymentAmount, value);
+                SetPropertyValue("ReturnDate", ref _ReturnDate, value);
             }
         }
 
-        private decimal _Total;
+        private decimal _ReturnAmount;
         [ImmediatePostData]
         [DbType("numeric(18,6)")]
         [ModelDefault("DisplayFormat", "{0:n2}")]
-        [XafDisplayName("Total")]
-        [Appearance("Total", Enabled = false)]
-        [Index(20), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        public decimal Total
+        [Appearance("ReturnAmount", Enabled = false)]
+        [XafDisplayName("Return Amount")]
+        [Index(8), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        public decimal ReturnAmount
         {
-            get { return _Total; }
+            get { return _ReturnAmount; }
             set
             {
-                SetPropertyValue("Total", ref _Total, value);
+                SetPropertyValue("ReturnAmount", ref _ReturnAmount, value);
             }
         }
 
         private string _SAPDocNum;
-        [XafDisplayName("SAP DP No.")]
+        [XafDisplayName("SAP No.")]
         [Appearance("SAPDocNum", Enabled = false)]
-        [Index(25), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(23), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
         public string SAPDocNum
         {
             get { return _SAPDocNum; }
             set
             {
                 SetPropertyValue("SAPDocNum", ref _SAPDocNum, value);
-            }
-        }
-
-        private bool _Sap;
-        [XafDisplayName("Sap")]
-        [Index(28), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
-        public bool Sap
-        {
-            get { return _Sap; }
-            set
-            {
-                SetPropertyValue("Sap", ref _Sap, value);
-            }
-        }
-
-        private bool _SapPayment;
-        [XafDisplayName("Sap Payment")]
-        [Index(30), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
-        public bool SapPayment
-        {
-            get { return _SapPayment; }
-            set
-            {
-                SetPropertyValue("SapPayment", ref _SapPayment, value);
             }
         }
 
@@ -232,7 +175,7 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
         }
 
         private SalesOrderCollection _SalesOrderCollection;
-        [Association("SalesOrderCollection-SalesOrderCollectionDetails")]
+        [Association("SalesOrderCollection-SalesOrderCollectionReturn")]
         [Index(99), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [Appearance("SalesOrderCollection", Enabled = false)]
         public SalesOrderCollection SalesOrderCollection

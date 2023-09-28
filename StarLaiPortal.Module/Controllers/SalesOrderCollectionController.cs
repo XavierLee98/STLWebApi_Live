@@ -12,6 +12,7 @@ using DevExpress.ExpressApp.Utils;
 using DevExpress.ExpressApp.Web;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
+using DevExpress.Web.Internal.XmlProcessor;
 using StarLaiPortal.Module.BusinessObjects;
 using StarLaiPortal.Module.BusinessObjects.Sales_Order;
 using StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection;
@@ -25,6 +26,7 @@ using System.Text;
 using System.Web;
 
 // 2023-04-09 fix speed issue ver 1.0.8.1
+// 2023-09-25 add sales return ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -45,6 +47,9 @@ namespace StarLaiPortal.Module.Controllers
             this.SubmitSOC.Active.SetItemValue("Enabled", false);
             this.CancelSOC.Active.SetItemValue("Enabled", false);
             this.PrintARDownpayment.Active.SetItemValue("Enabled", false);
+            // Start ver 1.0.10
+            this.SOCCopyFromSR.Active.SetItemValue("Enabled", false);
+            // End ver 1.0.10
         }
         protected override void OnViewControlsCreated()
         {
@@ -57,10 +62,16 @@ namespace StarLaiPortal.Module.Controllers
                 if (((DetailView)View).ViewEditMode == ViewEditMode.Edit)
                 {
                     this.SOCCopyFromSO.Active.SetItemValue("Enabled", true);
+                    // Start ver 1.0.10
+                    this.SOCCopyFromSR.Active.SetItemValue("Enabled", true);
+                    // End ver 1.0.10
                 }
                 else
                 {
                     this.SOCCopyFromSO.Active.SetItemValue("Enabled", false);
+                    // Start ver 1.0.10
+                    this.SOCCopyFromSR.Active.SetItemValue("Enabled", false);
+                    // End ver 1.0.10
                 }
 
                 if (((DetailView)View).ViewEditMode == ViewEditMode.View)
@@ -91,6 +102,9 @@ namespace StarLaiPortal.Module.Controllers
                 this.SubmitSOC.Active.SetItemValue("Enabled", false);
                 this.CancelSOC.Active.SetItemValue("Enabled", false);
                 this.PrintARDownpayment.Active.SetItemValue("Enabled", false);
+                // Start ver 1.0.10
+                this.SOCCopyFromSR.Active.SetItemValue("Enabled", false);
+                // End ver 1.0.10
             }
         }
         protected override void OnDeactivated()
@@ -193,6 +207,7 @@ namespace StarLaiPortal.Module.Controllers
                             string docprefix = genCon.GetDocPrefix();
                             soc.DocNum = genCon.GenerateDocNum(DocTypeList.ARD, ObjectSpace, TransferType.NA, 0, docprefix);
                         }
+
                         ObjectSpace.CommitChanges();
                         ObjectSpace.Refresh();
                     //}
@@ -225,13 +240,34 @@ namespace StarLaiPortal.Module.Controllers
             StringParameters p = (StringParameters)e.PopupWindow.View.CurrentObject;
             if (p.IsErr) return;
 
-            if (selectedObject.IsValid == true)
+            // Start ver 1.0.10
+            foreach(SalesOrderCollectionReturn ssalesreturn in selectedObject.SalesOrderCollectionReturn)
             {
+                if (selectedObject.SalesOrderCollectionDetails.Count() > 1)
+                {
+                    showMsg("Error", "Not allow multiple sales order while exist return.", InformationType.Error);
+                    return;
+                }
+
+                break;
+            }
+            // End ver 1.0.10
+
+            if (selectedObject.IsValid == true)
+            { 
                 selectedObject.Status = DocStatus.Submitted;
                 SalesOrderCollectionDocStatus ds = ObjectSpace.CreateObject<SalesOrderCollectionDocStatus>();
                 ds.DocStatus = DocStatus.Submitted;
                 ds.DocRemarks = p.ParamString;
                 selectedObject.SalesOrderCollectionDocStatus.Add(ds);
+
+                // Start ver 1.0.10
+                if (selectedObject.ReturnAmt > selectedObject.Total)
+                {
+                    selectedObject.Sap = true;
+                    selectedObject.Status = DocStatus.Post;
+                }
+                // End ver 1.0.10
 
                 ObjectSpace.CommitChanges();
                 ObjectSpace.Refresh();
@@ -239,6 +275,14 @@ namespace StarLaiPortal.Module.Controllers
                 IObjectSpace os = Application.CreateObjectSpace();
                 SalesOrderCollection trx = os.FindObject<SalesOrderCollection>(new BinaryOperator("Oid", selectedObject.Oid));
                 openNewView(os, trx, ViewEditMode.View);
+
+                // Start ver 1.0.10
+                if (trx.ReturnAmt > trx.Total)
+                {
+                    showMsg("Warning", "No downpayment created due to over return amount.", InformationType.Warning);
+                }
+                // End ver 1.0.10
+
                 showMsg("Successful", "Submit Done.", InformationType.Success);
             }
             else
@@ -348,5 +392,61 @@ namespace StarLaiPortal.Module.Controllers
                 showMsg("Fail", ex.Message, InformationType.Error);
             }
         }
+
+        // Start ver 1.0.10
+        private void SOCCopyFromSR_Execute(object sender, PopupWindowShowActionExecuteEventArgs e)
+        {
+            if (e.PopupWindowViewSelectedObjects.Count > 0)
+            {
+                try
+                {
+                    SalesOrderCollection soc = (SalesOrderCollection)View.CurrentObject;
+      
+                    foreach (vwOpenSR dtl in e.PopupWindowViewSelectedObjects)
+                    {
+                        SalesOrderCollectionReturn newreturn = ObjectSpace.CreateObject<SalesOrderCollectionReturn>();
+
+                        newreturn.SalesReturn = dtl.DocNum;
+                        newreturn.CustomerName = dtl.CustomerName;
+                        newreturn.ReturnDate = dtl.ReturnDate;
+                        newreturn.ReturnAmount = dtl.DocTotal;
+                        newreturn.SAPDocNum = dtl.SAPNo;
+
+                        soc.SalesOrderCollectionReturn.Add(newreturn);
+
+                        showMsg("Success", "Copy Success.", InformationType.Success);
+                    }
+
+                    if (soc.DocNum == null)
+                    {
+                        string docprefix = genCon.GetDocPrefix();
+                        soc.DocNum = genCon.GenerateDocNum(DocTypeList.ARD, ObjectSpace, TransferType.NA, 0, docprefix);
+                    }
+
+                    ObjectSpace.CommitChanges();
+                    ObjectSpace.Refresh();
+                }
+                catch (Exception)
+                {
+                    showMsg("Fail", "Copy Fail.", InformationType.Error);
+                }
+            }
+        }
+
+        private void SOCCopyFromSR_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
+        {
+            SalesOrderCollection soc = (SalesOrderCollection)View.CurrentObject;
+
+            var os = Application.CreateObjectSpace();
+            var viewId = Application.FindListViewId(typeof(vwOpenSR));
+            var cs = Application.CreateCollectionSource(os, typeof(vwOpenSR), viewId);
+            if (soc.Customer != null)
+            {
+                cs.Criteria["Customer"] = new BinaryOperator("Customer", soc.Customer.BPCode);
+            }
+            var lv1 = Application.CreateListView(viewId, cs, true);
+            e.View = lv1;
+        }
+        // End ver 1.0.10
     }
 }

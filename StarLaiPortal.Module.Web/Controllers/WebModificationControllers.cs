@@ -35,6 +35,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static DevExpress.XtraPrinting.Native.ExportOptionsPropertiesNames;
 
 // 2023-07-28 add AR Downpayment cancalletion ver 1.0.7
 // 2023-08-25 add picklistactual validation ver 1.0.9
