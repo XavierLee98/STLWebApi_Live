@@ -13,6 +13,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+// 2023-09-25 add Territory and Open Payment ver 1.0.10
+
 namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
 {
     [DefaultClassOptions]
@@ -269,5 +271,25 @@ namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
         {
             get; set;
         }
+
+        // Start ver 1.0.10
+        [XafDisplayName("Territory")]
+        [Appearance("Territory", Enabled = false)]
+        [Index(59)]
+        public string Territory
+        {
+            get; set;
+        }
+
+        [XafDisplayName("Open Payment")]
+        [Appearance("OpenPayment", Enabled = false)]
+        [Index(60)]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        public decimal OpenPayment
+        {
+            get; set;
+        }
+        // End ver 1.0.10
     }
 }

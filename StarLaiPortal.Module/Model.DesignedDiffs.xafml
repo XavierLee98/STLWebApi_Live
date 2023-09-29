@@ -197,6 +197,7 @@
           <Item Id="PurchaseReturnRequestDocTrail_ListView" Removed="True" />
           <Item Id="SalesOrderCollectionDetails_ListView" Removed="True" />
           <Item Id="SalesOrderCollectionDocStatus_ListView" Removed="True" />
+          <Item Id="SalesOrderCollectionReturn_ListView" Removed="True" />
           <Item Id="SalesOrderDetails_ListView" Removed="True" />
           <Item Id="SalesOrderDocStatus_ListView" Removed="True" />
           <Item Id="SalesQuotationAppStage_ListView" Removed="True" />
@@ -232,6 +233,7 @@
           <Item Id="vwLastPurchasePrice_ListView" Removed="True" />
           <Item Id="vwLoadingSO_ListView" Removed="True" />
           <Item Id="vwOpenSO_ListView" Removed="True" />
+          <Item Id="vwOpenSR_ListView" Removed="True" />
           <Item Id="vwPackList_ListView" Removed="True" />
           <Item Id="vwPaymentSO_ListView" Removed="True" />
           <Item Id="vwPickList_ListView" Removed="True" />

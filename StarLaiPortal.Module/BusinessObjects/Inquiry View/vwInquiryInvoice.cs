@@ -13,6 +13,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+// 2023-09-25 add Doctotal List ver 1.0.10
+
 namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
 {
     [DefaultClassOptions]
@@ -254,5 +256,17 @@ namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
         {
             get; set;
         }
+
+        // Start ver 1.0.10
+        [XafDisplayName("Doc Total")]
+        [Appearance("DocTotal", Enabled = false)]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [Index(60)]
+        public decimal DocTotal
+        {
+            get; set;
+        }
+        // End ver 1.0.10
     }
 }

@@ -17,7 +17,7 @@ using System.Text;
 namespace StarLaiPortal.Module.BusinessObjects.View
 {
     [DefaultClassOptions]
-    [XafDisplayName("Open Sales Order")]
+    [XafDisplayName("Open Sales Return")]
     //[ImageName("BO_Contact")]
     [DefaultProperty("BoFullName")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
