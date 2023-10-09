@@ -574,7 +574,7 @@ namespace StarLaiPortal.Module.Controllers
                                 // Start ver 1.0.10
                                 if (newload.Warehouse == null)
                                 {
-                                    newload.Warehouse = newload.Session.GetObjectByKey<vwWarehouse>(picklist.Warehouse.WarehouseCode);
+                                    newload.Warehouse = newload.Session.GetObjectByKey<vwWarehouse>(selectedObject.Warehouse.WarehouseCode);
                                 }
                                 // End ver 1.0.10
 
@@ -588,7 +588,7 @@ namespace StarLaiPortal.Module.Controllers
                                     // Start ver 1.0.10
                                     if (newpack.Warehouse == null)
                                     {
-                                        newpack.Warehouse = newpack.Session.GetObjectByKey<vwWarehouse>(picklist.Warehouse.WarehouseCode);
+                                        newpack.Warehouse = newpack.Session.GetObjectByKey<vwWarehouse>(selectedObject.Warehouse.WarehouseCode);
                                     }
                                     // End ver 1.0.10
 
