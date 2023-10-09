@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-07-28 add AR Downpayment Cancellation ver 1.0.7
+// 2023-10-05 add payment method for sales return ver 1.0.10
 
 namespace StarLaiPortal.Module.BusinessObjects
 {
@@ -132,4 +133,13 @@ namespace StarLaiPortal.Module.BusinessObjects
         [XafDisplayName("No")] No = 0,
         [XafDisplayName("Yes")] Yes = 1
     }
+
+    // Start ver 1.0.10
+    public enum SRPaymentMethod
+    {
+        [XafDisplayName("Exchange")] Exchange = 0,
+        [XafDisplayName("Cash Refund")] CashRefund = 1,
+        [XafDisplayName("Transfer Refund")] TransferRefund = 2
+    }
+    // End ver 1.0.10
 }

@@ -312,6 +312,7 @@
     <Compile Include="BusinessObjects\View\vwPackList.cs" />
     <Compile Include="BusinessObjects\View\vwPaymentSO.cs" />
     <Compile Include="BusinessObjects\View\vwPaymentSOGroup.cs" />
+    <Compile Include="BusinessObjects\View\vwPaymentSOSimplified.cs" />
     <Compile Include="BusinessObjects\View\vwPaymentTerm.cs" />
     <Compile Include="BusinessObjects\View\vwPaymentType.cs" />
     <Compile Include="BusinessObjects\View\vwPickList.cs" />

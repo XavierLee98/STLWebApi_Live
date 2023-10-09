@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 
 // 2023-08-16 - add stock 3 and stock 4 - ver 1.0.8
+// 2023-10-05 add payment method for sales return ver 1.0.10
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -644,6 +645,9 @@ namespace StarLaiPortal.Module.Controllers
                 {
                     newsr.ReasonCode = newsr.Session.GetObjectByKey<vwReasonCode>(srr.ReasonCode.Prikey);
                 }
+                // Start ver 1.0.10
+                newsr.PaymentMethod = srr.PaymentMethod;
+                // End ver 1.0.10
 
                 foreach (SalesReturnRequestDetails dtl in srr.SalesReturnRequestDetails)
                 {

@@ -418,7 +418,7 @@ namespace StarLaiPortal.Module.Controllers
 
                 if (sar.ReasonCode != null)
                 {
-                    newsa.ReasonCode = newsa.Session.GetObjectByKey<vwReasonCode>(sar.ReasonCode.ReasonCode);
+                    newsa.ReasonCode = newsa.Session.GetObjectByKey<vwReasonCode>(sar.ReasonCode.Prikey);
                 }
                 newsa.AdjDate = sar.AdjDate;
                 newsa.Remarks = sar.Remarks;

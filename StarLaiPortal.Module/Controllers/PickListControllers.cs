@@ -367,8 +367,12 @@ namespace StarLaiPortal.Module.Controllers
                             }
 
                             IObjectSpace os = Application.CreateObjectSpace();
-                            vwPaymentSO so = os.FindObject<vwPaymentSO>(CriteriaOperator.Parse("Oid = ? and DocNum = ?",
-                                dtl.Oid, dtl.DocNum));
+                            // Start ver 1.0.10
+                            //vwPaymentSO so = os.FindObject<vwPaymentSO>(CriteriaOperator.Parse("Oid = ? and DocNum = ?",
+                            //    dtl.Oid, dtl.DocNum));
+                              vwPaymentSOSimplified so = os.FindObject<vwPaymentSOSimplified>(CriteriaOperator.Parse("RowOID = ? and DocNum = ?",
+                                  dtl.Oid, dtl.DocNum));
+                            // End ver 1.0.10
 
                             if (so == null)
                             {
@@ -1326,8 +1330,12 @@ namespace StarLaiPortal.Module.Controllers
                             }
 
                             IObjectSpace sos = Application.CreateObjectSpace();
-                            vwPaymentSO dupso = sos.FindObject<vwPaymentSO>(CriteriaOperator.Parse("Oid = ? and DocNum = ?",
+                            // Start ver 1.0.10
+                            //vwPaymentSO dupso = sos.FindObject<vwPaymentSO>(CriteriaOperator.Parse("Oid = ? and DocNum = ?",
+                            //    dtl.Oid, dtl.DocNum));
+                            vwPaymentSOSimplified dupso = sos.FindObject<vwPaymentSOSimplified>(CriteriaOperator.Parse("RowOID = ? and DocNum = ?",
                                 dtl.Oid, dtl.DocNum));
+                            // End ver 1.0.10
 
                             if (dupso == null)
                             {

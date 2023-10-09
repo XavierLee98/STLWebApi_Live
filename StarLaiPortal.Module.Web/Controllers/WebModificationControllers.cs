@@ -728,7 +728,7 @@ namespace StarLaiPortal.Module.Web.Controllers
                 {
                     if (dtl.BaseDoc != null)
                     {
-                        genCon.CloseWarehouseTransferReq(dtl.BaseDoc, "Copy", ObjectSpace);
+                        genCon.CloseStockAdjustmentReq(dtl.BaseDoc, "Copy", ObjectSpace);
                         break;
                     }
                 }

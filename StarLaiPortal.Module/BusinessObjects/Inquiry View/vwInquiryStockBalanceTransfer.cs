@@ -129,6 +129,16 @@ namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
             get; set;
         }
 
+        [XafDisplayName("On9")]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [Appearance("On9", Enabled = false)]
+        [Index(24)]
+        public decimal On9
+        {
+            get; set;
+        }
+
         [XafDisplayName("Transfer Qty")]
         [DbType("numeric(18,6)")]
         [ModelDefault("DisplayFormat", "{0:n2}")]

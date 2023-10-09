@@ -236,6 +236,7 @@
           <Item Id="vwOpenSR_ListView" Removed="True" />
           <Item Id="vwPackList_ListView" Removed="True" />
           <Item Id="vwPaymentSO_ListView" Removed="True" />
+          <Item Id="vwPaymentSOSimplified_ListView" Removed="True" />
           <Item Id="vwPickList_ListView" Removed="True" />
           <Item Id="vwPO_ListView" Removed="True" />
           <Item Id="vwPODetails_ListView" Removed="True" />
@@ -3814,25 +3815,26 @@
       </Items>
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
-          <LayoutGroup Id="SimpleEditors" RelativeSize="31.407942238267147" Direction="Horizontal">
-            <LayoutGroup Id="SalesReturnRequests_col1" ShowCaption="False" Index="0" RelativeSize="42.280945757997216" IsNewNode="True">
-              <LayoutItem Id="Customer" ViewItem="Customer" Index="0" RelativeSize="20.689655172413794" IsNewNode="True" />
-              <LayoutItem Id="CustomerName" ViewItem="CustomerName" Index="1" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="Salesperson" ViewItem="Salesperson" Index="2" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="Currency" ViewItem="Currency" Index="3" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="CurrencyRate" ViewItem="CurrencyRate" Index="4" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="Reference" ViewItem="Reference" Index="5" RelativeSize="19.540229885057471" IsNewNode="True" />
+          <LayoutGroup Id="SimpleEditors" RelativeSize="37.593984962406012" Direction="Horizontal">
+            <LayoutGroup Id="SalesReturnRequests_col1" ShowCaption="False" Index="0" RelativeSize="42.25941422594142" IsNewNode="True">
+              <LayoutItem Id="Customer" ViewItem="Customer" Index="0" RelativeSize="18" IsNewNode="True" />
+              <LayoutItem Id="CustomerName" ViewItem="CustomerName" Index="1" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="Salesperson" ViewItem="Salesperson" Index="2" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="PaymentMethod" ViewItem="PaymentMethod" Index="3" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="Currency" ViewItem="Currency" Index="4" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="CurrencyRate" ViewItem="CurrencyRate" Index="5" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="Reference" ViewItem="Reference" Index="6" RelativeSize="17" IsNewNode="True" />
             </LayoutGroup>
-            <LayoutGroup Id="SalesReturnRequests_col2" ShowCaption="False" Index="1" RelativeSize="57.719054242002784" Direction="Horizontal" Caption="SalesReturnRequests_col2" IsNewNode="True">
-              <LayoutGroup Id="Auto68161cc5-b83e-48bd-9400-10ceeea9c221" ShowCaption="False" Caption="Auto68161cc5-b83e-48bd-9400-10ceeea9c221(10)" Index="0" RelativeSize="69.1566265060241" IsNewNode="True">
-                <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="20.689655172413794" IsNewNode="True" />
-                <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="14.942528735632184" IsNewNode="True" />
-                <LayoutItem Id="AppStatus" ViewItem="AppStatus" Index="2" RelativeSize="14.942528735632184" IsNewNode="True" />
-                <LayoutItem Id="DocDate" ViewItem="DocDate" Index="3" RelativeSize="14.942528735632184" IsNewNode="True" />
-                <LayoutItem Id="PostingDate" ViewItem="PostingDate" Index="4" RelativeSize="14.942528735632184" IsNewNode="True" />
-                <LayoutItem Id="Remarks" ViewItem="Remarks" Index="5" RelativeSize="19.540229885057471" IsNewNode="True" />
+            <LayoutGroup Id="SalesReturnRequests_col2" ShowCaption="False" Index="1" RelativeSize="57.74058577405858" Direction="Horizontal" Caption="SalesReturnRequests_col2" IsNewNode="True">
+              <LayoutGroup Id="Auto68161cc5-b83e-48bd-9400-10ceeea9c221" ShowCaption="False" Caption="Auto68161cc5-b83e-48bd-9400-10ceeea9c221(10)" Index="0" RelativeSize="69.082125603864739" IsNewNode="True">
+                <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="18" IsNewNode="True" />
+                <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="13" IsNewNode="True" />
+                <LayoutItem Id="AppStatus" ViewItem="AppStatus" Index="2" RelativeSize="13" IsNewNode="True" />
+                <LayoutItem Id="DocDate" ViewItem="DocDate" Index="3" RelativeSize="13" IsNewNode="True" />
+                <LayoutItem Id="PostingDate" ViewItem="PostingDate" Index="4" RelativeSize="13" IsNewNode="True" />
+                <LayoutItem Id="Remarks" ViewItem="Remarks" Index="5" RelativeSize="30" IsNewNode="True" />
               </LayoutGroup>
-              <LayoutItem Id="SRR Inquiry Item" ViewItem="SRR Inquiry Item" Index="1" RelativeSize="30.843373493975903" IsNewNode="True" />
+              <LayoutItem Id="SRR Inquiry Item" ViewItem="SRR Inquiry Item" Index="1" RelativeSize="30.917874396135264" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="SalesReturnRequests" RelativeSize="100" Removed="True">
               <LayoutGroup Id="SalesReturnRequests_col1" RelativeSize="50">
@@ -3856,15 +3858,15 @@
               </LayoutGroup>
             </LayoutGroup>
           </LayoutGroup>
-          <TabbedGroup Id="Tabs" RelativeSize="68.592057761732846">
+          <TabbedGroup Id="Tabs" RelativeSize="62.406015037593988">
             <LayoutGroup Id="SalesReturnRequestDetails" RelativeSize="100">
               <LayoutItem Id="SalesReturnRequestDetails" RelativeSize="100" />
             </LayoutGroup>
             <LayoutGroup Id="Item1" ShowCaption="True" CaptionLocation="Top" Index="1" RelativeSize="100" Caption="Address" IsNewNode="True">
-              <LayoutItem Id="BillingAddress" ViewItem="BillingAddress" Index="0" RelativeSize="10.909090909090908" IsNewNode="True" />
-              <LayoutItem Id="BillingAddressfield" ViewItem="BillingAddressfield" Index="1" RelativeSize="29.696969696969695" ShowCaption="False" IsNewNode="True" />
-              <LayoutItem Id="ShippingAddress" ViewItem="ShippingAddress" Index="2" RelativeSize="7.8787878787878789" IsNewNode="True" />
-              <LayoutItem Id="ShippingAddressfield" ViewItem="ShippingAddressfield" Index="3" RelativeSize="51.515151515151516" ShowCaption="False" IsNewNode="True" />
+              <LayoutItem Id="BillingAddress" ViewItem="BillingAddress" Index="0" RelativeSize="12.76595744680851" IsNewNode="True" />
+              <LayoutItem Id="BillingAddressfield" ViewItem="BillingAddressfield" Index="1" RelativeSize="33.687943262411345" ShowCaption="False" IsNewNode="True" />
+              <LayoutItem Id="ShippingAddress" ViewItem="ShippingAddress" Index="2" RelativeSize="9.21985815602837" IsNewNode="True" />
+              <LayoutItem Id="ShippingAddressfield" ViewItem="ShippingAddressfield" Index="3" RelativeSize="44.326241134751776" ShowCaption="False" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="SalesReturnRequestDocTrail" RelativeSize="100" Index="2">
               <LayoutItem Id="SalesReturnRequestDocTrail" RelativeSize="100" />
@@ -4109,22 +4111,23 @@
       </Items>
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
-          <LayoutGroup Id="SimpleEditors" RelativeSize="31.407942238267147" Direction="Horizontal">
-            <LayoutGroup Id="SalesReturns_col1" ShowCaption="False" Index="0" RelativeSize="49.513212795549371" IsNewNode="True">
-              <LayoutItem Id="Customer" ViewItem="Customer" Index="0" RelativeSize="20.689655172413794" IsNewNode="True" />
-              <LayoutItem Id="CustomerName" ViewItem="CustomerName" Index="1" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="Salesperson" ViewItem="Salesperson" Index="2" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="Currency" ViewItem="Currency" Index="3" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="CurrencyRate" ViewItem="CurrencyRate" Index="4" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="Reference" ViewItem="Reference" Index="5" RelativeSize="19.540229885057471" IsNewNode="True" />
+          <LayoutGroup Id="SimpleEditors" RelativeSize="37.593984962406012" Direction="Horizontal">
+            <LayoutGroup Id="SalesReturns_col1" ShowCaption="False" Index="0" RelativeSize="49.5118549511855" IsNewNode="True">
+              <LayoutItem Id="Customer" ViewItem="Customer" Index="0" RelativeSize="18" IsNewNode="True" />
+              <LayoutItem Id="CustomerName" ViewItem="CustomerName" Index="1" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="Salesperson" ViewItem="Salesperson" Index="2" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="PaymentMethod" ViewItem="PaymentMethod" Index="3" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="Currency" ViewItem="Currency" Index="4" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="CurrencyRate" ViewItem="CurrencyRate" Index="5" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="Reference" ViewItem="Reference" Index="6" RelativeSize="17" IsNewNode="True" />
             </LayoutGroup>
-            <LayoutGroup Id="SalesReturns_col2" ShowCaption="False" Index="1" RelativeSize="50.486787204450629" IsNewNode="True">
-              <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="20.689655172413794" IsNewNode="True" />
-              <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="DocDate" ViewItem="DocDate" Index="2" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="PostingDate" ViewItem="PostingDate" Index="3" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="SAPDocNum" ViewItem="SAPDocNum" Index="4" RelativeSize="14.942528735632184" IsNewNode="True" />
-              <LayoutItem Id="Remarks" ViewItem="Remarks" Index="5" RelativeSize="19.540229885057471" IsNewNode="True" />
+            <LayoutGroup Id="SalesReturns_col2" ShowCaption="False" Index="1" RelativeSize="50.4881450488145" IsNewNode="True">
+              <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="18" IsNewNode="True" />
+              <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="DocDate" ViewItem="DocDate" Index="2" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="PostingDate" ViewItem="PostingDate" Index="3" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="SAPDocNum" ViewItem="SAPDocNum" Index="4" RelativeSize="13" IsNewNode="True" />
+              <LayoutItem Id="Remarks" ViewItem="Remarks" Index="5" RelativeSize="30" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="SalesReturns" RelativeSize="100" Removed="True">
               <LayoutGroup Id="SalesReturns_col1" RelativeSize="50">
@@ -4152,15 +4155,15 @@
               </LayoutGroup>
             </LayoutGroup>
           </LayoutGroup>
-          <TabbedGroup Id="Tabs" RelativeSize="68.592057761732846">
+          <TabbedGroup Id="Tabs" RelativeSize="62.406015037593988">
             <LayoutGroup Id="SalesReturnDetails" RelativeSize="100">
               <LayoutItem Id="SalesReturnDetails" RelativeSize="100" />
             </LayoutGroup>
             <LayoutGroup Id="Item1" ShowCaption="True" CaptionLocation="Top" Index="1" RelativeSize="100" Caption="Address" IsNewNode="True">
-              <LayoutItem Id="BillingAddress" ViewItem="BillingAddress" Index="0" RelativeSize="10.909090909090908" IsNewNode="True" />
-              <LayoutItem Id="BillingAddressfield" ViewItem="BillingAddressfield" Index="1" RelativeSize="29.393939393939394" ShowCaption="False" IsNewNode="True" />
-              <LayoutItem Id="ShippingAddress" ViewItem="ShippingAddress" Index="2" RelativeSize="7.8787878787878789" IsNewNode="True" />
-              <LayoutItem Id="ShippingAddressfield" ViewItem="ShippingAddressfield" Index="3" RelativeSize="51.81818181818182" ShowCaption="False" IsNewNode="True" />
+              <LayoutItem Id="BillingAddress" ViewItem="BillingAddress" Index="0" RelativeSize="12.76595744680851" IsNewNode="True" />
+              <LayoutItem Id="BillingAddressfield" ViewItem="BillingAddressfield" Index="1" RelativeSize="33.687943262411345" ShowCaption="False" IsNewNode="True" />
+              <LayoutItem Id="ShippingAddress" ViewItem="ShippingAddress" Index="2" RelativeSize="9.21985815602837" IsNewNode="True" />
+              <LayoutItem Id="ShippingAddressfield" ViewItem="ShippingAddressfield" Index="3" RelativeSize="44.326241134751776" ShowCaption="False" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="SalesReturnDocTrail" RelativeSize="100" Index="2">
               <LayoutItem Id="SalesReturnDocTrail" RelativeSize="100" />
@@ -4582,7 +4585,7 @@
     <DetailView Id="vwBinStockBalance_DetailView" AllowEdit="False" />
     <ListView Id="vwBinStockBalance_ListView" DataAccessMode="Client" />
     <DetailView Id="vwBusniessPartner_DetailView" AllowEdit="False" />
-    <ListView Id="vwBusniessPartner_ListView" DataAccessMode="Client" />
+    <ListView Id="vwBusniessPartner_ListView" DataAccessMode="Client" FreezeColumnIndices="False" />
     <DetailView Id="vwDepartment_DetailView" AllowEdit="False" />
     <ListView Id="vwDepartment_ListView" DataAccessMode="Client" />
     <DetailView Id="vwDownpaymentINV_DetailView" AllowEdit="False" />
@@ -4712,6 +4715,7 @@
         <ColumnInfo Id="Warehouse" Index="11" />
       </Columns>
     </ListView>
+    <DetailView Id="vwPaymentSOSimplified_DetailView" AllowEdit="False" />
     <DetailView Id="vwPaymentTerm_DetailView" AllowEdit="False" />
     <ListView Id="vwPaymentTerm_ListView" DataAccessMode="Client" />
     <DetailView Id="vwPaymentType_DetailView" AllowEdit="False" />

@@ -15,6 +15,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+// 2023-10-05 add payment method for sales return ver 1.0.10
+
 namespace StarLaiPortal.Module.BusinessObjects.Sales_Return
 {
     [DefaultClassOptions]
@@ -392,6 +394,21 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Return
                 SetPropertyValue("CurrencyRate", ref _CurrencyRate, value);
             }
         }
+
+        // Start ver 1.0.10
+        private SRPaymentMethod _PaymentMethod;
+        [XafDisplayName("Payment Method")]
+        [Appearance("PaymentMethod", Enabled = false)]
+        [Index(35), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        public SRPaymentMethod PaymentMethod
+        {
+            get { return _PaymentMethod; }
+            set
+            {
+                SetPropertyValue("PaymentMethod", ref _PaymentMethod, value);
+            }
+        }
+        // End ver 1.0.10
 
         private string _Reference;
         [XafDisplayName("AR Invoice No.")]
