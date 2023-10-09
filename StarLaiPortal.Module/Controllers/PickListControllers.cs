@@ -14,6 +14,7 @@ using DevExpress.ExpressApp.Web.Editors.ASPx;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using DevExpress.Web.Internal.XmlProcessor;
+using DevExpress.XtraPrinting;
 using StarLaiPortal.Module.BusinessObjects;
 using StarLaiPortal.Module.BusinessObjects.Delivery_Order;
 using StarLaiPortal.Module.BusinessObjects.Load;
@@ -570,6 +571,12 @@ namespace StarLaiPortal.Module.Controllers
                                 {
                                     newload.Vehicle = newload.Session.GetObjectByKey<vwVehicle>(selectedObject.Vehicle.VehicleCode);
                                 }
+                                // Start ver 1.0.10
+                                if (newload.Warehouse == null)
+                                {
+                                    newload.Warehouse = newload.Session.GetObjectByKey<vwWarehouse>(picklist.Warehouse.WarehouseCode);
+                                }
+                                // End ver 1.0.10
 
                                 while (reader.Read())
                                 {
@@ -578,6 +585,12 @@ namespace StarLaiPortal.Module.Controllers
                                     newpack.PackingLocation = newpack.Session.GetObjectByKey<vwBin>(reader.GetString(0));
                                     newpack.Status = DocStatus.Submitted;
                                     newpack.CustomerGroup = selectedObject.CustomerGroup;
+                                    // Start ver 1.0.10
+                                    if (newpack.Warehouse == null)
+                                    {
+                                        newpack.Warehouse = newpack.Session.GetObjectByKey<vwWarehouse>(picklist.Warehouse.WarehouseCode);
+                                    }
+                                    // End ver 1.0.10
 
                                     foreach (PickListDetailsActual dtl in selectedObject.PickListDetailsActual)
                                     {

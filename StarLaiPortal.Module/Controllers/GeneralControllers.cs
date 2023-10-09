@@ -790,6 +790,12 @@ namespace StarLaiPortal.Module.Controllers
                         {
                             newload.Vehicle = newload.Session.GetObjectByKey<vwVehicle>(picklist.Vehicle.VehicleCode);
                         }
+                        // Start ver 1.0.10
+                        if (newload.Warehouse == null)
+                        {
+                            newload.Warehouse = newload.Session.GetObjectByKey<vwWarehouse>(picklist.Warehouse.WarehouseCode);
+                        }
+                        // End ver 1.0.10
 
                         while (reader.Read())
                         {
@@ -798,6 +804,12 @@ namespace StarLaiPortal.Module.Controllers
                             newpack.PackingLocation = newpack.Session.GetObjectByKey<vwBin>(reader.GetString(0));
                             newpack.Status = DocStatus.Submitted;
                             newpack.CustomerGroup = picklist.CustomerGroup;
+                            // Start ver 1.0.10
+                            if (newpack.Warehouse == null)
+                            {
+                                newpack.Warehouse = newpack.Session.GetObjectByKey<vwWarehouse>(picklist.Warehouse.WarehouseCode);
+                            }
+                            // End ver 1.0.10
 
                             foreach (PickListDetailsActual dtl in picklist.PickListDetailsActual)
                             {
