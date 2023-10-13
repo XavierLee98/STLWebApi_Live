@@ -452,7 +452,7 @@ namespace StarLaiPortal.Module.Controllers
                             }
 
                             // Start ver 1.0.10
-                            if (newdelivery.Warehouse != null)
+                            if (newdelivery.Warehouse == null)
                             {
                                 newdelivery.Warehouse = newdelivery.Session.GetObjectByKey<vwWarehouse>(dtl.Warehouse.WarehouseCode);
                             }

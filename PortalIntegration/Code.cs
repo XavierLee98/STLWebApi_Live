@@ -583,91 +583,41 @@ namespace PortalIntegration
                             bool postpayment = false;
                             bool pendingsales = false;
 
-                            foreach (SalesOrderCollectionDetails dtl in dpobj.SalesOrderCollectionDetails)
+                            // Start ver 1.0.10
+                            if (dpobj.TotalPayment <= 0)
                             {
-                                if (dtl.Sap == false)
+                                postdp = true;
+                                postpayment = true;
+                            }
+                            // End ver 1.0.10
+
+                            // Start ver 1.0.10
+                            if (postdp == false && postpayment == false)
+                            {
+                            // End ver 1.0.10
+                                foreach (SalesOrderCollectionDetails dtl in dpobj.SalesOrderCollectionDetails)
                                 {
-                                    #region Post AR Downpayment
-                                    if (!sap.oCom.InTransaction) sap.oCom.StartTransaction();
-
-                                    int tempto = 0;
-
-                                    tempto = PostDPtoSAP(dpobj, dtl.SalesOrder, ObjectSpaceProvider, sap);
-                                    if (tempto == 1)
+                                    if (dtl.Sap == false)
                                     {
-                                        if (sap.oCom.InTransaction)
-                                            sap.oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
-
-                                        dtl.Sap = true;
-                                        postdp = true;
-
-                                        dpos.CommitChanges();
-
-                                        GC.Collect();
-                                    }
-                                    else if (tempto <= 0)
-                                    {
-                                        if (sap.oCom.InTransaction)
-                                            sap.oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
-
-                                        postfail = true;
-
-                                        GC.Collect();
-                                    }
-                                    else if (tempto == 2)
-                                    {
-                                        if (sap.oCom.InTransaction)
-                                            sap.oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
-
-                                        postfail = true;
-                                        pendingsales = true;
-                                    }
-                                    #endregion
-                                }
-                                else
-                                {
-                                    postdp = true;
-                                }
-
-                                if (dtl.SapPayment == false)
-                                {
-                                    int dpdocentry = 0;
-                                    string getdpDocentry = "SELECT DocEntry FROM [" + ConfigurationManager.AppSettings["CompanyDB"].ToString() +
-                                            "]..ODPI WHERE U_PortalDocNum = '" + dpobj.DocNum + "' AND U_SoDocNumber = '" + dtl.SalesOrder + "'";
-                                    if (conn.State == ConnectionState.Open)
-                                    {
-                                        conn.Close();
-                                    }
-                                    conn.Open();
-                                    SqlCommand cmd = new SqlCommand(getdpDocentry, conn);
-                                    SqlDataReader reader = cmd.ExecuteReader();
-                                    while (reader.Read())
-                                    {
-                                        dpdocentry = reader.GetInt32(0);
-                                    }
-                                    conn.Close();
-
-                                    if (dtl.PaymentAmount > 0 && dpdocentry > 0)
-                                    {
-                                        #region Post AR Downpayment Payment
+                                        #region Post AR Downpayment
                                         if (!sap.oCom.InTransaction) sap.oCom.StartTransaction();
 
-                                        int tempardp = 0;
+                                        int tempto = 0;
 
-                                        tempardp = PostDPPaymenttoSAP(dpobj, dtl, dtl.SalesOrder, ObjectSpaceProvider, sap, dpdocentry);
-                                        if (tempardp == 1)
+                                        tempto = PostDPtoSAP(dpobj, dtl.SalesOrder, ObjectSpaceProvider, sap);
+                                        if (tempto == 1)
                                         {
                                             if (sap.oCom.InTransaction)
                                                 sap.oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
 
-                                            dtl.SapPayment = true;
-                                            postpayment = true;
+                                            dtl.Sap = true;
+                                            postdp = true;
 
                                             dpos.CommitChanges();
 
                                             GC.Collect();
                                         }
-                                        else if (tempardp <= 0)
+                                        else if (tempto <= 0)
                                         {
                                             if (sap.oCom.InTransaction)
                                                 sap.oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
@@ -676,18 +626,83 @@ namespace PortalIntegration
 
                                             GC.Collect();
                                         }
+                                        else if (tempto == 2)
+                                        {
+                                            if (sap.oCom.InTransaction)
+                                                sap.oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+
+                                            postfail = true;
+                                            pendingsales = true;
+                                        }
                                         #endregion
+                                    }
+                                    else
+                                    {
+                                        postdp = true;
+                                    }
+
+                                    if (dtl.SapPayment == false)
+                                    {
+                                        int dpdocentry = 0;
+                                        string getdpDocentry = "SELECT DocEntry FROM [" + ConfigurationManager.AppSettings["CompanyDB"].ToString() +
+                                                "]..ODPI WHERE U_PortalDocNum = '" + dpobj.DocNum + "' AND U_SoDocNumber = '" + dtl.SalesOrder + "'";
+                                        if (conn.State == ConnectionState.Open)
+                                        {
+                                            conn.Close();
+                                        }
+                                        conn.Open();
+                                        SqlCommand cmd = new SqlCommand(getdpDocentry, conn);
+                                        SqlDataReader reader = cmd.ExecuteReader();
+                                        while (reader.Read())
+                                        {
+                                            dpdocentry = reader.GetInt32(0);
+                                        }
+                                        conn.Close();
+
+                                        if (dtl.PaymentAmount > 0 && dpdocentry > 0)
+                                        {
+                                            #region Post AR Downpayment Payment
+                                            if (!sap.oCom.InTransaction) sap.oCom.StartTransaction();
+
+                                            int tempardp = 0;
+
+                                            tempardp = PostDPPaymenttoSAP(dpobj, dtl, dtl.SalesOrder, ObjectSpaceProvider, sap, dpdocentry);
+                                            if (tempardp == 1)
+                                            {
+                                                if (sap.oCom.InTransaction)
+                                                    sap.oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
+
+                                                dtl.SapPayment = true;
+                                                postpayment = true;
+
+                                                dpos.CommitChanges();
+
+                                                GC.Collect();
+                                            }
+                                            else if (tempardp <= 0)
+                                            {
+                                                if (sap.oCom.InTransaction)
+                                                    sap.oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+
+                                                postfail = true;
+
+                                                GC.Collect();
+                                            }
+                                            #endregion
+                                        }
+                                        else
+                                        {
+                                            postpayment = true;
+                                        }
                                     }
                                     else
                                     {
                                         postpayment = true;
                                     }
                                 }
-                                else
-                                {
-                                    postpayment = true;
-                                }
+                            // Start ver 1.0.10
                             }
+                            // End ver 1.0.10
 
                             if (postfail == false && postdp == true && postpayment == true)
                             {
@@ -1021,7 +1036,7 @@ namespace PortalIntegration
                                     if (dtl.BaseDoc != sonum)
                                     {
                                         string getdoDocentry = "SELECT DocNum FROM [" +
-                                            ConfigurationManager.AppSettings["CompanyDB"].ToString() + "]..RCT2 WHERE DocEntry = "
+                                            ConfigurationManager.AppSettings["CompanyDB"].ToString() + "]..RCT2 WHERE InvType = 203 AND DocEntry = "
                                             + dtl.BaseDoc;
                                         if (conn.State == ConnectionState.Open)
                                         {
@@ -3135,9 +3150,9 @@ namespace PortalIntegration
                                     {
                                         countchar++;
                                     }
-                                    if (countchar >= 26)
+                                    if (countchar >= 25)
                                     {
-                                        oDoc.TransferReference = oTargetDoc.ReferenceNum.Substring(1, 26).ToString();
+                                        oDoc.TransferReference = oTargetDoc.ReferenceNum.Substring(1, 25).ToString();
                                     }
                                     else
                                     {

@@ -41,6 +41,7 @@ using static DevExpress.XtraPrinting.Native.ExportOptionsPropertiesNames;
 // 2023-08-25 add picklistactual validation ver 1.0.9
 // 2023-04-09 fix speed issue ver 1.0.8.1
 // 2023-09-25 copy warehouse ver 1.0.10
+// 2023-10-11 fix multi tab issue ver 1.0.10
 
 namespace StarLaiPortal.Module.Web.Controllers
 {
@@ -91,7 +92,24 @@ namespace StarLaiPortal.Module.Web.Controllers
             {
                 SalesQuotation CurrObject = (SalesQuotation)args.CurrentObject;
 
-                base.Save(args);
+                // Start ver 1.0.10
+                IObjectSpace sq = Application.CreateObjectSpace();
+                SalesQuotation sqtrx = sq.FindObject<SalesQuotation>(new BinaryOperator("Oid", CurrObject.Oid));
+
+                if (sqtrx.AppStatus == ApprovalStatusType.Not_Applicable && sqtrx.Status == DocStatus.Submitted)
+                {
+                    genCon.showMsg("Error", "The object you are trying to save was changed by other user, please close the tab and reopen again.", InformationType.Error);
+                    return;
+                }
+
+                if (sqtrx.AppStatus == ApprovalStatusType.Approved && sqtrx.Status == DocStatus.Submitted)
+                {
+                    genCon.showMsg("Error", "The object you are trying to save was changed by other user, please close the tab and reopen again.", InformationType.Error);
+                    return;
+                }
+                // End ver 1.0.10
+
+                    base.Save(args);
                 if (CurrObject.DocNum == null)
                 {
                     string docprefix = genCon.GetDocPrefix();
