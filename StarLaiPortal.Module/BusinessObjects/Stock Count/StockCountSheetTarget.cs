@@ -6,30 +6,30 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
+using DevExpress.Web;
 using DevExpress.Xpo;
+using StarLaiPortal.Module.BusinessObjects.Sales_Quotation;
 using StarLaiPortal.Module.BusinessObjects.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 
-// 2023-08-25 - export and import function - ver 1.0.9
-// 2023-10-16 - add legacyitemcode - ver 1.0.11
-
-namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
+namespace StarLaiPortal.Module.BusinessObjects.Stock_Count
 {
     [DefaultClassOptions]
     //[Appearance("HideNew", AppearanceItemType.Action, "True", TargetItems = "New", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     //[Appearance("HideDelete", AppearanceItemType.Action, "True", TargetItems = "Delete", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("LinkDoc", AppearanceItemType = "Action", TargetItems = "Link", Context = "ListView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     [Appearance("UnlinkDoc", AppearanceItemType = "Action", TargetItems = "Unlink", Context = "ListView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
-    [XafDisplayName("Warehouse Transfer Request Details")]
-    public class WarehouseTransferReqDetails : XPObject
+    [XafDisplayName("Stock Count Sheet Target")]
+    public class StockCountSheetTarget : XPObject
     { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument113146.aspx).
         // Use CodeRush to create XPO classes and properties with a few keystrokes.
         // https://docs.devexpress.com/CodeRushForRoslyn/118557
-        public WarehouseTransferReqDetails(Session session)
+        public StockCountSheetTarget(Session session)
             : base(session)
         {
         }
@@ -102,13 +102,12 @@ namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
         [ImmediatePostData]
         [NoForeignKey]
         [LookupEditorMode(LookupEditorMode.AllItems)]
-        [XafDisplayName("ItemCode")]
+        [XafDisplayName("Item Code")]
         [DataSourceCriteria("frozenFor = 'N'")]
         [Index(0), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        [Appearance("ItemCode", Enabled = false, Criteria ="Not IsNew")]
+        [Appearance("ItemCode", Enabled = false, Criteria = "not IsNew")]
         [RuleRequiredField(DefaultContexts.Save)]
         public vwItemMasters ItemCode
-
         {
             get { return _ItemCode; }
             set
@@ -116,36 +115,17 @@ namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
                 SetPropertyValue("ItemCode", ref _ItemCode, value);
                 if (!IsLoading && value != null)
                 {
-                    // Start ver 1.0.9
-                    if (this.FromWarehouse != null)
-                    {
-                        FromBin = Session.FindObject<vwBinStockBalance>(CriteriaOperator.Parse("BinAbs = ? and ItemCode = ? and Warehouse = ?",
-                            FromWarehouse.DftBinAbs, ItemCode.ItemCode, FromWarehouse.WarehouseCode));
-                    }
-                    // End ver 1.0.9
-
                     ItemDesc = ItemCode.ItemName;
-                    // Start ver 1.0.11
                     LegacyItemCode = ItemCode.LegacyItemCode;
-                    // End ver 1.0.11
-                    CatalogNo = ItemCode.CatalogNo;
-                    UOM = ItemCode.UOM;
-
-
                 }
                 else if (!IsLoading && value == null)
                 {
                     ItemDesc = null;
-                    // Start ver 1.0.11
                     LegacyItemCode = null;
-                    // End ver 1.0.11
-                    CatalogNo = null;
-                    UOM = null;
                 }
             }
         }
 
-        // Start ver 1.0.11
         private string _LegacyItemCode;
         [XafDisplayName("Legacy Item Code")]
         [Index(2), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
@@ -158,7 +138,6 @@ namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
                 SetPropertyValue("LegacyItemCode", ref _LegacyItemCode, value);
             }
         }
-        // End ver 1.0.11
 
         private string _ItemDesc;
         [RuleRequiredField(DefaultContexts.Save)]
@@ -174,60 +153,38 @@ namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
             }
         }
 
-        private string _UOM;
-        [XafDisplayName("UOM Group")]
-        [Appearance("UOM", Enabled = false)]
-        [Index(5), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        public string UOM
-        {
-            get { return _UOM; }
-            set
-            {
-                SetPropertyValue("UOM", ref _UOM, value);
-            }
-        }
-
-        private string _CatalogNo;
-        [XafDisplayName("Catalog No")]
-        [Appearance("CatalogNo", Enabled = false)]
-        [Index(8), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        public string CatalogNo
-        {
-            get { return _CatalogNo; }
-            set
-            {
-                SetPropertyValue("CatalogNo", ref _CatalogNo, value);
-            }
-        }
-
-        private vwBinStockBalance _FromBin;
-        [NoForeignKey]
-        [LookupEditorMode(LookupEditorMode.AllItems)]
-        [XafDisplayName("From Bin")]
-        [DataSourceCriteria("Warehouse = '@this.FromWarehouse.WarehouseCode' and ItemCode = '@this.ItemCode.ItemCode'")]
-        [Index(10), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        public vwBinStockBalance FromBin
-        {
-            get { return _FromBin; }
-            set
-            {
-                SetPropertyValue("FromBin", ref _FromBin, value);
-            }
-        }
-
-        private vwBin _ToBin;
+        private vwWarehouse _Warehouse;
         [NoForeignKey]
         [ImmediatePostData]
-        [LookupEditorMode(LookupEditorMode.AllItems)]
-        [XafDisplayName("To Bin")]
-        [DataSourceCriteria("Warehouse = '@this.ToWarehouse.WarehouseCode'")]
-        [Index(13), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        public vwBin ToBin
+        [RuleRequiredField(DefaultContexts.Save)]
+        [XafDisplayName("Warehouse")]
+        [Appearance("Warehouse", Enabled = false)]
+        [Index(5), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public vwWarehouse Warehouse
         {
-            get { return _ToBin; }
+            get { return _Warehouse; }
             set
             {
-                SetPropertyValue("ToBin", ref _ToBin, value);
+                SetPropertyValue("Warehouse", ref _Warehouse, value);
+                if (!IsLoading && value != null)
+                {
+                    Bin = Session.FindObject<vwBin>(CriteriaOperator.Parse("AbsEntry = ?", Warehouse.DftBinAbs));
+                }
+            }
+        }
+
+        private vwBin _Bin;
+        [NoForeignKey]
+        [XafDisplayName("Bin")]
+        [LookupEditorMode(LookupEditorMode.AllItems)]
+        [DataSourceCriteria("Warehouse = '@this.Warehouse.WarehouseCode'")]
+        [Index(8), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        public vwBin Bin
+        {
+            get { return _Bin; }
+            set
+            {
+                SetPropertyValue("Bin", ref _Bin, value);
             }
         }
 
@@ -237,61 +194,13 @@ namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
         [ModelDefault("DisplayFormat", "{0:N0}")]
         [ModelDefault("EditMask", "d")]
         [XafDisplayName("Quantity")]
-        [Index(15), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [Index(10), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         public decimal Quantity
         {
             get { return _Quantity; }
             set
             {
                 SetPropertyValue("Quantity", ref _Quantity, value);
-            }
-        }
-
-        private vwWarehouse _FromWarehouse;
-        [NoForeignKey]
-        [ImmediatePostData]
-        [LookupEditorMode(LookupEditorMode.AllItems)]
-        // Start ver 1.0.9
-        //[RuleRequiredField(DefaultContexts.Save)]
-        // End ver 1.0.9
-        [XafDisplayName("From Warehouse")]
-        [Index(10), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
-        public vwWarehouse FromWarehouse
-        {
-            get { return _FromWarehouse; }
-            set
-            {
-                SetPropertyValue("FromWarehouse", ref _FromWarehouse, value);
-                if (!IsLoading && value != null)
-                {
-                    if (ItemCode != null)
-                    {
-                        FromBin = Session.FindObject<vwBinStockBalance>(CriteriaOperator.Parse("BinAbs = ? and ItemCode = ? and Warehouse = ?", 
-                            FromWarehouse.DftBinAbs, ItemCode.ItemCode, FromWarehouse.WarehouseCode));
-                    }
-                }
-            }
-        }
-
-        private vwWarehouse _ToWarehouse;
-        [NoForeignKey]
-        [ImmediatePostData]
-        [LookupEditorMode(LookupEditorMode.AllItems)]
-        // Start ver 1.0.9
-        //[RuleRequiredField(DefaultContexts.Save)]
-        // End ver 1.0.9
-        [XafDisplayName("To Warehouse")]
-        [Index(13), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
-        public vwWarehouse ToWarehouse
-        {
-            get { return _ToWarehouse; }
-            set
-            {
-                SetPropertyValue("ToWarehouse", ref _ToWarehouse, value);
-                if (!IsLoading && value != null)
-                {
-                    ToBin = Session.FindObject<vwBin>(CriteriaOperator.Parse("AbsEntry = ?", ToWarehouse.DftBinAbs));
-                }
             }
         }
 
@@ -302,14 +211,14 @@ namespace StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer
             { return Session.IsNewObject(this); }
         }
 
-        private WarehouseTransferReq _WarehouseTransferReq;
-        [Association("WarehouseTransferReq-WarehouseTransferReqDetails")]
+        private StockCountSheet _StockCountSheet;
+        [Association("StockCountSheet-StockCountSheetTarget")]
         [Index(99), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
-        [Appearance("WarehouseTransferReq", Enabled = false)]
-        public WarehouseTransferReq WarehouseTransferReq
+        [Appearance("StockCountSheet", Enabled = false)]
+        public StockCountSheet StockCountSheet
         {
-            get { return _WarehouseTransferReq; }
-            set { SetPropertyValue("WarehouseTransferReq", ref _WarehouseTransferReq, value); }
+            get { return _StockCountSheet; }
+            set { SetPropertyValue("StockCountSheet", ref _StockCountSheet, value); }
         }
 
         protected override void OnSaving()

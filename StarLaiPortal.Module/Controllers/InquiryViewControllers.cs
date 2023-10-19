@@ -25,8 +25,10 @@ using System.Web.UI.WebControls;
 using DevExpress.Xpo.DB;
 using DevExpress.ExpressApp.Web.Templates;
 using DevExpress.ExpressApp.Web;
+using StarLaiPortal.Module.BusinessObjects.Sales_Order;
 
-// 2023-09-14 - add filter into inquiry - ver 1.0.9 
+// 2023-09-14 - add filter into inquiry - ver 1.0.9
+// 2023-10-16 - sales order inquiry add "All" option for filter and view button - ver 1.0.11
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -55,6 +57,9 @@ namespace StarLaiPortal.Module.Controllers
             this.InquiryDateTo.Active.SetItemValue("Enabled", false);
             this.InquiryFilter.Active.SetItemValue("Enabled", false);
             // End ver 1.0.9
+            // Start ver 1.0.11
+            this.ViewSalesOrderInquiry.Active.SetItemValue("Enabled", false);
+            // End ver 1.0.11
 
             if (typeof(vwInquiryOpenPickList).IsAssignableFrom(View.ObjectTypeInfo.Type))
             {
@@ -88,10 +93,16 @@ namespace StarLaiPortal.Module.Controllers
             {
                 if (View.ObjectTypeInfo.Type == typeof(vwInquirySalesOrder))
                 {
+                    this.ViewSalesOrderInquiry.Active.SetItemValue("Enabled", true);
+                    this.ViewSalesOrderInquiry.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;
+
                     if (View.Id == "vwInquirySalesOrder_ListView")
                     {
                         InquiryStatus.Items.Clear();
 
+                        // Start ver 1.0.11
+                        InquiryStatus.Items.Add(new ChoiceActionItem("All", "All"));
+                        // End ver 1.0.11
                         InquiryStatus.Items.Add(new ChoiceActionItem("Open", "Open"));
                         InquiryStatus.Items.Add(new ChoiceActionItem("Draft", "Draft"));
                         InquiryStatus.Items.Add(new ChoiceActionItem("Submitted", "Submitted"));
@@ -100,7 +111,7 @@ namespace StarLaiPortal.Module.Controllers
                         InquiryStatus.Items.Add(new ChoiceActionItem("Posted", "Posted"));
                         InquiryStatus.Items.Add(new ChoiceActionItem("Pending Post", "Pending Post"));
 
-                        InquiryStatus.SelectedIndex = 0;
+                        InquiryStatus.SelectedIndex = 1;
 
                         this.InquiryStatus.Active.SetItemValue("Enabled", true);
                         InquiryStatus.PaintStyle = DevExpress.ExpressApp.Templates.ActionItemPaintStyle.Caption;
@@ -116,9 +127,21 @@ namespace StarLaiPortal.Module.Controllers
                         this.InquiryDateTo.CustomizeControl += DateActionTo_CustomizeControl;
                         this.InquiryFilter.Active.SetItemValue("Enabled", true);
 
-                        ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
-                        "and DocDate >= ? and DocDate <= ?",
-                        InquiryStatus.SelectedItem.Id, InquiryDateFrom.Value, InquiryDateTo.Value);
+                        // Start ver 1.0.11
+                        if (InquiryStatus.SelectedItem.Id != "All")
+                        {
+                            // End ver 1.0.11
+                            ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+                            "and DocDate >= ? and DocDate <= ?",
+                            InquiryStatus.SelectedItem.Id, InquiryDateFrom.Value, InquiryDateTo.Value);
+                        // Start ver 1.0.11
+                        }
+                        else
+                        {
+                            ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("DocDate >= ? and DocDate <= ?",
+                                InquiryDateFrom.Value, InquiryDateTo.Value);
+                        }
+                        // End ver 1.0.11
                     }
                 }
             }
@@ -328,9 +351,21 @@ namespace StarLaiPortal.Module.Controllers
         // Start ver 1.0.9
         private void InquiryStatus_Execute(object sender, SingleChoiceActionExecuteEventArgs e)
         {
-            ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
-                "and DocDate >= ? and DocDate <= ?",
-                InquiryStatus.SelectedItem.Id, Fromdate, Todate);
+            // Start ver 1.0.11
+            if (InquiryStatus.SelectedItem.Id != "All")
+            {
+            // End ver 1.0.11
+                ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+                    "and DocDate >= ? and DocDate <= ?",
+                    InquiryStatus.SelectedItem.Id, Fromdate, Todate);
+            // Start ver 1.0.11
+            }
+            else
+            {
+                ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("DocDate >= ? and DocDate <= ?",
+                    Fromdate, Todate);
+            }
+            // End ver 1.0.11
         }
 
         private void InquiryDateFrom_Execute(object sender, ParametrizedActionExecuteEventArgs e)
@@ -349,10 +384,48 @@ namespace StarLaiPortal.Module.Controllers
 
         private void InquiryFilter_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
-            ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
+            // Start ver 1.0.11
+            if (InquiryStatus.SelectedItem.Id != "All")
+            {
+            // End ver 1.0.11
+                ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("[Status] = ? " +
                 "and DocDate >= ? and DocDate <= ?",
                 InquiryStatus.SelectedItem.Id, Fromdate, Todate);
+            // Start ver 1.0.11
+            }
+            else
+            {
+                ((ListView)View).CollectionSource.Criteria["Filter1"] = CriteriaOperator.Parse("DocDate >= ? and DocDate <= ?",
+                    Fromdate, Todate);
+            }
+            // End ver 1.0.11
         }
         // End ver 1.0.9
+
+        // Start ver 1.0.11
+        private void ViewSalesOrderInquiry_Execute(object sender, PopupWindowShowActionExecuteEventArgs e)
+        {
+            vwInquirySalesOrder selectedObject = (vwInquirySalesOrder)e.CurrentObject;
+
+            IObjectSpace os = Application.CreateObjectSpace();
+            SalesOrder trx = os.FindObject<SalesOrder>(new BinaryOperator("DocNum", selectedObject.PortalNo));
+            openNewView(os, trx, ViewEditMode.View);
+        }
+
+        private void ViewSalesOrderInquiry_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
+        {
+            vwInquirySalesOrder selectedObject = (vwInquirySalesOrder)View.CurrentObject;
+
+            IObjectSpace os = Application.CreateObjectSpace();
+            SalesOrder trx = os.FindObject<SalesOrder>(new BinaryOperator("DocNum", selectedObject.PortalNo));
+
+            DetailView detailView = Application.CreateDetailView(os, "SalesOrder_DetailView_Dashboard", true, trx);
+            detailView.ViewEditMode = DevExpress.ExpressApp.Editors.ViewEditMode.View;
+            e.View = detailView;
+            e.DialogController.AcceptAction.Caption = "Go To Document";
+            e.Maximized = true;
+            //e.DialogController.CancelAction.Active["NothingToCancel"] = false;
+        }
+        // End ver 1.0.11
     }
 }

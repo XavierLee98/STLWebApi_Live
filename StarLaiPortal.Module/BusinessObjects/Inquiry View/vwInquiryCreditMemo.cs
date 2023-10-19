@@ -14,6 +14,8 @@ using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 
+// 2023-10-16 - add row total and doc total - ver 1.0.11
+
 namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
 {
     [XafDisplayName("A/R Credit Memo Inquiry")]
@@ -267,5 +269,27 @@ namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
         {
             get; set;
         }
+
+        // Start ver 1.0.11
+        [XafDisplayName("Row Total")]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [Appearance("RowTotal", Enabled = false)]
+        [Index(68)]
+        public decimal RowTotal
+        {
+            get; set;
+        }
+
+        [XafDisplayName("Doc. Total")]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [Appearance("DocTotal", Enabled = false)]
+        [Index(70)]
+        public decimal DocTotal
+        {
+            get; set;
+        }
+        // End ver 1.0.11
     }
 }

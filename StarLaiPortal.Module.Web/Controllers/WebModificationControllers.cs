@@ -96,16 +96,19 @@ namespace StarLaiPortal.Module.Web.Controllers
                 IObjectSpace sq = Application.CreateObjectSpace();
                 SalesQuotation sqtrx = sq.FindObject<SalesQuotation>(new BinaryOperator("Oid", CurrObject.Oid));
 
-                if (sqtrx.AppStatus == ApprovalStatusType.Not_Applicable && sqtrx.Status == DocStatus.Submitted)
+                if (sqtrx != null)
                 {
-                    genCon.showMsg("Error", "The object you are trying to save was changed by other user, please close the tab and reopen again.", InformationType.Error);
-                    return;
-                }
+                    if (sqtrx.AppStatus == ApprovalStatusType.Not_Applicable && sqtrx.Status == DocStatus.Submitted)
+                    {
+                        genCon.showMsg("Error", "The object you are trying to save was changed by other user, please close the tab and reopen again.", InformationType.Error);
+                        return;
+                    }
 
-                if (sqtrx.AppStatus == ApprovalStatusType.Approved && sqtrx.Status == DocStatus.Submitted)
-                {
-                    genCon.showMsg("Error", "The object you are trying to save was changed by other user, please close the tab and reopen again.", InformationType.Error);
-                    return;
+                    if (sqtrx.AppStatus == ApprovalStatusType.Approved && sqtrx.Status == DocStatus.Submitted)
+                    {
+                        genCon.showMsg("Error", "The object you are trying to save was changed by other user, please close the tab and reopen again.", InformationType.Error);
+                        return;
+                    }
                 }
                 // End ver 1.0.10
 

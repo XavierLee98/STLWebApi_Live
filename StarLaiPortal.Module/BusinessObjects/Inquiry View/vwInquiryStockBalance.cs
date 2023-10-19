@@ -13,6 +13,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+// 2023-10-16 - add available - ver 1.0.11
+
 namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
 {
     [DefaultClassOptions]
@@ -134,5 +136,17 @@ namespace StarLaiPortal.Module.BusinessObjects.Inquiry_View
         {
             get; set;
         }
+
+        // Start ver 1.0.11
+        [XafDisplayName("Available")]
+        [DbType("numeric(18,6)")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [Appearance("Available", Enabled = false)]
+        [Index(25)]
+        public decimal Available
+        {
+            get; set;
+        }
+        // End ver 1.0.11
     }
 }

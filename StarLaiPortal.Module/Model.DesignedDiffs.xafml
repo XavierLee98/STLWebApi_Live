@@ -225,6 +225,9 @@
           <Item Id="StockAdjustmentReqAttachment_ListView" Removed="True" />
           <Item Id="StockAdjustmentReqDetails_ListView" Removed="True" />
           <Item Id="StockAdjustmentReqDocTrail_ListView" Removed="True" />
+          <Item Id="StockCountSheetCounted_ListView" Removed="True" />
+          <Item Id="StockCountSheetDocTrail_ListView" Removed="True" />
+          <Item Id="StockCountSheetTarget_ListView" Removed="True" />
           <Item Id="vwASN_ListView" Removed="True" />
           <Item Id="vwASNDetails_ListView" Removed="True" />
           <Item Id="vwDownpaymentINV_ListView" Removed="True" />
@@ -360,6 +363,12 @@
           <Item Id="vwInquiryStockAdjustmentDetails_ListView" Index="3" />
         </Items>
       </Item>
+      <Item Id="Stock Count">
+        <Items>
+          <Item Id="StockCountSheet_ListView" Index="0" />
+          <Item Id="StockCountConfirm_ListView" Index="1" />
+        </Items>
+      </Item>
     </Items>
   </NavigationItems>
   <Options>
@@ -425,7 +434,13 @@
     <ListView Id="Approvals_ListView" DataAccessMode="Client" />
     <DetailView Id="ApprovalUsers_DetailView" AllowEdit="False" />
     <ListView Id="ARDownpaymentCancel_ARDownpaymentCancelDetails_ListView" AllowEdit="True" />
-    <ListView Id="ARDownpaymentCancel_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="ARDownpaymentCancel_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <DetailView Id="ARDownpaymentCancel_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -749,7 +764,13 @@
       </Layout>
     </DetailView>
     <DetailView Id="AuditDataItemPersistent_DetailView" AllowEdit="False" />
-    <ListView Id="BundleType_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="BundleType_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="BundleType_ListView" DataAccessMode="Client" />
     <DetailView Id="Dashboards_DetailView" AllowEdit="False" />
     <ListView Id="Dashboards_ListView" IsGroupPanelVisible="True" ShowAutoFilterRow="False" DataAccessMode="Client">
@@ -831,7 +852,13 @@
         <ColumnInfo Id="Department" SortOrder="Ascending" GroupIndex="0" Index="14" />
       </Columns>
     </ListView>
-    <ListView Id="DeliveryOrder_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="DeliveryOrder_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="DeliveryOrder_DeliveryOrderDetails_ListView" AllowEdit="True" />
     <DetailView Id="DeliveryOrder_DetailView">
       <Layout>
@@ -950,7 +977,13 @@
       </Layout>
     </DetailView>
     <ListView Id="DeliveryOrderDetails_ListView" AllowEdit="False" />
-    <ListView Id="DiscrepancyReason_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="DiscrepancyReason_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="DiscrepancyReason_ListView" DataAccessMode="Client" />
     <ListView Id="DocTypes_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
@@ -1355,7 +1388,13 @@
         <ColumnInfo Id="Method" PropertyName="Method" Index="11" IsNewNode="True" />
       </Columns>
     </ListView>
-    <ListView Id="ItemInquiryDefault_AuditTrail_ListView" AllowDelete="False" AllowEdit="True" AllowLink="False" AllowNew="False" />
+    <ListView Id="ItemInquiryDefault_AuditTrail_ListView" AllowDelete="False" AllowEdit="True" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="ItemInquiryDefault_ListView" DataAccessMode="Client" />
     <DetailView Id="ItemInquiryDetails_DetailView" AllowEdit="False" DefaultFocusedItem="">
       <Items>
@@ -1450,8 +1489,8 @@
         <ColumnInfo Id="PropertyName" Index="-1" />
         <ColumnInfo Id="UserName" SortIndex="-1" SortOrder="None" />
         <ColumnInfo Id="ModifiedOn" SortIndex="0" SortOrder="Descending" />
-        <ColumnInfo Id="NewValue" Index="3" />
-        <ColumnInfo Id="OldValue" Index="4" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
       </Columns>
     </ListView>
     <DetailView Id="Load_DetailView">
@@ -1650,7 +1689,13 @@
       </Layout>
     </DetailView>
     <ListView Id="PackList_ListView" DataAccessMode="Client" />
-    <ListView Id="PaymentType_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="PaymentType_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="PaymentType_ListView" DataAccessMode="Client" />
     <DetailView Id="PermissionPolicyRole_DetailView" AllowDelete="True" />
     <ListView Id="PermissionPolicyUser_Roles_ListView" AllowDelete="False" AllowUnlink="True" />
@@ -1876,7 +1921,13 @@
         <ColumnInfo Id="ItemCode" Width="202" />
       </Columns>
     </ListView>
-    <ListView Id="PriorityType_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="PriorityType_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="PriorityType_ListView" FreezeColumnIndices="False" DataAccessMode="Client" />
     <DetailView Id="PurchaseOrderDetails_DetailView">
       <Layout>
@@ -3426,7 +3477,13 @@
       </Layout>
     </DetailView>
     <ListView Id="SalesRefundReqDetails_ListView" AllowEdit="False" />
-    <ListView Id="SalesRefundRequests_AuditTrail_ListView" AllowDelete="False" AllowEdit="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="SalesRefundRequests_AuditTrail_ListView" AllowDelete="False" AllowEdit="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <DetailView Id="SalesRefundRequests_DetailView">
       <Items>
         <ActionContainerViewItem Id="SFR Inquiry Item" ActionContainer="ListView" Caption="SFR Inquiry Item" Orientation="Vertical" IsNewNode="True" />
@@ -3655,7 +3712,13 @@
       </Columns>
     </ListView>
     <ListView Id="SalesRefundRequests_SalesRefundReqDetails_ListView" AllowEdit="True" />
-    <ListView Id="SalesRefunds_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="SalesRefunds_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <DetailView Id="SalesRefunds_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -4258,9 +4321,21 @@
       </Columns>
     </ListView>
     <ListView Id="SalesReturns_SalesReturnDetails_ListView" AllowEdit="True" />
-    <ListView Id="Series_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="Series_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="Series_ListView" DataAccessMode="Client" />
-    <ListView Id="StaffInfo_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="StaffInfo_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="StaffInfo_ListView" DataAccessMode="Client" />
     <DetailView Id="StockAdjustmentDetails_DetailView">
       <Layout>
@@ -4312,7 +4387,13 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <ListView Id="StockAdjustmentRequests_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="StockAdjustmentRequests_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <DetailView Id="StockAdjustmentRequests_DetailView">
       <Items>
         <ActionContainerViewItem Id="SAR Inquiry Item" ActionContainer="ListView" Caption="SAR Inquiry Item" Orientation="Vertical" IsNewNode="True" />
@@ -4512,7 +4593,13 @@
       </Columns>
     </ListView>
     <ListView Id="StockAdjustmentRequests_StockAdjustmentReqDetails_ListView" AllowEdit="True" />
-    <ListView Id="StockAdjustments_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="StockAdjustments_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <DetailView Id="StockAdjustments_DetailView_Dashboard" CaptionColon=":" EnableCaptionColon="True" CaptionLocation="Default" CaptionHorizontalAlignment="Default" CaptionVerticalAlignment="Default" CaptionWordWrap="Default" EnableLayoutGroupImages="True" RequiredFieldMark="*" ClassName="StarLaiPortal.Module.BusinessObjects.Stock_Adjustment.StockAdjustments" IsNewNode="True">
       <Items IsNewNode="True">
         <PropertyEditor Id="AdjDate" PropertyName="AdjDate" IsNewNode="True" />
@@ -4570,7 +4657,168 @@
     </DetailView>
     <ListView Id="StockAdjustments_ListView" DataAccessMode="Client" />
     <ListView Id="StockAdjustments_StockAdjustmentDetails_ListView" AllowEdit="True" />
-    <ListView Id="Transporter_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="StockCountConfirm_AuditTrail_ListView">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
+    <DetailView Id="StockCountConfirm_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="19.277108433734941">
+            <LayoutGroup Id="StockCountConfirm_col1" ShowCaption="False" Index="0" RelativeSize="49.939540507859732" IsNewNode="True">
+              <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="37.5" IsNewNode="True" />
+              <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="1" RelativeSize="27.083333333333332" IsNewNode="True" />
+              <LayoutItem Id="StockCountDate" ViewItem="StockCountDate" Index="2" RelativeSize="35.416666666666664" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountConfirm_col2" ShowCaption="False" Index="1" RelativeSize="50.060459492140268" IsNewNode="True">
+              <LayoutItem Id="Status" ViewItem="Status" Index="0" RelativeSize="37.5" IsNewNode="True" />
+              <LayoutItem Id="Remarks" ViewItem="Remarks" Index="1" RelativeSize="62.5" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountConfirm" Removed="True" />
+          </LayoutGroup>
+          <TabbedGroup Id="Tabs" RelativeSize="80.722891566265062">
+            <LayoutGroup Id="StockCountConfirmDetails" RelativeSize="100">
+              <LayoutItem Id="StockCountConfirmDetails" RelativeSize="100" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountConfirmDocTrail" RelativeSize="100">
+              <LayoutItem Id="StockCountConfirmDocTrail" RelativeSize="100" />
+            </LayoutGroup>
+            <LayoutGroup Id="AuditTrail" RelativeSize="100">
+              <LayoutItem Id="AuditTrail" RelativeSize="100" />
+            </LayoutGroup>
+          </TabbedGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="StockCountConfirm_StockCountConfirmDetails_ListView" AllowEdit="True" />
+    <DetailView Id="StockCountConfirmDetails_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="100">
+            <LayoutGroup Id="StockCountConfirmDetails_col1" ShowCaption="False" Index="0" RelativeSize="49.939540507859732" IsNewNode="True">
+              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="7.2289156626506026" IsNewNode="True" />
+              <LayoutItem Id="LegacyItemCode" ViewItem="LegacyItemCode" Index="1" RelativeSize="5.2208835341365463" IsNewNode="True" />
+              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="2" RelativeSize="87.550200803212846" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountConfirmDetails_col2" ShowCaption="False" Index="1" RelativeSize="50.060459492140268" IsNewNode="True">
+              <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="0" RelativeSize="7.2289156626506026" IsNewNode="True" />
+              <LayoutItem Id="Bin" ViewItem="Bin" Index="1" RelativeSize="5.2208835341365463" IsNewNode="True" />
+              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="2" RelativeSize="87.550200803212846" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountConfirmDetails" Removed="True" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="StockCountSheet_AuditTrail_ListView">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
+    <DetailView Id="StockCountSheet_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="24.497991967871485" Direction="Horizontal">
+            <LayoutGroup Id="StockCountSheet_col1" ShowCaption="False" Index="0" RelativeSize="49.930651872399444" IsNewNode="True">
+              <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="29.508196721311474" IsNewNode="True" />
+              <LayoutItem Id="Counter" ViewItem="Counter" Index="1" RelativeSize="21.311475409836067" IsNewNode="True" />
+              <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="2" RelativeSize="21.311475409836067" IsNewNode="True" />
+              <LayoutItem Id="Counted" ViewItem="Counted" Index="3" RelativeSize="27.868852459016395" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountSheet_col2" ShowCaption="False" Index="1" RelativeSize="50.069348127600556" IsNewNode="True">
+              <LayoutItem Id="StockCountDate" ViewItem="StockCountDate" Index="0" RelativeSize="29.508196721311474" IsNewNode="True" />
+              <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="21.311475409836067" IsNewNode="True" />
+              <LayoutItem Id="Round" ViewItem="Round" Index="2" RelativeSize="21.311475409836067" IsNewNode="True" />
+              <LayoutItem Id="Reference" ViewItem="Reference" Index="3" RelativeSize="27.868852459016395" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountSheet" RelativeSize="100" Removed="True">
+              <LayoutGroup Id="StockCountSheet_col1" RelativeSize="49.928057553956833">
+                <LayoutItem Id="Remarks" ViewItem="Remarks" Index="4" RelativeSize="24" IsNewNode="True" />
+                <LayoutItem Id="Counted" RelativeSize="17.333333333333332" />
+                <LayoutItem Id="Counter" RelativeSize="17.333333333333332" />
+                <LayoutItem Id="DocNum" RelativeSize="24" />
+                <LayoutItem Id="StockCountDate" Removed="True" />
+                <LayoutItem Id="Warehouse" RelativeSize="17.333333333333332" />
+              </LayoutGroup>
+              <LayoutGroup Id="StockCountSheet_col2" RelativeSize="50.071942446043167">
+                <LayoutItem Id="StockCountDate" ViewItem="StockCountDate" Index="0" RelativeSize="24" IsNewNode="True" />
+                <LayoutItem Id="Status" Index="1" RelativeSize="17.333333333333332" />
+                <LayoutItem Id="Reference" Index="2" RelativeSize="17.333333333333332" />
+                <LayoutItem Id="Remarks" Index="3" RelativeSize="17.333333333333332" Removed="True" />
+                <LayoutItem Id="Round" Index="3" RelativeSize="41.333333333333336" />
+              </LayoutGroup>
+            </LayoutGroup>
+          </LayoutGroup>
+          <LayoutItem Id="Remarks" ViewItem="Remarks" Index="1" RelativeSize="5.2208835341365463" IsNewNode="True" />
+          <TabbedGroup Id="Tabs" RelativeSize="70.281124497991968" Index="2">
+            <LayoutGroup Id="StockCountSheetTarget" RelativeSize="100">
+              <LayoutItem Id="StockCountSheetTarget" RelativeSize="100" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountSheetCounted" RelativeSize="100">
+              <LayoutItem Id="StockCountSheetCounted" RelativeSize="100" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountSheetDocTrail" RelativeSize="100">
+              <LayoutItem Id="StockCountSheetDocTrail" RelativeSize="100" />
+            </LayoutGroup>
+            <LayoutGroup Id="AuditTrail" RelativeSize="100">
+              <LayoutItem Id="AuditTrail" RelativeSize="100" />
+            </LayoutGroup>
+          </TabbedGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="StockCountSheet_StockCountSheetCounted_ListView" AllowEdit="True" />
+    <ListView Id="StockCountSheet_StockCountSheetTarget_ListView" AllowEdit="True" />
+    <DetailView Id="StockCountSheetCounted_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="100">
+            <LayoutGroup Id="StockCountSheetCounted_col1" ShowCaption="False" Index="0" RelativeSize="49.878640776699029" IsNewNode="True">
+              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="7.2289156626506026" IsNewNode="True" />
+              <LayoutItem Id="ItemBarCode" ViewItem="ItemBarCode" Index="1" RelativeSize="5.2208835341365463" IsNewNode="True" />
+              <LayoutItem Id="LegacyItemCode" ViewItem="LegacyItemCode" Index="2" RelativeSize="5.2208835341365463" IsNewNode="True" />
+              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="3" RelativeSize="82.3293172690763" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountSheetCounted_col2" ShowCaption="False" Index="1" RelativeSize="50.121359223300971" IsNewNode="True">
+              <LayoutItem Id="Bin" ViewItem="Bin" Index="0" RelativeSize="7.2289156626506026" IsNewNode="True" />
+              <LayoutItem Id="BinBarCode" ViewItem="BinBarCode" Index="1" RelativeSize="5.2208835341365463" IsNewNode="True" />
+              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="2" RelativeSize="87.550200803212846" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountSheetCounted" Removed="True" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="StockCountSheetTarget_DetailView">
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="100">
+            <LayoutGroup Id="StockCountSheetTarget_col1" ShowCaption="False" Index="0" RelativeSize="49.930651872399444" IsNewNode="True">
+              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="7.2289156626506026" IsNewNode="True" />
+              <LayoutItem Id="LegacyItemCode" ViewItem="LegacyItemCode" Index="1" RelativeSize="5.2208835341365463" IsNewNode="True" />
+              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="2" RelativeSize="87.550200803212846" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountSheetTarget_col2" ShowCaption="False" Index="1" RelativeSize="50.069348127600556" IsNewNode="True">
+              <LayoutItem Id="Bin" ViewItem="Bin" Index="0" RelativeSize="7.2289156626506026" IsNewNode="True" />
+              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="1" RelativeSize="92.7710843373494" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="StockCountSheetTarget" Removed="True" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="Transporter_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <ListView Id="Transporter_ListView" DataAccessMode="Client" />
     <DetailView Id="vwASN_DetailView" AllowEdit="False" />
     <ListView Id="vwASN_ListView" DataAccessMode="Client" />
@@ -5020,23 +5268,30 @@
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
           <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="100">
-            <LayoutGroup Id="WarehouseTransferReqDetails_col1" ShowCaption="False" Index="0" RelativeSize="49.896480331262943" IsNewNode="True">
-              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="6.654343807763401" IsNewNode="True" />
-              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="1" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="UOM" ViewItem="UOM" Index="2" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="CatalogNo" ViewItem="CatalogNo" Index="3" RelativeSize="83.733826247689464" IsNewNode="True" />
+            <LayoutGroup Id="WarehouseTransferReqDetails_col1" ShowCaption="False" Index="0" RelativeSize="49.860724233983284" IsNewNode="True">
+              <LayoutItem Id="ItemCode" ViewItem="ItemCode" Index="0" RelativeSize="6.7669172932330826" IsNewNode="True" />
+              <LayoutItem Id="LegacyItemCode" ViewItem="LegacyItemCode" Index="1" RelativeSize="4.8872180451127818" IsNewNode="True" />
+              <LayoutItem Id="ItemDesc" ViewItem="ItemDesc" Index="2" RelativeSize="4.8872180451127818" IsNewNode="True" />
+              <LayoutItem Id="UOM" ViewItem="UOM" Index="3" RelativeSize="83.458646616541358" IsNewNode="True" />
             </LayoutGroup>
-            <LayoutGroup Id="WarehouseTransferReqDetails_col2" ShowCaption="False" Index="1" RelativeSize="50.103519668737057" IsNewNode="True">
-              <LayoutItem Id="FromBin" ViewItem="FromBin" Index="0" RelativeSize="6.654343807763401" IsNewNode="True" />
-              <LayoutItem Id="ToBin" ViewItem="ToBin" Index="1" RelativeSize="4.8059149722735679" IsNewNode="True" />
-              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="2" RelativeSize="88.539741219963034" IsNewNode="True" />
+            <LayoutGroup Id="WarehouseTransferReqDetails_col2" ShowCaption="False" Index="1" RelativeSize="50.139275766016716" IsNewNode="True">
+              <LayoutItem Id="CatalogNo" ViewItem="CatalogNo" Index="0" RelativeSize="6.7669172932330826" IsNewNode="True" />
+              <LayoutItem Id="FromBin" ViewItem="FromBin" Index="1" RelativeSize="4.8872180451127818" IsNewNode="True" />
+              <LayoutItem Id="ToBin" ViewItem="ToBin" Index="2" RelativeSize="4.8872180451127818" IsNewNode="True" />
+              <LayoutItem Id="Quantity" ViewItem="Quantity" Index="3" RelativeSize="83.458646616541358" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="WarehouseTransferReqDetails" Removed="True" />
           </LayoutGroup>
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <ListView Id="WarehouseTransfers_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False" />
+    <ListView Id="WarehouseTransfers_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
+      <Columns>
+        <ColumnInfo Id="PropertyName" Index="-1" />
+        <ColumnInfo Id="OldValue" Index="3" />
+        <ColumnInfo Id="NewValue" Index="4" />
+      </Columns>
+    </ListView>
     <DetailView Id="WarehouseTransfers_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">

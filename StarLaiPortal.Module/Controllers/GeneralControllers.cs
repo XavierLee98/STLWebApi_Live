@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -40,6 +41,7 @@ using System.Text;
 // 2023-09-25 bring SO remark to DO ver 1.0.10
 // 2023-09-25 add warehouse field ver 1.0.10
 // 2023-09-25 update asn coptytoqty ver 1.0.10
+// 2023-10-19 write txt log ver 1.0.11
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -470,10 +472,18 @@ namespace StarLaiPortal.Module.Controllers
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
+                    // Start ver 1.0.11
+                    WriteLog("[INFO]", "GenerateDO : " + load.DocNum + " -----------------------");
+                    WriteLog("[INFO]", "SO Number : " + reader.GetString(0));
+                    // End ver 1.0.11
                     SalesOrder so = os.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", reader.GetString(0)));
 
                     if (so != null)
                     {
+                        // Start ver 1.0.11
+                        WriteLog("[INFO]", "SO Number Processed : " + reader.GetString(0));
+                        // End ver 1.0.11
+
                         Load currload = os.FindObject<Load>(CriteriaOperator.Parse("DocNum = ?", load.DocNum));
 
                         string picklistnum = null;
@@ -745,6 +755,12 @@ namespace StarLaiPortal.Module.Controllers
 
                         os.CommitChanges();
                     }
+                    // Start ver 1.0.11
+                    else
+                    {
+                        WriteLog("[INFO]", "SO Number Not Found : " + reader.GetString(0));
+                    }
+                    // End ver 1.0.11
                 }
                 conn.Close();
             }
@@ -1334,5 +1350,36 @@ namespace StarLaiPortal.Module.Controllers
 
             return 1;
         }
+
+        // Start ver 1.0.11
+        private void WriteLog(string lvl, string str)
+        {
+            FileStream fileStream = null;
+
+            string filePath = "C:\\Portal_And_Apps_Log\\";
+            filePath = filePath + "[" + "Info And Error" + "] Log_" + System.DateTime.Today.ToString("yyyyMMdd") + "." + "txt";
+
+            FileInfo fileInfo = new FileInfo(filePath);
+            DirectoryInfo dirInfo = new DirectoryInfo(fileInfo.DirectoryName);
+            if (!dirInfo.Exists) dirInfo.Create();
+
+            if (!fileInfo.Exists)
+            {
+                fileStream = fileInfo.Create();
+            }
+            else
+            {
+                fileStream = new FileStream(filePath, FileMode.Append);
+            }
+
+            StreamWriter log = new StreamWriter(fileStream);
+            string status = lvl.ToString().Replace("[Log]", "");
+
+            //For Portal_UpdateStatus_Log
+            log.WriteLine("{0}{1}", status, str.ToString());
+
+            log.Close();
+        }
+        // End ver 1.0.11
     }
 }

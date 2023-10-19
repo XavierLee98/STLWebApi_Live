@@ -259,7 +259,7 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order_Collection
         private string _ReferenceNum;
         [ImmediatePostData]
         [XafDisplayName("Reference Num.")]
-        [Size(25)]
+        [Size(24)]
         [RuleRequiredField(DefaultContexts.Save)]
         [Index(13), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
         public string ReferenceNum

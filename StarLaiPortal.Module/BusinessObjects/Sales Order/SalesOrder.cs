@@ -19,6 +19,7 @@ using System.Text;
 // 2023-08-22 add cancel and close button ver 1.0.9
 // 2023-04-09 fix speed issue ver 1.0.8.1
 // 2023-09-25 change date format ver 1.0.10
+// 2023-10-16 hide seach function ver 1.0.11
 
 namespace StarLaiPortal.Module.BusinessObjects.Sales_Order
 {
@@ -33,6 +34,9 @@ namespace StarLaiPortal.Module.BusinessObjects.Sales_Order
     [Appearance("HideCancel", AppearanceItemType.Action, "True", TargetItems = "CancelSO", Criteria = "not (Status in (6)) or Sap = 'False'", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     [Appearance("HideClose", AppearanceItemType.Action, "True", TargetItems = "CloseSO", Criteria = "not (Status in (6)) or Sap = 'False'", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
     // End ver 1.0.9
+    // Start ver 1.0.11
+    [Appearance("HideFullTextSearch", AppearanceItemType.Action, "True", TargetItems = "FullTextSearch", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
+    // End ver 1.0.11
 
     public class SalesOrder : XPObject
     { // Inherit from a different class to provide a custom primary key, concurrency and deletion behavior, etc. (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument113146.aspx).

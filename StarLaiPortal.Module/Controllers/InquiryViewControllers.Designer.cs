@@ -36,6 +36,7 @@
             this.InquiryDateFrom = new DevExpress.ExpressApp.Actions.ParametrizedAction(this.components);
             this.InquiryDateTo = new DevExpress.ExpressApp.Actions.ParametrizedAction(this.components);
             this.InquiryFilter = new DevExpress.ExpressApp.Actions.SimpleAction(this.components);
+            this.ViewSalesOrderInquiry = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
             // 
             // ViewOpenPickList
             // 
@@ -115,6 +116,18 @@
             this.InquiryFilter.ToolTip = null;
             this.InquiryFilter.Execute += new DevExpress.ExpressApp.Actions.SimpleActionExecuteEventHandler(this.InquiryFilter_Execute);
             // 
+            // ViewSalesOrderInquiry
+            // 
+            this.ViewSalesOrderInquiry.AcceptButtonCaption = null;
+            this.ViewSalesOrderInquiry.CancelButtonCaption = null;
+            this.ViewSalesOrderInquiry.Caption = "View";
+            this.ViewSalesOrderInquiry.Category = "ListView";
+            this.ViewSalesOrderInquiry.ConfirmationMessage = null;
+            this.ViewSalesOrderInquiry.Id = "ViewSalesOrderInquiry";
+            this.ViewSalesOrderInquiry.ToolTip = null;
+            this.ViewSalesOrderInquiry.CustomizePopupWindowParams += new DevExpress.ExpressApp.Actions.CustomizePopupWindowParamsEventHandler(this.ViewSalesOrderInquiry_CustomizePopupWindowParams);
+            this.ViewSalesOrderInquiry.Execute += new DevExpress.ExpressApp.Actions.PopupWindowShowActionExecuteEventHandler(this.ViewSalesOrderInquiry_Execute);
+            // 
             // InquiryViewControllers
             // 
             this.Actions.Add(this.ViewOpenPickList);
@@ -124,6 +137,7 @@
             this.Actions.Add(this.InquiryDateFrom);
             this.Actions.Add(this.InquiryDateTo);
             this.Actions.Add(this.InquiryFilter);
+            this.Actions.Add(this.ViewSalesOrderInquiry);
 
         }
 
@@ -136,5 +150,6 @@
         private DevExpress.ExpressApp.Actions.ParametrizedAction InquiryDateFrom;
         private DevExpress.ExpressApp.Actions.ParametrizedAction InquiryDateTo;
         private DevExpress.ExpressApp.Actions.SimpleAction InquiryFilter;
+        private DevExpress.ExpressApp.Actions.PopupWindowShowAction ViewSalesOrderInquiry;
     }
 }

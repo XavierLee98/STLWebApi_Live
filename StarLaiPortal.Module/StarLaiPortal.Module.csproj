@@ -290,6 +290,25 @@
     <Compile Include="BusinessObjects\Stock Adjustment\StockAdjustmentReqDocTrail.cs" />
     <Compile Include="BusinessObjects\Stock Adjustment\StockAdjustmentRequests.cs" />
     <Compile Include="BusinessObjects\Stock Adjustment\StockAdjustments.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountConfirm.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountConfirmDetails.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountConfirmDetailView.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountConfirmDetailView.Designer.cs">
+      <DependentUpon>StockCountConfirmDetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessObjects\Stock Count\StockCountConfirmDocTrail.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountSheet.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountSheetCounted.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountSheetCountedDetailView.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountSheetCountedDetailView.Designer.cs">
+      <DependentUpon>StockCountSheetCountedDetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessObjects\Stock Count\StockCountSheetDocTrail.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountSheetTarget.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountSheetTargetDetailView.cs" />
+    <Compile Include="BusinessObjects\Stock Count\StockCountSheetTargetDetailView.Designer.cs">
+      <DependentUpon>StockCountSheetTargetDetailView.cs</DependentUpon>
+    </Compile>
     <Compile Include="BusinessObjects\View\vwASN.cs" />
     <Compile Include="BusinessObjects\View\vwASNDetails.cs" />
     <Compile Include="BusinessObjects\View\vwBank.cs" />
@@ -513,6 +532,12 @@
     <Compile Include="Controllers\StockAdjustmentReqControllers.Designer.cs">
       <DependentUpon>StockAdjustmentReqControllers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\StockCountSheetControllers.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\StockCountSheetControllers.Designer.cs">
+      <DependentUpon>StockCountSheetControllers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\StockReorderingControllers.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -630,6 +655,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\StockAdjustmentReqControllers.resx">
       <DependentUpon>StockAdjustmentReqControllers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\StockCountSheetControllers.resx">
+      <DependentUpon>StockCountSheetControllers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\StockReorderingControllers.resx">
       <DependentUpon>StockReorderingControllers.cs</DependentUpon>

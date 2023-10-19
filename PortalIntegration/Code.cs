@@ -3150,9 +3150,9 @@ namespace PortalIntegration
                                     {
                                         countchar++;
                                     }
-                                    if (countchar >= 25)
+                                    if (countchar >= 24)
                                     {
-                                        oDoc.TransferReference = oTargetDoc.ReferenceNum.Substring(1, 25).ToString();
+                                        oDoc.TransferReference = oTargetDoc.ReferenceNum.Substring(1, 24).ToString();
                                     }
                                     else
                                     {
@@ -3242,6 +3242,9 @@ namespace PortalIntegration
             {
                 if (!oTargetDoc.Sap)
                 {
+                    // Start ver 1.0.10
+                    string sodocnum = null;
+                    // End ver 1.0.10
                     Guid g;
                     // Create and display the value of two GUIDs.
                     g = Guid.NewGuid();
@@ -3310,6 +3313,10 @@ namespace PortalIntegration
                         IObjectSpace os = ObjectSpaceProvider.CreateObjectSpace();
                         SalesOrder so = os.FindObject<SalesOrder>(CriteriaOperator.Parse("DocNum = ?", dtl.SODocNum));
 
+                        // Start ver 1.0.10
+                        sodocnum = so.DocNum;
+                        // End ver 1.0.10
+
                         if (so.Series.SeriesName == "Cash")
                         {
                             IObjectSpace fos = ObjectSpaceProvider.CreateObjectSpace();
@@ -3334,10 +3341,18 @@ namespace PortalIntegration
                         }
                     }
 
-                    string getdpDocentry = "SELECT T0.DocEntry, T0.DocTotal FROM [" + ConfigurationManager.AppSettings["CompanyDB"].ToString() + "]..ODPI T0 " +
-                          "LEFT JOIN DeliveryOrderDetails T1 on T0.U_SoDocNumber = T1.SODocNum COLLATE DATABASE_DEFAULT " +
-                          "WHERE T1.DeliveryOrder = " + oTargetDoc.Oid + " " +
-                          "GROUP BY T0.DocEntry, T0.DocTotal";
+                    // Start ver 1.0.10
+                    //string getdpDocentry = "SELECT T0.DocEntry, T0.DocTotal FROM [" + ConfigurationManager.AppSettings["CompanyDB"].ToString() + "]..ODPI T0 " +
+                    //      "LEFT JOIN DeliveryOrderDetails T1 on T0.U_SoDocNumber = T1.SODocNum COLLATE DATABASE_DEFAULT " +
+                    //      "WHERE T1.DeliveryOrder = " + oTargetDoc.Oid + " " +
+                    //      "GROUP BY T0.DocEntry, T0.DocTotal";
+                    string getdpDocentry = "SELECT T0.DocEntry, T0.DocTotal, T0.DocTotal - SUM(ISNULL(T1.Total, 0)) as Balance " +
+                        "FROM [" + ConfigurationManager.AppSettings["CompanyDB"].ToString() + "]..ODPI T0 " +
+                        "LEFT JOIN DeliveryOrderDetails T1 on T0.U_SoDocNumber = T1.SODocNum COLLATE DATABASE_DEFAULT and T1.GCRecord is null " +
+                        "INNER JOIN DeliveryOrder T2 on T1.DeliveryOrder = T2.OID and  T2.SapINV = 1 and T2.GCRecord is null " +
+                        "WHERE T0.U_SoDocNumber = '" + sodocnum + "' " +
+                        "GROUP BY T0.DocEntry, T0.DocTotal";
+                    // End ver 1.0.10
                     if (conn.State == ConnectionState.Open)
                     {
                         conn.Close();
@@ -3347,13 +3362,29 @@ namespace PortalIntegration
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        SAPbobsCOM.DownPaymentsToDraw dpm = oDoc.DownPaymentsToDraw;
-                        dpm.DocEntry = reader.GetInt32(0);
                         // Start ver 1.0.10
-                        //dpm.AmountToDraw = (double)oTargetDoc.DeliveryOrderDetails.Sum(s => s.Total);
-                        dpm.AmountToDraw = (double)reader.GetDecimal(1);
+                        if (reader.GetDecimal(2) > 0)
+                        {
+                            double drawamt = (double)reader.GetDecimal(2) - (double)oTargetDoc.DeliveryOrderDetails.Sum(s => s.Total);
                         // End ver 1.0.10
-                        dpm.Add();
+                            SAPbobsCOM.DownPaymentsToDraw dpm = oDoc.DownPaymentsToDraw;
+                            dpm.DocEntry = reader.GetInt32(0);
+                            // Start ver 1.0.10
+                            //dpm.AmountToDraw = (double)oTargetDoc.DeliveryOrderDetails.Sum(s => s.Total);
+                            //dpm.AmountToDraw = (double)reader.GetDecimal(1);
+                            if (drawamt <= 0)
+                            {
+                                dpm.AmountToDraw = (double)reader.GetDecimal(2);
+                            }
+                            else
+                            {
+                                dpm.AmountToDraw = (double)oTargetDoc.DeliveryOrderDetails.Sum(s => s.Total);
+                            }
+                            // End ver 1.0.10
+                            dpm.Add();
+                        // Start ver 1.0.10
+                        }
+                        // End ver 1.0.10
                     }
                     conn.Close();
 

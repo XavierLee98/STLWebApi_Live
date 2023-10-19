@@ -14,6 +14,7 @@ using System.Text;
 
 // 2023-07-28 add AR Downpayment Cancellation ver 1.0.7
 // 2023-10-05 add payment method for sales return ver 1.0.10
+// 2023-10-18 add Stock Count ver 1.0.11
 
 namespace StarLaiPortal.Module.BusinessObjects
 {
@@ -49,8 +50,12 @@ namespace StarLaiPortal.Module.BusinessObjects
         [XafDisplayName("Delivery Order")] DO = 19,
         [XafDisplayName("Reports")] Reports = 20,
         // Start ver 1.0.7
-        [XafDisplayName("AR Downpayment Cancellation")] ARDC = 21
+        [XafDisplayName("AR Downpayment Cancellation")] ARDC = 21,
         // End ver 1.0.7
+        // Start ver 1.0.11
+        [XafDisplayName("Stock Count Sheet")] STS = 22,
+        [XafDisplayName("Stock Count Confirm")] STC = 23
+        // End ver 1.0.11
     }
 
     public enum DocStatus
