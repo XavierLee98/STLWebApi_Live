@@ -17,10 +17,12 @@ using DevExpress.Web;
 using StarLaiPortal.Module.BusinessObjects;
 using StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice;
 using StarLaiPortal.Module.BusinessObjects.GRN;
+using StarLaiPortal.Module.BusinessObjects.Sales_Quotation;
 using StarLaiPortal.Module.BusinessObjects.View;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -248,24 +250,57 @@ namespace StarLaiPortal.Module.Controllers
                             dtl2.OIDKey = dtl2.Oid;
 
                             // Start ver 1.0.8.1
-                            if (duppo != dtl2.PORefNo)
-                            {
-                                if (asn.PONo == null)
-                                {
-                                    asn.PONo = dtl2.PORefNo;
-                                }
-                                else
-                                {
-                                    asn.PONo = asn.PONo + ", " + dtl2.PORefNo;
-                                }
+                            //if (duppo != dtl2.PORefNo)
+                            //{
+                            //    if (asn.PONo == null)
+                            //    {
+                            //        asn.PONo = dtl2.PORefNo;
+                            //    }
+                            //    else
+                            //    {
+                            //        asn.PONo = asn.PONo + ", " + dtl2.PORefNo;
+                            //    }
 
-                                duppo = dtl2.PORefNo;
-                            }
+                            //    duppo = dtl2.PORefNo;
+                            //}
                             // End ver 1.0.8.1
                         }
 
                         ObjectSpace.CommitChanges();
                         ObjectSpace.Refresh();
+                        
+                        // Start ver 1.0.11
+                        IObjectSpace os = Application.CreateObjectSpace();
+                        ASN trx = os.FindObject<ASN>(new BinaryOperator("Oid", asn.Oid));
+
+                        if (trx.Oid > 0)
+                        {
+                            trx.PONo = null;
+                            SqlConnection conn = new SqlConnection(genCon.getConnectionString());
+                            string getporef = "SELECT PORefNo FROM ASNDetails where ASN = " + trx.Oid + " GROUP BY PORefNo";
+                            if (conn.State == ConnectionState.Open)
+                            {
+                                conn.Close();
+                            }
+                            conn.Open();
+                            SqlCommand cmd = new SqlCommand(getporef, conn);
+                            SqlDataReader reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                if (trx.PONo != null)
+                                {
+                                    trx.PONo = trx.PONo + ", " + reader.GetString(0);
+                                }
+                                else
+                                {
+                                    trx.PONo = reader.GetString(0);
+                                }
+                            }
+                        }
+
+                        os.CommitChanges();
+                        openNewView(os, trx, ViewEditMode.Edit);
+                        // End ver 1.0.11
 
                         showMsg("Success", "Copy Success.", InformationType.Success);
                     //}
@@ -390,24 +425,57 @@ namespace StarLaiPortal.Module.Controllers
                             dtl2.OIDKey = dtl2.Oid;
 
                             // Start ver 1.0.8.1
-                            if (duppo != dtl2.PORefNo)
-                            {
-                                if (asn.PONo == null)
-                                {
-                                    asn.PONo = dtl2.PORefNo;
-                                }
-                                else
-                                {
-                                    asn.PONo = asn.PONo + ", " + dtl2.PORefNo;
-                                }
+                            //if (duppo != dtl2.PORefNo)
+                            //{
+                            //    if (asn.PONo == null)
+                            //    {
+                            //        asn.PONo = dtl2.PORefNo;
+                            //    }
+                            //    else
+                            //    {
+                            //        asn.PONo = asn.PONo + ", " + dtl2.PORefNo;
+                            //    }
 
-                                duppo = dtl2.PORefNo;
-                            }
+                            //    duppo = dtl2.PORefNo;
+                            //}
                             // End ver 1.0.8.1
                         }
 
                         ObjectSpace.CommitChanges();
                         ObjectSpace.Refresh();
+
+                        // Start ver 1.0.11
+                        IObjectSpace os = Application.CreateObjectSpace();
+                        ASN trx = os.FindObject<ASN>(new BinaryOperator("Oid", asn.Oid));
+
+                        if (trx.Oid > 0)
+                        {
+                            trx.PONo = null;
+                            SqlConnection conn = new SqlConnection(genCon.getConnectionString());
+                            string getporef = "SELECT PORefNo FROM ASNDetails where ASN = " + trx.Oid + " GROUP BY PORefNo";
+                            if (conn.State == ConnectionState.Open)
+                            {
+                                conn.Close();
+                            }
+                            conn.Open();
+                            SqlCommand cmd = new SqlCommand(getporef, conn);
+                            SqlDataReader reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                if (trx.PONo != null)
+                                {
+                                    trx.PONo = trx.PONo + ", " + reader.GetString(0);
+                                }
+                                else
+                                {
+                                    trx.PONo = reader.GetString(0);
+                                }
+                            }
+                        }
+
+                        os.CommitChanges();
+                        openNewView(os, trx, ViewEditMode.Edit);
+                        // End ver 1.0.11
 
                         showMsg("Success", "Copy Success.", InformationType.Success);
 

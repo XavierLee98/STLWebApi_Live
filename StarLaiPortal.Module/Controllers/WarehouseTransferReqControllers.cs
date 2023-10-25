@@ -897,7 +897,7 @@ namespace StarLaiPortal.Module.Controllers
             string filename;
 
             SqlConnection conn = new SqlConnection(genCon.getConnectionString());
-            SalesQuotation whr = (SalesQuotation)View.CurrentObject;
+            WarehouseTransferReq whr = (WarehouseTransferReq)View.CurrentObject;
             ApplicationUser user = (ApplicationUser)SecuritySystem.CurrentUser;
 
             try

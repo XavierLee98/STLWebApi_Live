@@ -33,6 +33,7 @@ using StarLaiPortal.Module.BusinessObjects.Sales_Quotation;
 using StarLaiPortal.Module.BusinessObjects.Sales_Refund;
 using StarLaiPortal.Module.BusinessObjects.Sales_Return;
 using StarLaiPortal.Module.BusinessObjects.Stock_Adjustment;
+using StarLaiPortal.Module.BusinessObjects.Stock_Count;
 using StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,7 @@ using System.Web.UI.WebControls;
 // 2023-07-28 add AR Downpayment cancalletion ver 1.0.7
 // 2023-09-11 add dashboard sales/purchase/warehouse ver 1.0.9
 // 2023-09-19 add disable detail view ver 1.0.9
+// 2023-10-20 add stock count ver 1.0.11
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -152,8 +154,12 @@ namespace StarLaiPortal.Module.Controllers
                  View.ObjectTypeInfo.Type == typeof(SalesRefundRequests) || View.ObjectTypeInfo.Type == typeof(SalesRefunds) ||
                  View.ObjectTypeInfo.Type == typeof(DeliveryOrder) ||
                  // Start ver 1.0.7
-                 View.ObjectTypeInfo.Type == typeof(ARDownpaymentCancel)
+                 View.ObjectTypeInfo.Type == typeof(ARDownpaymentCancel) ||
                  // End ver 1.0.7
+                 // Start ver 1.0.12
+                 View.ObjectTypeInfo.Type == typeof(StockCountSheet) ||
+                 View.ObjectTypeInfo.Type == typeof(StockCountConfirm)
+                 // Start ver 1.0.12
                  )
             {
                 listViewController = Frame.GetController<ListViewController>();
@@ -263,7 +269,15 @@ namespace StarLaiPortal.Module.Controllers
                  View.ObjectTypeInfo.Type == typeof(WarehouseTransferReq) || View.ObjectTypeInfo.Type == typeof(WarehouseTransfers) ||
                  View.ObjectTypeInfo.Type == typeof(StockAdjustmentRequests) || View.ObjectTypeInfo.Type == typeof(StockAdjustments) ||
                  View.ObjectTypeInfo.Type == typeof(SalesRefundRequests) || View.ObjectTypeInfo.Type == typeof(SalesRefunds) ||
-                 View.ObjectTypeInfo.Type == typeof(DeliveryOrder))
+                 View.ObjectTypeInfo.Type == typeof(DeliveryOrder) ||
+                 // Start ver 1.0.7
+                 View.ObjectTypeInfo.Type == typeof(ARDownpaymentCancel) ||
+                 // End ver 1.0.7
+                 // Start ver 1.0.12
+                 View.ObjectTypeInfo.Type == typeof(StockCountSheet) ||
+                 View.ObjectTypeInfo.Type == typeof(StockCountConfirm)
+                 // Start ver 1.0.12
+                 )
             {
                 if (listViewController != null)
                 {

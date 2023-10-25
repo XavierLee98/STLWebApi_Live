@@ -3346,10 +3346,11 @@ namespace PortalIntegration
                     //      "LEFT JOIN DeliveryOrderDetails T1 on T0.U_SoDocNumber = T1.SODocNum COLLATE DATABASE_DEFAULT " +
                     //      "WHERE T1.DeliveryOrder = " + oTargetDoc.Oid + " " +
                     //      "GROUP BY T0.DocEntry, T0.DocTotal";
-                    string getdpDocentry = "SELECT T0.DocEntry, T0.DocTotal, T0.DocTotal - SUM(ISNULL(T1.Total, 0)) as Balance " +
+                    string getdpDocentry = "SELECT T0.DocEntry, T0.DocTotal, T0.DocTotal - SUM(ISNULL(T2.Total, 0)) as Balance " +
                         "FROM [" + ConfigurationManager.AppSettings["CompanyDB"].ToString() + "]..ODPI T0 " +
-                        "LEFT JOIN DeliveryOrderDetails T1 on T0.U_SoDocNumber = T1.SODocNum COLLATE DATABASE_DEFAULT and T1.GCRecord is null " +
-                        "INNER JOIN DeliveryOrder T2 on T1.DeliveryOrder = T2.OID and  T2.SapINV = 1 and T2.GCRecord is null " +
+                        "LEFT JOIN DeliveryOrder T1 on T1.SONo = T0.U_SoDocNumber COLLATE DATABASE_DEFAULT " +
+                        "AND T1.GCRecord is null and T1.SapINV = 1 " +
+                        "LEFT JOIN DeliveryOrderDetails T2 on T1.OID = T2.DeliveryOrder and T2.GCRecord is null " +
                         "WHERE T0.U_SoDocNumber = '" + sodocnum + "' " +
                         "GROUP BY T0.DocEntry, T0.DocTotal";
                     // End ver 1.0.10

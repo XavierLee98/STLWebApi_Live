@@ -18,11 +18,13 @@ using DevExpress.Web.Internal.XmlProcessor;
 using StarLaiPortal.Module.BusinessObjects;
 using StarLaiPortal.Module.BusinessObjects.Advanced_Shipment_Notice;
 using StarLaiPortal.Module.BusinessObjects.GRN;
+using StarLaiPortal.Module.BusinessObjects.Pack_List;
 using StarLaiPortal.Module.BusinessObjects.Sales_Quotation;
 using StarLaiPortal.Module.BusinessObjects.View; 
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -232,52 +234,103 @@ namespace StarLaiPortal.Module.Controllers
                         ObjectSpace.Refresh();
 
                         // Start ver 1.0.8.1
-                        string duppo = null;
-                        string dupporef = null;
-                        // End ver 1.0.8.1
-                        foreach (GRNDetails dtl2 in grn.GRNDetails)
-                        {
-                            dtl2.OIDKey = dtl2.Oid;
+                        //string duppo = null;
+                        //string dupporef = null;
+                        //// End ver 1.0.8.1
+                        //foreach (GRNDetails dtl2 in grn.GRNDetails)
+                        //{
+                        //    dtl2.OIDKey = dtl2.Oid;
 
                             // Start ver 1.0.8.1
-                            if (dtl2.PONo != null)
-                            {
-                                if (duppo != dtl2.PONo)
-                                {
-                                    if (grn.SAPPONo == null)
-                                    {
-                                        grn.SAPPONo = dtl2.PONo;
-                                    }
-                                    else
-                                    {
-                                        grn.SAPPONo = grn.SAPPONo + ", " + dtl2.PONo;
-                                    }
+                            //if (dtl2.PONo != null)
+                            //{
+                            //    if (duppo != dtl2.PONo)
+                            //    {
+                            //        if (grn.SAPPONo == null)
+                            //        {
+                            //            grn.SAPPONo = dtl2.PONo;
+                            //        }
+                            //        else
+                            //        {
+                            //            grn.SAPPONo = grn.SAPPONo + ", " + dtl2.PONo;
+                            //        }
 
-                                    duppo = dtl2.PONo;
-                                }
-                            }
+                            //        duppo = dtl2.PONo;
+                            //    }
+                            //}
 
-                            if (dtl2.PORefNo != null)
-                            {
-                                if (dupporef != dtl2.PORefNo)
-                                {
-                                    if (grn.PortalPONo == null)
-                                    {
-                                        grn.PortalPONo = dtl2.PORefNo;
-                                    }
-                                    else
-                                    {
-                                        grn.PortalPONo = grn.PortalPONo + ", " + dtl2.PORefNo;
-                                    }
+                            //if (dtl2.PORefNo != null)
+                            //{
+                            //    if (dupporef != dtl2.PORefNo)
+                            //    {
+                            //        if (grn.PortalPONo == null)
+                            //        {
+                            //            grn.PortalPONo = dtl2.PORefNo;
+                            //        }
+                            //        else
+                            //        {
+                            //            grn.PortalPONo = grn.PortalPONo + ", " + dtl2.PORefNo;
+                            //        }
 
-                                    dupporef = dtl2.PORefNo;
-                                }
-                            }
+                            //        dupporef = dtl2.PORefNo;
+                            //    }
+                            //}
                             // End ver 1.0.8.1
-                        }
+                        //}
 
                         ObjectSpace.CommitChanges();
                         ObjectSpace.Refresh();
+
+                        // Start ver 1.0.11
+                        IObjectSpace os = Application.CreateObjectSpace();
+                        GRN trx = os.FindObject<GRN>(new BinaryOperator("Oid", grn.Oid));
+
+                        foreach (GRNDetails dtl2 in trx.GRNDetails)
+                        {
+                            dtl2.OIDKey = dtl2.Oid;
+                        }
+
+                        if (trx.Oid > 0)
+                        {
+                            trx.PortalPONo = null;
+                            trx.SAPPONo = null;
+                            SqlConnection conn = new SqlConnection(genCon.getConnectionString());
+                            string getporef = "SELECT PONo, ISNULL(PORefNo, '') From GRNDetails WHERE GRN = " + trx.Oid + " GROUP BY PONo, PORefNo";
+                            if (conn.State == ConnectionState.Open)
+                            {
+                                conn.Close();
+                            }
+                            conn.Open();
+                            SqlCommand cmd = new SqlCommand(getporef, conn);
+                            SqlDataReader reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                if (reader.GetString(1) != "")
+                                {
+                                    if (trx.PortalPONo != null)
+                                    {
+                                        trx.PortalPONo = trx.PortalPONo + ", " + reader.GetString(1);
+                                    }
+                                    else
+                                    {
+                                        trx.PortalPONo = reader.GetString(1);
+                                    }
+                                }
+
+                                if (trx.SAPPONo != null)
+                                {
+                                    trx.SAPPONo = trx.SAPPONo + ", " + reader.GetString(0);
+                                }
+                                else
+                                {
+                                    trx.SAPPONo = reader.GetString(0);
+                                }
+                            }
+                        }
+
+                        os.CommitChanges();
+                        openNewView(os, trx, ViewEditMode.Edit);
+                        // End ver 1.0.11
 
                         showMsg("Success", "Copy Success.", InformationType.Success);
                     //}
@@ -409,6 +462,17 @@ namespace StarLaiPortal.Module.Controllers
 
                                 grn.GRNDetails.Add(newgrnitem);
                             }
+
+                            // Start ver 1.0.11
+                            if (grn.ASNNo != null)
+                            {
+                                grn.ASNNo = grn.ASNNo + ", " + asn.ASNDocNum;
+                            }
+                            else
+                            {
+                                grn.ASNNo = asn.ASNDocNum;
+                            }
+                            // End ver 1.0.11
                         }
 
                         if (grn.DocNum == null)
@@ -421,66 +485,117 @@ namespace StarLaiPortal.Module.Controllers
                         string dupporef = null;
                         string dupasn = null;
                         // End ver 1.0.8.1
-                        foreach (GRNDetails dtl2 in grn.GRNDetails)
-                        {
-                            dtl2.OIDKey = dtl2.Oid;
+                        //foreach (GRNDetails dtl2 in grn.GRNDetails)
+                        //{
+                        //    dtl2.OIDKey = dtl2.Oid;
 
-                            if (dtl2.PONo != null)
-                            {
-                                if (duppo != dtl2.PONo)
-                                {
-                                    if (grn.SAPPONo == null)
-                                    {
-                                        grn.SAPPONo = dtl2.PONo;
-                                    }
-                                    else
-                                    {
-                                        grn.SAPPONo = grn.SAPPONo + ", " + dtl2.PONo;
-                                    }
+                            //if (dtl2.PONo != null)
+                            //{
+                            //    if (duppo != dtl2.PONo)
+                            //    {
+                            //        if (grn.SAPPONo == null)
+                            //        {
+                            //            grn.SAPPONo = dtl2.PONo;
+                            //        }
+                            //        else
+                            //        {
+                            //            grn.SAPPONo = grn.SAPPONo + ", " + dtl2.PONo;
+                            //        }
 
-                                    duppo = dtl2.PONo;
-                                }
-                            }
+                            //        duppo = dtl2.PONo;
+                            //    }
+                            //}
 
-                            if (dtl2.PORefNo != null)
-                            {
-                                if (dupporef != dtl2.PORefNo)
-                                {
-                                    if (grn.PortalPONo == null)
-                                    {
-                                        grn.PortalPONo = dtl2.PORefNo;
-                                    }
-                                    else
-                                    {
-                                        grn.PortalPONo = grn.PortalPONo + ", " + dtl2.PORefNo;
-                                    }
+                            //if (dtl2.PORefNo != null)
+                            //{
+                            //    if (dupporef != dtl2.PORefNo)
+                            //    {
+                            //        if (grn.PortalPONo == null)
+                            //        {
+                            //            grn.PortalPONo = dtl2.PORefNo;
+                            //        }
+                            //        else
+                            //        {
+                            //            grn.PortalPONo = grn.PortalPONo + ", " + dtl2.PORefNo;
+                            //        }
 
-                                    dupporef = dtl2.PORefNo;
-                                }
-                            }
+                            //        dupporef = dtl2.PORefNo;
+                            //    }
+                            //}
 
-                            if (dtl2.ASNBaseDoc != null)
-                            {
-                                if (dupasn != dtl2.ASNBaseDoc)
-                                {
-                                    if (grn.ASNNo == null)
-                                    {
-                                        grn.ASNNo = dtl2.ASNBaseDoc;
-                                    }
-                                    else
-                                    {
-                                        grn.ASNNo = grn.ASNNo + ", " + dtl2.ASNBaseDoc;
-                                    }
+                            //if (dtl2.ASNBaseDoc != null)
+                            //{
+                            //    if (dupasn != dtl2.ASNBaseDoc)
+                            //    {
+                            //        if (grn.ASNNo == null)
+                            //        {
+                            //            grn.ASNNo = dtl2.ASNBaseDoc;
+                            //        }
+                            //        else
+                            //        {
+                            //            grn.ASNNo = grn.ASNNo + ", " + dtl2.ASNBaseDoc;
+                            //        }
 
-                                    dupasn = dtl2.ASNBaseDoc;
-                                }
-                            }
-                        }
+                            //        dupasn = dtl2.ASNBaseDoc;
+                            //    }
+                            //}
+                        //}
 
                         ObjectSpace.CommitChanges();
                         ObjectSpace.Refresh();
 
-                        showMsg("Success", "Copy Success.", InformationType.Success);
+                    // Start ver 1.0.11
+                    IObjectSpace os = Application.CreateObjectSpace();
+                    GRN trx = os.FindObject<GRN>(new BinaryOperator("Oid", grn.Oid));
+
+                    foreach (GRNDetails dtl2 in trx.GRNDetails)
+                    {
+                        dtl2.OIDKey = dtl2.Oid;
+                    }
+
+                    if (trx.Oid > 0)
+                    {
+                        trx.PortalPONo = null;
+                        trx.SAPPONo = null;
+                        SqlConnection conn = new SqlConnection(genCon.getConnectionString());
+                        string getporef = "SELECT PONo, ISNULL(PORefNo, '') FROM GRNDetails WHERE GRN = " + trx.Oid + " GROUP BY PONo, PORefNo";
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                        conn.Open();
+                        SqlCommand cmd = new SqlCommand(getporef, conn);
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            if (reader.GetString(1) != "")
+                            {
+                                if (trx.PortalPONo != null)
+                                {
+                                    trx.PortalPONo = trx.PortalPONo + ", " + reader.GetString(1);
+                                }
+                                else
+                                {
+                                    trx.PortalPONo = reader.GetString(1);
+                                }
+                            }
+
+                            if (trx.SAPPONo != null)
+                            {
+                                trx.SAPPONo = trx.SAPPONo + ", " + reader.GetString(0);
+                            }
+                            else
+                            {
+                                trx.SAPPONo = reader.GetString(0);
+                            }
+                        }
+                    }
+
+                    os.CommitChanges();
+                    openNewView(os, trx, ViewEditMode.Edit);
+                    // End ver 1.0.11
+
+                    showMsg("Success", "Copy Success.", InformationType.Success);
                     //}
                 }
                 catch (Exception)

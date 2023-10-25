@@ -19,6 +19,13 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Linq;
 using System.Text;
+using Admiral.ImportData;
+using StarLaiPortal.Module.BusinessObjects.Warehouse_Transfer;
+using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
+using DevExpress.ExpressApp.Web;
+using System.Configuration;
+using System.Web;
 
 namespace StarLaiPortal.Module.Controllers
 {
@@ -38,6 +45,10 @@ namespace StarLaiPortal.Module.Controllers
             this.SubmitSCS.Active.SetItemValue("Enabled", false);
             this.CancelSCS.Active.SetItemValue("Enabled", false);
             this.CloseSCS.Active.SetItemValue("Enabled", false);
+            this.ExportSheetTargetItems.Active.SetItemValue("Enabled", false);
+            this.ImportSheetTargetItems.Active.SetItemValue("Enabled", false);
+            this.ExportSheetCountedItems.Active.SetItemValue("Enabled", false);
+            this.ImportSheetCountedItems.Active.SetItemValue("Enabled", false);
         }
         protected override void OnViewControlsCreated()
         {
@@ -61,26 +72,30 @@ namespace StarLaiPortal.Module.Controllers
                     this.CloseSCS.Active.SetItemValue("Enabled", false);
                 }
 
-                //if (((DetailView)View).ViewEditMode == ViewEditMode.Edit)
-                //{
-                //    this.GRNCopyFromPO.Active.SetItemValue("Enabled", true);
-                //    this.GRNCopyFromASN.Active.SetItemValue("Enabled", true);
-                //    this.ExportGRN.Active.SetItemValue("Enabled", true);
-                //    this.ImportGRN.Active.SetItemValue("Enabled", true);
-                //}
-                //else
-                //{
-                //    this.GRNCopyFromPO.Active.SetItemValue("Enabled", false);
-                //    this.GRNCopyFromASN.Active.SetItemValue("Enabled", false);
-                //    this.ExportGRN.Active.SetItemValue("Enabled", false);
-                //    this.ImportGRN.Active.SetItemValue("Enabled", false);
-                //}
+                if (((DetailView)View).ViewEditMode == ViewEditMode.Edit)
+                {
+                    this.ExportSheetTargetItems.Active.SetItemValue("Enabled", true);
+                    this.ImportSheetTargetItems.Active.SetItemValue("Enabled", true);
+                    this.ExportSheetCountedItems.Active.SetItemValue("Enabled", true);
+                    this.ImportSheetCountedItems.Active.SetItemValue("Enabled", true);
+                }
+                else
+                {
+                    this.ExportSheetTargetItems.Active.SetItemValue("Enabled", false);
+                    this.ImportSheetTargetItems.Active.SetItemValue("Enabled", false);
+                    this.ExportSheetCountedItems.Active.SetItemValue("Enabled", false);
+                    this.ImportSheetCountedItems.Active.SetItemValue("Enabled", false);
+                }
             }
             else
             {
                 this.SubmitSCS.Active.SetItemValue("Enabled", false);
                 this.CancelSCS.Active.SetItemValue("Enabled", false);
                 this.CloseSCS.Active.SetItemValue("Enabled", false);
+                this.ExportSheetTargetItems.Active.SetItemValue("Enabled", false);
+                this.ImportSheetTargetItems.Active.SetItemValue("Enabled", false);
+                this.ExportSheetCountedItems.Active.SetItemValue("Enabled", false);
+                this.ImportSheetCountedItems.Active.SetItemValue("Enabled", false);
             }
         }
         protected override void OnDeactivated()
@@ -220,6 +235,166 @@ namespace StarLaiPortal.Module.Controllers
             ((StringParameters)dv.CurrentObject).ActionMessage = "Press OK to CONFIRM the action and SAVE, else press Cancel.";
 
             e.View = dv;
+        }
+
+        private void ImportSheetTargetItems_Execute(object sender, PopupWindowShowActionExecuteEventArgs e)
+        {
+            ObjectSpace.CommitChanges();
+            ObjectSpace.Refresh();
+        }
+
+        private void ImportSheetTargetItems_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
+        {
+            StockCountSheet trx = (StockCountSheet)View.CurrentObject;
+
+            var os = Application.CreateObjectSpace();
+            var solution = os.CreateObject<ImportData>();
+            solution.Option = new ImportOption();
+
+            solution.Option.UpdateProgress = (x) => solution.Progress = x;
+            solution.Option.DocNum = trx.DocNum;
+            solution.Option.ConnectionString = genCon.getConnectionString();
+            solution.Option.Type = "StockCountSheetTarget";
+
+            solution.Option.MainTypeInfo = (this.View as DetailView).Model.ModelClass;
+            var view = Application.CreateDetailView(os, solution, false);
+
+            view.Closed += (sss, eee) =>
+            {
+                this.Frame.GetController<RefreshController>().RefreshAction.DoExecute();
+            };
+
+            e.DialogController.CancelAction.Active["NothingToCancel"] = false;
+            e.DialogController.AcceptAction.ActionMeaning = ActionMeaning.Unknown;
+            //e.Maximized = true;
+
+            e.View = view;
+        }
+
+        private void ImportSheetCountedItems_Execute(object sender, PopupWindowShowActionExecuteEventArgs e)
+        {
+            ObjectSpace.CommitChanges();
+            ObjectSpace.Refresh();
+        }
+
+        private void ImportSheetCountedItems_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
+        {
+            StockCountSheet trx = (StockCountSheet)View.CurrentObject;
+
+            var os = Application.CreateObjectSpace();
+            var solution = os.CreateObject<ImportData>();
+            solution.Option = new ImportOption();
+
+            solution.Option.UpdateProgress = (x) => solution.Progress = x;
+            solution.Option.DocNum = trx.DocNum;
+            solution.Option.ConnectionString = genCon.getConnectionString();
+            solution.Option.Type = "StockCountSheetCounted";
+
+            solution.Option.MainTypeInfo = (this.View as DetailView).Model.ModelClass;
+            var view = Application.CreateDetailView(os, solution, false);
+
+            view.Closed += (sss, eee) =>
+            {
+                this.Frame.GetController<RefreshController>().RefreshAction.DoExecute();
+            };
+
+            e.DialogController.CancelAction.Active["NothingToCancel"] = false;
+            e.DialogController.AcceptAction.ActionMeaning = ActionMeaning.Unknown;
+            //e.Maximized = true;
+
+            e.View = view;
+        }
+
+        private void ExportSheetTargetItems_Execute(object sender, SimpleActionExecuteEventArgs e)
+        {
+            string strServer;
+            string strDatabase;
+            string strUserID;
+            string strPwd;
+            string filename;
+
+            SqlConnection conn = new SqlConnection(genCon.getConnectionString());
+            StockCountSheet sheettarget = (StockCountSheet)View.CurrentObject;
+            ApplicationUser user = (ApplicationUser)SecuritySystem.CurrentUser;
+
+            try
+            {
+                ReportDocument doc = new ReportDocument();
+                strServer = ConfigurationManager.AppSettings.Get("SQLserver").ToString();
+                doc.Load(HttpContext.Current.Server.MapPath("~\\Reports\\SheetTargetImportFormat.rpt"));
+                strDatabase = conn.Database;
+                strUserID = ConfigurationManager.AppSettings.Get("SQLID").ToString();
+                strPwd = ConfigurationManager.AppSettings.Get("SQLPass").ToString();
+                doc.DataSourceConnections[0].SetConnection(strServer, strDatabase, strUserID, strPwd);
+                doc.Refresh();
+
+                doc.SetParameterValue("DocNum", sheettarget.DocNum);
+                doc.SetParameterValue("Type", "StarLaiPortal.Module.BusinessObjects.Stock_Count.StockCountSheetTarget");
+
+                filename = ConfigurationManager.AppSettings.Get("ReportPath").ToString() + conn.Database
+                    + "_" + sheettarget.DocNum + "_" + user.UserName + "_SheetTargetImport_" + ".xls";
+
+                doc.ExportToDisk(ExportFormatType.Excel, filename);
+                doc.Close();
+                doc.Dispose();
+
+                string url = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority +
+                    ConfigurationManager.AppSettings.Get("PrintPath").ToString() + conn.Database
+                    + "_" + sheettarget.DocNum + "_" + user.UserName + "_SheetTargetImport_" + ".xls";
+                var script = "window.open('" + url + "');";
+
+                WebWindow.CurrentRequestWindow.RegisterStartupScript("DownloadFile", script);
+            }
+            catch (Exception ex)
+            {
+                showMsg("Fail", ex.Message, InformationType.Error);
+            }
+        }
+
+        private void ExportSheetCountedItems_Execute(object sender, SimpleActionExecuteEventArgs e)
+        {
+            string strServer;
+            string strDatabase;
+            string strUserID;
+            string strPwd;
+            string filename;
+
+            SqlConnection conn = new SqlConnection(genCon.getConnectionString());
+            StockCountSheet sheetcounted = (StockCountSheet)View.CurrentObject;
+            ApplicationUser user = (ApplicationUser)SecuritySystem.CurrentUser;
+
+            try
+            {
+                ReportDocument doc = new ReportDocument();
+                strServer = ConfigurationManager.AppSettings.Get("SQLserver").ToString();
+                doc.Load(HttpContext.Current.Server.MapPath("~\\Reports\\SheetCountedImportFormat.rpt"));
+                strDatabase = conn.Database;
+                strUserID = ConfigurationManager.AppSettings.Get("SQLID").ToString();
+                strPwd = ConfigurationManager.AppSettings.Get("SQLPass").ToString();
+                doc.DataSourceConnections[0].SetConnection(strServer, strDatabase, strUserID, strPwd);
+                doc.Refresh();
+
+                doc.SetParameterValue("DocNum", sheetcounted.DocNum);
+                doc.SetParameterValue("Type", "StarLaiPortal.Module.BusinessObjects.Stock_Count.StockCountSheetCounted");
+
+                filename = ConfigurationManager.AppSettings.Get("ReportPath").ToString() + conn.Database
+                    + "_" + sheetcounted.DocNum + "_" + user.UserName + "_SheetCountedImport_" + ".xls";
+
+                doc.ExportToDisk(ExportFormatType.Excel, filename);
+                doc.Close();
+                doc.Dispose();
+
+                string url = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority +
+                    ConfigurationManager.AppSettings.Get("PrintPath").ToString() + conn.Database
+                    + "_" + sheetcounted.DocNum + "_" + user.UserName + "_SheetCountedImport_" + ".xls";
+                var script = "window.open('" + url + "');";
+
+                WebWindow.CurrentRequestWindow.RegisterStartupScript("DownloadFile", script);
+            }
+            catch (Exception ex)
+            {
+                showMsg("Fail", ex.Message, InformationType.Error);
+            }
         }
     }
 }

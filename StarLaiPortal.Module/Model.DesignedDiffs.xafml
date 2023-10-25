@@ -225,6 +225,8 @@
           <Item Id="StockAdjustmentReqAttachment_ListView" Removed="True" />
           <Item Id="StockAdjustmentReqDetails_ListView" Removed="True" />
           <Item Id="StockAdjustmentReqDocTrail_ListView" Removed="True" />
+          <Item Id="StockCountConfirmDetails_ListView" Removed="True" />
+          <Item Id="StockCountConfirmDocTrail_ListView" Removed="True" />
           <Item Id="StockCountSheetCounted_ListView" Removed="True" />
           <Item Id="StockCountSheetDocTrail_ListView" Removed="True" />
           <Item Id="StockCountSheetTarget_ListView" Removed="True" />
@@ -363,7 +365,7 @@
           <Item Id="vwInquiryStockAdjustmentDetails_ListView" Index="3" />
         </Items>
       </Item>
-      <Item Id="Stock Count">
+      <Item Id="Stock Count" Visible="True">
         <Items>
           <Item Id="StockCountSheet_ListView" Index="0" />
           <Item Id="StockCountConfirm_ListView" Index="1" />
@@ -603,6 +605,9 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="ARDownpaymentCancellationAppStage_DetailView" AllowEdit="False" />
+    <DetailView Id="ARDownpaymentCancellationAppStatus_DetailView" AllowEdit="False" />
+    <DetailView Id="ARDownpaymentCancellationDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="ASN_ASNDetails_ListView" AllowEdit="True" />
     <ListView Id="ASN_AuditTrail_ListView" AllowLink="False" AllowNew="False" AllowUnlink="False" AllowDelete="False">
       <Columns>
@@ -763,6 +768,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="ASNDocTrail_DetailView" AllowEdit="False" />
     <DetailView Id="AuditDataItemPersistent_DetailView" AllowEdit="False" />
     <ListView Id="BundleType_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
@@ -977,6 +983,7 @@
       </Layout>
     </DetailView>
     <ListView Id="DeliveryOrderDetails_ListView" AllowEdit="False" />
+    <DetailView Id="DeliveryOrderDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="DiscrepancyReason_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -1155,6 +1162,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="GRNDocTrail_DetailView" AllowEdit="False" />
     <DetailView Id="ItemInquiry_DetailView" AllowEdit="True">
       <Items>
         <ActionContainerViewItem Id="Button" Caption="Button" ActionContainer="ListView" Orientation="Vertical" IsNewNode="True" />
@@ -1598,6 +1606,7 @@
     </DetailView>
     <ListView Id="Load_ListView" DataAccessMode="Client" />
     <DetailView Id="LoadDetails_DetailView" AllowEdit="False" />
+    <DetailView Id="LoadDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="PackList_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -1689,6 +1698,7 @@
       </Layout>
     </DetailView>
     <ListView Id="PackList_ListView" DataAccessMode="Client" />
+    <DetailView Id="PackListDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="PaymentType_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -1861,6 +1871,7 @@
     </ListView>
     <ListView Id="PickList_PickListDetails_ListView" AllowEdit="True" />
     <ListView Id="PickList_PickListDetailsActual_ListView" AllowEdit="True" />
+    <DetailView Id="PickListDocTrail_DetailView" AllowEdit="False" />
     <DetailView Id="PrintLabel_DetailView">
       <Items>
         <ActionContainerViewItem Id="AddPrintItem" ActionContainer="ListView" Caption="AddPrintItem" Orientation="Horizontal" IsNewNode="True" />
@@ -1929,6 +1940,8 @@
       </Columns>
     </ListView>
     <ListView Id="PriorityType_ListView" FreezeColumnIndices="False" DataAccessMode="Client" />
+    <DetailView Id="PurchaseOrderAppStage_DetailView" AllowEdit="False" />
+    <DetailView Id="PurchaseOrderAppStatus_DetailView" AllowEdit="False" />
     <DetailView Id="PurchaseOrderDetails_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -1954,6 +1967,7 @@
       </Layout>
     </DetailView>
     <ListView Id="PurchaseOrderDetails_ListView" AllowEdit="True" />
+    <DetailView Id="PurchaseOrderDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="PurchaseOrders_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -2315,6 +2329,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="PurchaseReturnDocTrail_DetailView" AllowEdit="False" />
     <DetailView Id="PurchaseReturnRequestDetails_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -2340,6 +2355,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="PurchaseReturnRequestDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="PurchaseReturnRequests_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -3104,6 +3120,8 @@
     <ListView Id="SalesOrderCollection_SalesOrderCollectionDetails_ListView" AllowEdit="True" />
     <ListView Id="SalesOrderCollection_SalesOrderCollectionReturn_ListView" AllowEdit="True" />
     <DetailView Id="SalesOrderCollectionDetails_DetailView" AllowEdit="True" />
+    <DetailView Id="SalesOrderCollectionDocStatus_DetailView" AllowEdit="False" />
+    <DetailView Id="SalesOrderDocStatus_DetailView" AllowEdit="False" />
     <ListView Id="SalesQuotation_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -3428,7 +3446,10 @@
       </Columns>
     </ListView>
     <ListView Id="SalesQuotation_SalesQuotationDetails_ListView" AllowEdit="True" />
+    <DetailView Id="SalesQuotationAppStage_DetailView" AllowEdit="False" />
+    <DetailView Id="SalesQuotationAppStatus_DetailView" AllowEdit="False" />
     <ListView Id="SalesQuotationDetails_ListView" AllowEdit="True" />
+    <DetailView Id="SalesQuotationDocTrail_DetailView" AllowEdit="False" />
     <DetailView Id="SalesRefundDetails_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -3452,6 +3473,9 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="SalesRefundDocTrail_DetailView" AllowEdit="False" />
+    <DetailView Id="SalesRefundReqAppStage_DetailView" AllowEdit="False" />
+    <DetailView Id="SalesRefundReqAppStatus_DetailView" AllowEdit="False" />
     <DetailView Id="SalesRefundReqDetails_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -3477,6 +3501,7 @@
       </Layout>
     </DetailView>
     <ListView Id="SalesRefundReqDetails_ListView" AllowEdit="False" />
+    <DetailView Id="SalesRefundReqDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="SalesRefundRequests_AuditTrail_ListView" AllowDelete="False" AllowEdit="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -3833,6 +3858,9 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="SalesReturnDocTrail_DetailView" AllowEdit="False" />
+    <DetailView Id="SalesReturnRequestAppStage_DetailView" AllowEdit="False" />
+    <DetailView Id="SalesReturnRequestAppStatus_DetailView" AllowEdit="False" />
     <DetailView Id="SalesReturnRequestDetails_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -3859,6 +3887,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="SalesReturnRequestDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="SalesReturnRequests_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -4363,6 +4392,9 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="StockAdjustmentDocTrail_DetailView" AllowEdit="False" />
+    <DetailView Id="StockAdjustmentReqAppStage_DetailView" AllowEdit="False" />
+    <DetailView Id="StockAdjustmentReqAppStatus_DetailView" AllowEdit="False" />
     <DetailView Id="StockAdjustmentReqDetails_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -4387,6 +4419,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="StockAdjustmentReqDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="StockAdjustmentRequests_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -4665,21 +4698,27 @@
       </Columns>
     </ListView>
     <DetailView Id="StockCountConfirm_DetailView">
+      <Items>
+        <ActionContainerViewItem Id="StockConfirmImport" ActionContainer="ListView" Caption="StockConfirmImport" Orientation="Vertical" IsNewNode="True" />
+      </Items>
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
-          <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="19.277108433734941">
-            <LayoutGroup Id="StockCountConfirm_col1" ShowCaption="False" Index="0" RelativeSize="49.939540507859732" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" Direction="Horizontal" RelativeSize="20.64516129032258">
+            <LayoutGroup Id="StockCountConfirm_col1" ShowCaption="False" Index="0" RelativeSize="43.572395128552095" IsNewNode="True">
               <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="37.5" IsNewNode="True" />
               <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="1" RelativeSize="27.083333333333332" IsNewNode="True" />
               <LayoutItem Id="StockCountDate" ViewItem="StockCountDate" Index="2" RelativeSize="35.416666666666664" IsNewNode="True" />
             </LayoutGroup>
-            <LayoutGroup Id="StockCountConfirm_col2" ShowCaption="False" Index="1" RelativeSize="50.060459492140268" IsNewNode="True">
-              <LayoutItem Id="Status" ViewItem="Status" Index="0" RelativeSize="37.5" IsNewNode="True" />
-              <LayoutItem Id="Remarks" ViewItem="Remarks" Index="1" RelativeSize="62.5" IsNewNode="True" />
+            <LayoutGroup Id="StockCountConfirm_col2" ShowCaption="False" Index="1" RelativeSize="56.427604871447905" Direction="Horizontal" Caption="StockCountConfirm_col2" IsNewNode="True">
+              <LayoutGroup Id="Auto78ba899a-4d58-433a-87c5-50b751ac7128" ShowCaption="False" Caption="Auto78ba899a-4d58-433a-87c5-50b751ac7128(8)" Index="0" RelativeSize="66.666666666666671" IsNewNode="True">
+                <LayoutItem Id="Status" ViewItem="Status" Index="0" RelativeSize="37.5" IsNewNode="True" />
+                <LayoutItem Id="Remarks" ViewItem="Remarks" Index="1" RelativeSize="62.5" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutItem Id="StockConfirmImport" ViewItem="StockConfirmImport" Index="1" RelativeSize="33.333333333333336" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="StockCountConfirm" Removed="True" />
           </LayoutGroup>
-          <TabbedGroup Id="Tabs" RelativeSize="80.722891566265062">
+          <TabbedGroup Id="Tabs" RelativeSize="79.354838709677423">
             <LayoutGroup Id="StockCountConfirmDetails" RelativeSize="100">
               <LayoutItem Id="StockCountConfirmDetails" RelativeSize="100" />
             </LayoutGroup>
@@ -4713,6 +4752,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="StockCountConfirmDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="StockCountSheet_AuditTrail_ListView">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -4721,20 +4761,26 @@
       </Columns>
     </ListView>
     <DetailView Id="StockCountSheet_DetailView">
+      <Items>
+        <ActionContainerViewItem Id="StockSheetImport" ActionContainer="ListView" Caption="StockSheetImport" Orientation="Vertical" IsNewNode="True" />
+      </Items>
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
-          <LayoutGroup Id="SimpleEditors" RelativeSize="24.497991967871485" Direction="Horizontal">
-            <LayoutGroup Id="StockCountSheet_col1" ShowCaption="False" Index="0" RelativeSize="49.930651872399444" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="22.975517890772128" Direction="Horizontal">
+            <LayoutGroup Id="StockCountSheet_col1" ShowCaption="False" Index="0" RelativeSize="39.484396200814111" IsNewNode="True">
               <LayoutItem Id="DocNum" ViewItem="DocNum" Index="0" RelativeSize="29.508196721311474" IsNewNode="True" />
               <LayoutItem Id="Counter" ViewItem="Counter" Index="1" RelativeSize="21.311475409836067" IsNewNode="True" />
               <LayoutItem Id="Warehouse" ViewItem="Warehouse" Index="2" RelativeSize="21.311475409836067" IsNewNode="True" />
               <LayoutItem Id="Counted" ViewItem="Counted" Index="3" RelativeSize="27.868852459016395" IsNewNode="True" />
             </LayoutGroup>
-            <LayoutGroup Id="StockCountSheet_col2" ShowCaption="False" Index="1" RelativeSize="50.069348127600556" IsNewNode="True">
-              <LayoutItem Id="StockCountDate" ViewItem="StockCountDate" Index="0" RelativeSize="29.508196721311474" IsNewNode="True" />
-              <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="21.311475409836067" IsNewNode="True" />
-              <LayoutItem Id="Round" ViewItem="Round" Index="2" RelativeSize="21.311475409836067" IsNewNode="True" />
-              <LayoutItem Id="Reference" ViewItem="Reference" Index="3" RelativeSize="27.868852459016395" IsNewNode="True" />
+            <LayoutGroup Id="StockCountSheet_col2" ShowCaption="False" Index="1" RelativeSize="60.515603799185889" Direction="Horizontal" Caption="StockCountSheet_col2" IsNewNode="True">
+              <LayoutGroup Id="Auto43fd0715-236a-4dcb-9d9b-7fc12625e5d4" ShowCaption="False" Caption="Auto43fd0715-236a-4dcb-9d9b-7fc12625e5d4(9)" Index="0" RelativeSize="71.300448430493276" IsNewNode="True">
+                <LayoutItem Id="StockCountDate" ViewItem="StockCountDate" Index="0" RelativeSize="29.508196721311474" IsNewNode="True" />
+                <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="21.311475409836067" IsNewNode="True" />
+                <LayoutItem Id="Round" ViewItem="Round" Index="2" RelativeSize="21.311475409836067" IsNewNode="True" />
+                <LayoutItem Id="Reference" ViewItem="Reference" Index="3" RelativeSize="27.868852459016395" IsNewNode="True" />
+              </LayoutGroup>
+              <LayoutItem Id="StockSheetImport" ViewItem="StockSheetImport" Index="1" RelativeSize="28.699551569506728" IsNewNode="True" />
             </LayoutGroup>
             <LayoutGroup Id="StockCountSheet" RelativeSize="100" Removed="True">
               <LayoutGroup Id="StockCountSheet_col1" RelativeSize="49.928057553956833">
@@ -4754,8 +4800,8 @@
               </LayoutGroup>
             </LayoutGroup>
           </LayoutGroup>
-          <LayoutItem Id="Remarks" ViewItem="Remarks" Index="1" RelativeSize="5.2208835341365463" IsNewNode="True" />
-          <TabbedGroup Id="Tabs" RelativeSize="70.281124497991968" Index="2">
+          <LayoutItem Id="Remarks" ViewItem="Remarks" Index="1" RelativeSize="4.8964218455743875" IsNewNode="True" />
+          <TabbedGroup Id="Tabs" RelativeSize="72.128060263653481" Index="2">
             <LayoutGroup Id="StockCountSheetTarget" RelativeSize="100">
               <LayoutItem Id="StockCountSheetTarget" RelativeSize="100" />
             </LayoutGroup>
@@ -4794,6 +4840,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="StockCountSheetDocTrail_DetailView" AllowEdit="False" />
     <DetailView Id="StockCountSheetTarget_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -5264,6 +5311,8 @@
       </Columns>
     </ListView>
     <ListView Id="WarehouseTransferReq_WarehouseTransferReqDetails_ListView" AllowEdit="True" />
+    <DetailView Id="WarehouseTransferReqAppStage_DetailView" AllowEdit="False" />
+    <DetailView Id="WarehouseTransferReqAppStatus_DetailView" AllowEdit="False" />
     <DetailView Id="WarehouseTransferReqDetails_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
@@ -5285,6 +5334,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <DetailView Id="WarehouseTransferReqDocTrail_DetailView" AllowEdit="False" />
     <ListView Id="WarehouseTransfers_AuditTrail_ListView" AllowDelete="False" AllowLink="False" AllowNew="False">
       <Columns>
         <ColumnInfo Id="PropertyName" Index="-1" />
@@ -5395,5 +5445,6 @@
     </DetailView>
     <ListView Id="WarehouseTransfers_ListView" DataAccessMode="Client" />
     <ListView Id="WarehouseTransfers_WarehouseTransferDetails_ListView" AllowEdit="True" />
+    <DetailView Id="WarehouseTransfersDocTrail_DetailView" AllowEdit="False" />
   </Views>
 </Application>

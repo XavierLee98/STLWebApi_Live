@@ -16,6 +16,7 @@ using DevExpress.Spreadsheet;
 using DevExpress.Xpo;
 
 // 2023-08-25 - export and import function - ver 1.0.9
+// 2023-10-20 - add stock count - ver 1.0.12
 
 namespace Admiral.ImportData
 {
@@ -337,6 +338,32 @@ namespace Admiral.ImportData
                                 }
                             }
                             // End ver 1.0.9
+
+                            // Start ver 1.0.12
+                            if (option.Type == "StockCountSheetTarget")
+                            {
+                                if (ws.Cells[3, c].DisplayText == "Stock Count Sheet")
+                                {
+                                    ws.Cells[r, c].SetValue(option.DocNum);
+                                }
+                            }
+
+                            if (option.Type == "StockCountSheetCounted")
+                            {
+                                if (ws.Cells[3, c].DisplayText == "Stock Count Sheet")
+                                {
+                                    ws.Cells[r, c].SetValue(option.DocNum);
+                                }
+                            }
+
+                            if (option.Type == "StockCountConfirm")
+                            {
+                                if (ws.Cells[3, c].DisplayText == "Stock Count Confirm")
+                                {
+                                    ws.Cells[r, c].SetValue(option.DocNum);
+                                }
+                            }
+                            // End ver 1.0.12
 
                             var field = fields[c];
                             var cell = ws.Cells[r, c];
@@ -682,6 +709,35 @@ namespace Admiral.ImportData
                         book.Worksheets.Remove(book.Worksheets[0]);
                     }
                     // End ver 1.0.9
+
+                    // Start ver 1.0.12
+                    if (item.Name == "StockCountSheetTarget")
+                    {
+                        var cls = option.MainTypeInfo.Application.BOModel.GetClass(item.MemberInfo.ListElementTypeInfo.Type);
+                        var b = book.Worksheets.Add("Stock Sheet Target");
+                        CreateSheet(b, cls, "StockCountSheetTarget", option.DocNum);
+
+                        book.Worksheets.Remove(book.Worksheets[0]);
+                    }
+
+                    if (item.Name == "StockCountSheetCounted")
+                    {
+                        var cls = option.MainTypeInfo.Application.BOModel.GetClass(item.MemberInfo.ListElementTypeInfo.Type);
+                        var b = book.Worksheets.Add("Stock Sheet Counted");
+                        CreateSheet(b, cls, "StockCountSheetCounted", option.DocNum);
+
+                        book.Worksheets.Remove(book.Worksheets[0]);
+                    }
+
+                    if (item.Name == "StockCountConfirmDetails")
+                    {
+                        var cls = option.MainTypeInfo.Application.BOModel.GetClass(item.MemberInfo.ListElementTypeInfo.Type);
+                        var b = book.Worksheets.Add("Stock Confirm Counted");
+                        CreateSheet(b, cls, "StockCountConfirm", option.DocNum);
+
+                        book.Worksheets.Remove(book.Worksheets[0]);
+                    }
+                    // End ver 1.0.12
                 }
             }
 
@@ -824,6 +880,77 @@ namespace Admiral.ImportData
                     }
                 }
                 // End ver 1.0.9
+
+                // Start ver 1.0.12
+                if (module == "StockCountSheetTarget")
+                {
+                    if (item.Name == "ItemCode" || item.Name == "Bin" || item.Name == "Quantity" ||
+                        item.Name == "StockCountSheet")
+                    {
+                        var c = cells[3, i];
+                        c.Value = item.Caption;
+                        c.FillColor = Color.FromArgb(255, 153, 0);
+                        c.Font.Color = Color.White;
+                        var isRequiredField = IsRequiredField(item);
+
+                        var range = book.Range.FromLTRB(i, 2, i, 20000);
+
+                        //DataValidation dv = null;
+
+                        if (isRequiredField)
+                        {
+                            c.Font.Bold = true;
+                        }
+                        i++;
+                    }
+                }
+
+                if (module == "StockCountSheetCounted")
+                {
+                    if (item.Name == "ItemCode" || item.Name == "Bin" || item.Name == "Quantity" ||
+                        item.Name == "StockCountSheet")
+                    {
+                        var c = cells[3, i];
+                        c.Value = item.Caption;
+                        c.FillColor = Color.FromArgb(255, 153, 0);
+                        c.Font.Color = Color.White;
+                        var isRequiredField = IsRequiredField(item);
+
+                        var range = book.Range.FromLTRB(i, 2, i, 20000);
+
+                        //DataValidation dv = null;
+
+                        if (isRequiredField)
+                        {
+                            c.Font.Bold = true;
+                        }
+                        i++;
+                    }
+                }
+
+                if (module == "StockCountConfirm")
+                {
+                    if (item.Name == "ItemCode" || item.Name == "Bin" || item.Name == "Quantity" ||
+                        item.Name == "StockCountConfirm")
+                    {
+                        var c = cells[3, i];
+                        c.Value = item.Caption;
+                        c.FillColor = Color.FromArgb(255, 153, 0);
+                        c.Font.Color = Color.White;
+                        var isRequiredField = IsRequiredField(item);
+
+                        var range = book.Range.FromLTRB(i, 2, i, 20000);
+
+                        //DataValidation dv = null;
+
+                        if (isRequiredField)
+                        {
+                            c.Font.Bold = true;
+                        }
+                        i++;
+                    }
+                }
+                // End ver 1.0.12
             }
             #endregion
         }
