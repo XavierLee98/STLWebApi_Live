@@ -16,6 +16,7 @@ using StarLaiPortal.WebApi.Helper;
 using StarLaiPortal.WebApi.Model;
 using System.Data.SqlClient;
 using System.Dynamic;
+using System.Text.Json.Nodes;
 
 namespace StarLaiPortal.WebApi.API.Controller
 {
@@ -133,6 +134,11 @@ namespace StarLaiPortal.WebApi.API.Controller
                 if (detailsObject == null || detailsObject.Count() <= 0)
                     return Problem("Warehouse Transfer Details are null.");
 
+                string ReqDocnum = string.Empty;
+
+                WarehouseTransferReq req = newObjectSpace.FindObject<WarehouseTransferReq>(CriteriaOperator.Parse("Oid = ?", dynamicObj.BaseId));
+                ReqDocnum = req.DocNum;
+
                 using (SqlConnection conn = new SqlConnection(Configuration.GetConnectionString("ConnectionString")))
                 {
                     foreach (var itemline in detailsObject)
@@ -157,6 +163,7 @@ namespace StarLaiPortal.WebApi.API.Controller
                 curobj.Picker = userName;
                 curobj.CreateUser = newObjectSpace.GetObjectByKey<ApplicationUser>(userId);
                 curobj.UpdateUser = newObjectSpace.GetObjectByKey<ApplicationUser>(userId);
+                curobj.WarehouseTransferReqNo = ReqDocnum;
                 curobj.TransferType = TransferType.WT;
 
                 foreach (var dtl in curobj.WarehouseTransferDetails)
